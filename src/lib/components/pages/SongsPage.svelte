@@ -1,8 +1,8 @@
 <script>
 	import Page from "../Page.svelte";
-</script>
 
-<Page>
+
+</script><Page>
 	<div class="Collum3">
 		<div class="MediumText">Original [Playlist]</div>
 		<iframe
@@ -60,4 +60,5 @@
 			margin-top: 40%;
 		}
 	}
+
 </style>

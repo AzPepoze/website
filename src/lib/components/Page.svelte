@@ -2,8 +2,7 @@
 	<slot />
 </div>
 
-<style>
-	.Page {
+<style> .Page {
 		min-width: 100%;
 		scroll-snap-align: center;
 		display: flex;

@@ -16,9 +16,9 @@
 			}, 3000);
 		}
 	});
-</script>
 
-<div
+
+</script><div
 	bind:this={loadscreen}
 	id="loadscreen"
 	style="background-color: rgb(0, 0, 0);;
@@ -99,4 +99,5 @@
 		background-size: cover;
 		background-repeat: repeat-x;
 	}
+
 </style>

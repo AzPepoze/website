@@ -1,70 +1,99 @@
 <script lang="ts">
-  import { onMount, createEventDispatcher } from "svelte";
-  import { page } from "../stores/page";
+	import { onMount } from "svelte";
+	import { page } from "../stores/page";
 
-  const dispatch = createEventDispatcher();
+	export let onnavigate: (page: number) => void = () => {};
 
-  let buttonContainer: HTMLElement;
+	let buttonContainer: HTMLElement;
 
-  onMount(() => {
-    setTimeout(() => {
-      if (buttonContainer) {
-        buttonContainer.style.bottom = "0px";
-      }
-    }, 500);
-  });
+	onMount(() => {
+		setTimeout(() => {
+			if (buttonContainer) {
+				buttonContainer.style.bottom = "20px";
+			}
+		}, 500);
+	});
 
-  function navigateTo(pageNumber: number) {
-    dispatch("navigate", pageNumber);
-  }
-</script>
+	function navigateTo(pageNumber: number) {
+		onnavigate(pageNumber);
+	}
 
-<div bind:this={buttonContainer} id="ButtonContainer">
-  <button on:click={() => navigateTo(0)} class:selected={$page === 0}> Home Page </button>
-  <button on:click={() => navigateTo(1)} class:selected={$page === 1}> Social media </button>
-  <button on:click={() => navigateTo(2)} class:selected={$page === 2}> Work Projects </button>
-  <button on:click={() => navigateTo(3)} class:selected={$page === 3}>
-    Songs<br />(Original / Remix)
-  </button>
+
+</script><div bind:this={buttonContainer} id="ButtonContainer">
+	<div class="nav-wrapper">
+		<button on:click={() => navigateTo(0)} class:selected={$page === 0}> HOME </button>
+		<button on:click={() => navigateTo(1)} class:selected={$page === 1}> SOCIALS </button>
+		<button on:click={() => navigateTo(2)} class:selected={$page === 2}> PROJECTS </button>
+		<button on:click={() => navigateTo(3)} class:selected={$page === 3}> MUSIC </button>
+	</div>
 </div>
 
 <style>
 	#ButtonContainer {
-		bottom: -8%;
+		bottom: -100px;
+		left: 0;
 		width: 100%;
-		height: 8%;
+		height: auto;
 		position: fixed;
 		display: flex;
+		justify-content: center;
+		pointer-events: none;
+		transition: bottom 1s cubic-bezier(0.16, 1, 0.3, 1);
+		z-index: 100;
+	}
+
+	.nav-wrapper {
+		display: flex;
 		flex-direction: row;
-		justify-content: space-between;
-		transition: bottom 2s;
+		background: rgba(0, 0, 0, 0.8);
+		border: 1px solid rgba(255, 255, 255, 0.2);
+		border-radius: 50px;
+		padding: 5px;
+		gap: 5px;
+		backdrop-filter: blur(10px);
+		pointer-events: auto;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 	}
 
 	button {
-		background: black;
-		opacity: 0.4;
+		background: transparent;
 		border: none;
-		color: white;
+		color: #888;
 		cursor: pointer;
-		flex-grow: 1;
-		font-size: 1.5rem;
-		transition:
-			opacity 0.3s,
-						background-color 0.3s;
-	}
-
-	button.selected {
-		opacity: 1;
-		background: unset;
+		padding: 12px 24px;
+		font-size: 1rem;
+		font-family: "JetBrains Mono", monospace;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+		transition: all 0.3s ease;
+		border-radius: 40px;
+		white-space: nowrap;
 	}
 
 	button:hover {
-		opacity: 0.8;
+		color: white;
+		background-color: rgba(255, 255, 255, 0.1);
+	}
+
+	button.selected {
+		color: black;
+		background-color: white;
+		font-weight: bold;
 	}
 
 	@media (max-width: 768px) {
+		.nav-wrapper {
+			width: 95%;
+			justify-content: space-between;
+			border-radius: 20px;
+		}
+
 		button {
-			font-size: 1rem;
+			font-size: 0.7rem;
+			padding: 10px 10px;
+			border-radius: 15px;
+			flex-grow: 1;
 		}
 	}
+
 </style>
