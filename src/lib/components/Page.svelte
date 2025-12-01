@@ -20,7 +20,6 @@
 		}
 	}
 
-	/* Generic styles for frames within a page */
 	:global(.Page > .LeftFrame),
 	:global(.Page > .RightFrame) {
 		width: 100%;

@@ -6,7 +6,7 @@
 
 <Page>
 	<div class="LeftFrame">
-		<TiltCard className="tilt-card-container">
+		<TiltCard className="tilt-card-container" blur={false}>
 			<HeaderText text="HELLO!" className="MainText StrokeText glitch-header typing-cursor" />
 			<div class="SubText">First of all, Please choose your language.</div>
 		</TiltCard>
