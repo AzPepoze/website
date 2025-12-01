@@ -42,7 +42,13 @@
 	}
 
 	onMount(() => {
+		if ("scrollRestoration" in history) {
+			history.scrollRestoration = "manual";
+		}
+
 		if (mainContainer) {
+			mainContainer.scrollTop = 0;
+			handleScroll();
 			mainContainer.addEventListener("scroll", handleScroll);
 			mainContainer.addEventListener("wheel", handleWheel, { passive: false });
 		}

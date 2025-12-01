@@ -2,66 +2,89 @@
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
+	import { page } from "$lib/stores/page";
+	import { scrollTransition } from "$lib/transitions/custom-transitions";
 </script>
 
 <Page>
-	<div class="Header">
-		<HeaderText text="PROJECTS" className="MainText StrokeText" />
-	</div>
+	{#if $page === 2}
+		<div
+			class="Header"
+			in:scrollTransition={{ y: -50, duration: 1000, delay: 200, blur: 5 }}
+			out:scrollTransition={{ y: -50, duration: 500, blur: 5 }}
+		>
+			<HeaderText text="PROJECTS" className="MainText StrokeText" />
+		</div>
 
-	<div class="ProjectsContainer">
-		<TiltCard className="project-card glass-panel">
-			<div class="media-container">
-				<iframe
-					src="https://www.youtube.com/embed/videoseries?si=tuTqFvJaufMJfvyV&amp;list=PLr6Nl-A8PXhxhHBmEeVc64ns1Cpi8ygYc&autoplay=1&loop=1&mute=1&playsinline=1"
-					title="Perthro"
-					frameborder="0"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-					allowfullscreen
-				></iframe>
+		<div class="ProjectsContainer">
+			<div
+				in:scrollTransition={{ y: 100, duration: 1000, delay: 400, blur: 5, backdropBlur: 10 }}
+				out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+				class="project-card"
+			>
+				<TiltCard className="project-card glass-panel">
+					<div class="media-container">
+						<iframe
+							src="https://www.youtube.com/embed/videoseries?si=tuTqFvJaufMJfvyV&amp;list=PLr6Nl-A8PXhxhHBmEeVc64ns1Cpi8ygYc&autoplay=1&loop=1&mute=1&playsinline=1"
+							title="Perthro"
+							frameborder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							allowfullscreen
+						></iframe>
+					</div>
+					<div class="content-wrapper">
+						<div class="title">Perthro</div>
+						<div class="description">
+							<p><strong>Genre:</strong> Open World RPG (Roblox)</p>
+							<p><strong>Role:</strong> Solo Developer</p>
+							<p>
+								<strong>Status:</strong>
+								<span class="status-tag developing">In Development</span>
+							</p>
+						</div>
+					</div>
+				</TiltCard>
 			</div>
-			<div class="content-wrapper">
-				<div class="title">Perthro</div>
-				<div class="description">
-					<p><strong>Genre:</strong> Open World RPG (Roblox)</p>
-					<p><strong>Role:</strong> Solo Developer</p>
-					<p><strong>Status:</strong> <span class="status-tag developing">In Development</span></p>
-				</div>
-			</div>
-		</TiltCard>
 
-		<TiltCard className="project-card glass-panel">
-			<div class="media-container">
-				<iframe
-					src="https://www.youtube.com/embed/Z3Hrpjsi9AY?rel=0&wmode=opaque&enablejsapi=1&autoplay=1&loop=1&mute=1&playsinline=1&playlist=Z3Hrpjsi9AY"
-					title="Newtube"
-					frameborder="0"
-					allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-					allowfullscreen
-				></iframe>
+			<div
+				in:scrollTransition={{ y: 100, duration: 1000, delay: 500, blur: 5, backdropBlur: 10 }}
+				out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+				class="project-card"
+			>
+				<TiltCard className="project-card glass-panel">
+					<div class="media-container">
+						<iframe
+							src="https://www.youtube.com/embed/Z3Hrpjsi9AY?rel=0&wmode=opaque&enablejsapi=1&autoplay=1&loop=1&mute=1&playsinline=1&playlist=Z3Hrpjsi9AY"
+							title="Newtube"
+							frameborder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							allowfullscreen
+						></iframe>
+					</div>
+					<div class="content-wrapper">
+						<div class="title">Newtube</div>
+						<div class="description">
+							<p><strong>Type:</strong> Browser Extension</p>
+							<p>
+								<strong>Available:</strong>
+								<a
+									href="https://chrome.google.com/webstore/detail/dnjjchajjdnfbjhjclmilicgheglcopj"
+									target="_blank"
+									class="link">Chrome</a
+								>,
+								<a
+									href="https://addons.mozilla.org/en-US/firefox/addon/newtube-youtubestylecustomizer/"
+									target="_blank"
+									class="link">Firefox</a
+								>
+							</p>
+							<p><strong>Status:</strong> <span class="status-tag public">Public</span></p>
+						</div>
+					</div>
+				</TiltCard>
 			</div>
-			<div class="content-wrapper">
-				<div class="title">Newtube</div>
-				<div class="description">
-					<p><strong>Type:</strong> Browser Extension</p>
-					<p>
-						<strong>Available:</strong>
-						<a
-							href="https://chrome.google.com/webstore/detail/dnjjchajjdnfbjhjclmilicgheglcopj"
-							target="_blank"
-							class="link">Chrome</a
-						>,
-						<a
-							href="https://addons.mozilla.org/en-US/firefox/addon/newtube-youtubestylecustomizer/"
-							target="_blank"
-							class="link">Firefox</a
-						>
-					</p>
-					<p><strong>Status:</strong> <span class="status-tag public">Public</span></p>
-				</div>
-			</div>
-		</TiltCard>
-	</div>
+		</div>
+	{/if}
 </Page>
 
 <style lang="scss">

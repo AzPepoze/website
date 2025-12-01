@@ -2,77 +2,104 @@
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
+	import { page } from "$lib/stores/page";
+	import { scrollTransition } from "$lib/transitions/custom-transitions";
+</script>
 
-
-</script><Page>
-	<div class="LeftFrame">
-		<div class="title-container">
-			<HeaderText text="CONNECT" className="MainText StrokeText glitch" />
-			<div class="SubText">Find me on these platforms</div>
+<Page>
+	{#if $page === 1}
+		<div
+			class="LeftFrame"
+			in:scrollTransition={{ y: 100, duration: 1000, delay: 200, blur: 5 }}
+			out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
+		>
+			<div class="title-container">
+				<HeaderText text="CONNECT" className="MainText StrokeText glitch" />
+				<div class="SubText">Find me on these platforms</div>
+			</div>
 		</div>
-	</div>
 
-	<div class="RightFrame">
-		<div class="grid-container">
-			<TiltCard rotationIntensity={10} className="card-wrapper">
-				<a
-					href="https://www.youtube.com/channel/UCJ2C0UTfxQo6iGTfudPfoRQ"
-					target="_blank"
-					class="social-card youtube"
+		<div class="RightFrame">
+			<div class="grid-container">
+				<div
+					in:scrollTransition={{ y: 100, duration: 500, delay: 200, blur: 5, backdropBlur: 10 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
 				>
-					<div class="card-content">
-						<div class="icon-wrapper">
-							<img
-								src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png"
-								alt="Youtube"
-							/>
-						</div>
-						<div class="text-wrapper">
-							<span class="platform">YouTube</span>
-							<span class="username">AzPepoze</span>
-						</div>
-					</div>
-					<div class="glow"></div>
-				</a>
-			</TiltCard>
+					<TiltCard rotationIntensity={10} className="card-wrapper">
+						<a
+							href="https://www.youtube.com/channel/UCJ2C0UTfxQo6iGTfudPfoRQ"
+							target="_blank"
+							class="social-card youtube"
+						>
+							<div class="card-content">
+								<div class="icon-wrapper">
+									<img
+										src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png"
+										alt="Youtube"
+									/>
+								</div>
+								<div class="text-wrapper">
+									<span class="platform">YouTube</span>
+									<span class="username">AzPepoze</span>
+								</div>
+							</div>
+							<div class="glow"></div>
+						</a>
+					</TiltCard>
+				</div>
 
-			<TiltCard rotationIntensity={10} className="card-wrapper">
-				<a href="https://www.pixiv.net/en/users/44970537" target="_blank" class="social-card pixiv">
-					<div class="card-content">
-						<div class="icon-wrapper">
-							<img
-								src="https://is5-ssl.mzstatic.com/image/thumb/Purple116/v4/65/cc/d2/65ccd259-6ed6-4e34-20f0-d83018f6663a/AppIcon-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg"
-								alt="Pixiv"
-							/>
-						</div>
-						<div class="text-wrapper">
-							<span class="platform">Pixiv</span>
-							<span class="username">AzPepoze</span>
-						</div>
-					</div>
-					<div class="glow"></div>
-				</a>
-			</TiltCard>
+				<div
+					in:scrollTransition={{ y: 100, duration: 500, delay: 300, blur: 5, backdropBlur: 10 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+				>
+					<TiltCard rotationIntensity={10} className="card-wrapper">
+						<a
+							href="https://www.pixiv.net/en/users/44970537"
+							target="_blank"
+							class="social-card pixiv"
+						>
+							<div class="card-content">
+								<div class="icon-wrapper">
+									<img
+										src="https://is5-ssl.mzstatic.com/image/thumb/Purple116/v4/65/cc/d2/65ccd259-6ed6-4e34-20f0-d83018f6663a/AppIcon-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg"
+										alt="Pixiv"
+									/>
+								</div>
+								<div class="text-wrapper">
+									<span class="platform">Pixiv</span>
+									<span class="username">AzPepoze</span>
+								</div>
+							</div>
+							<div class="glow"></div>
+						</a>
+					</TiltCard>
+				</div>
 
-			<TiltCard rotationIntensity={10} className="card-wrapper">
-				<a href="https://www.tiktok.com/@azpepoze_1" target="_blank" class="social-card tiktok">
-					<div class="card-content">
-						<div class="icon-wrapper">
-							<img
-								src="https://img.freepik.com/premium-vector/tik-tok-logo_578229-290.jpg"
-								alt="Tiktok"
-							/>
-						</div>
-						<div class="text-wrapper">
-							<span class="platform">TikTok</span>
-							<span class="username">@azpepoze_1</span>
-						</div>
-					</div>
-					<div class="glow"></div>
-				</a>
-			</TiltCard>
+				<div
+					in:scrollTransition={{ y: 100, duration: 500, delay: 400, blur: 5, backdropBlur: 10 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+				>
+					<TiltCard rotationIntensity={10} className="card-wrapper">
+						<a href="https://www.tiktok.com/@azpepoze_1" target="_blank" class="social-card tiktok">
+							<div class="card-content">
+								<div class="icon-wrapper">
+									<img
+										src="https://img.freepik.com/premium-vector/tik-tok-logo_578229-290.jpg"
+										alt="Tiktok"
+									/>
+								</div>
+								<div class="text-wrapper">
+									<span class="platform">TikTok</span>
+									<span class="username">@azpepoze_1</span>
+								</div>
+							</div>
+							<div class="glow"></div>
+						</a>
+					</TiltCard>
+				</div>
+			</div>
 		</div>
-	</div>
+	{/if}
 </Page>
 
 <style lang="scss">
@@ -312,5 +339,4 @@
 			}
 		}
 	}
-
 </style>
