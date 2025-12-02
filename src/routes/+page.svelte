@@ -6,7 +6,6 @@
 	import LoadScreen from "$lib/components/LoadScreen.svelte";
 	import MouseEffects from "$lib/components/MouseEffects.svelte";
 	import ProjectsPage from "$lib/components/pages/ProjectsPage.svelte";
-	import SongsPage from "$lib/components/pages/SongsPage.svelte";
 	import SocialsPage from "$lib/components/pages/SocialsPage.svelte";
 	import { page } from "$lib/stores/page";
 
@@ -60,9 +59,9 @@
 			}
 		};
 	});
+</script>
 
-
-</script><main bind:this={mainContainer}>
+<main bind:this={mainContainer}>
 	<BackgroundImage scrollOffset={scrollTop} />
 	<LoadScreen />
 	<MouseEffects />
@@ -72,13 +71,10 @@
 			<HomePage />
 		</section>
 		<section id="page-1">
-			<SocialsPage />
-		</section>
-		<section id="page-2">
 			<ProjectsPage />
 		</section>
-		<section id="page-3">
-			<SongsPage />
+		<section id="page-2">
+			<SocialsPage />
 		</section>
 	</div>
 
@@ -108,5 +104,4 @@
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
 	}
-
 </style>

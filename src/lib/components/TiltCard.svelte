@@ -3,7 +3,7 @@
 	export let scale = 1.02;
 	export let className = "";
 	export let perspective = 1000;
-	export let blur = true;
+	export let bg = true;
 
 	let card: HTMLElement;
 
@@ -34,7 +34,7 @@
 
 <div
 	class="tilt-card {className}"
-	class:blur
+	class:bg
 	bind:this={card}
 	on:mousemove={handleMouseMove}
 	on:mouseleave={handleMouseLeave}
@@ -48,7 +48,9 @@
 		transform-style: preserve-3d;
 	}
 
-	.blur {
-		backdrop-filter: blur(10px);
+	.bg {
+		background: rgba(10, 10, 10, 0.8);
+		border: 1px solid rgba(255, 255, 255, 0.1);
+		border-radius: 20px;
 	}
 </style>

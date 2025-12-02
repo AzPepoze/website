@@ -7,7 +7,7 @@
 </script>
 
 <Page>
-	{#if $page === 1}
+	{#if $page === 2}
 		<div
 			class="LeftFrame"
 			in:scrollTransition={{ y: 100, duration: 1000, delay: 200, blur: 5 }}
@@ -22,8 +22,8 @@
 		<div class="RightFrame">
 			<div class="grid-container">
 				<div
-					in:scrollTransition={{ y: 100, duration: 500, delay: 200, blur: 5, backdropBlur: 10 }}
-					out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+					in:scrollTransition={{ y: 100, duration: 500, delay: 200, blur: 5 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 				>
 					<TiltCard rotationIntensity={10} className="card-wrapper">
 						<a
@@ -49,8 +49,8 @@
 				</div>
 
 				<div
-					in:scrollTransition={{ y: 100, duration: 500, delay: 300, blur: 5, backdropBlur: 10 }}
-					out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+					in:scrollTransition={{ y: 100, duration: 500, delay: 300, blur: 5 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 				>
 					<TiltCard rotationIntensity={10} className="card-wrapper">
 						<a
@@ -76,8 +76,8 @@
 				</div>
 
 				<div
-					in:scrollTransition={{ y: 100, duration: 500, delay: 400, blur: 5, backdropBlur: 10 }}
-					out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+					in:scrollTransition={{ y: 100, duration: 500, delay: 400, blur: 5 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 				>
 					<TiltCard rotationIntensity={10} className="card-wrapper">
 						<a href="https://www.tiktok.com/@azpepoze_1" target="_blank" class="social-card tiktok">
@@ -97,6 +97,29 @@
 						</a>
 					</TiltCard>
 				</div>
+
+				<div
+					in:scrollTransition={{ y: 100, duration: 500, delay: 500, blur: 5 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
+				>
+					<TiltCard rotationIntensity={10} className="card-wrapper">
+						<a href="https://github.com/AzPepoze" target="_blank" class="social-card github">
+							<div class="card-content">
+								<div class="icon-wrapper">
+									<img
+										src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+										alt="GitHub"
+									/>
+								</div>
+								<div class="text-wrapper">
+									<span class="platform">GitHub</span>
+									<span class="username">AzPepoze</span>
+								</div>
+							</div>
+							<div class="glow"></div>
+						</a>
+					</TiltCard>
+				</div>
 			</div>
 		</div>
 	{/if}
@@ -107,7 +130,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: flex-start;
-		gap: 0.5rem; /* Reduced gap */
+		gap: 0.5rem;
 	}
 
 	.grid-container {
@@ -116,43 +139,40 @@
 		gap: 1rem;
 		width: 100%;
 		max-width: 800px;
-		padding: 0.5rem; /* Reduced padding */
+		padding: 0.5rem;
 	}
 
-	/* Default (Mobile) */
 	:global(.card-wrapper) {
-		height: 100px; /* Aggressively smaller default height */
+		height: 100px;
 		width: 100%;
 	}
 
 	.social-card {
 		position: relative;
 		display: flex;
-		flex-direction: row; /* Horizontal layout by default on mobile */
+		flex-direction: row;
 		align-items: center;
-		justify-content: flex-start; /* Align left */
+		justify-content: flex-start;
 		height: 100%;
 		width: 100%;
-		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 15px; /* Smaller radius */
-		backdrop-filter: blur(10px);
+		border-radius: 15px;
 		text-decoration: none;
 		overflow: hidden;
 		transition: border-color 0.3s;
-		padding: 0 1.5rem; /* Horizontal padding */
+		padding: 0 1.5rem;
 
 		.card-content {
 			z-index: 2;
 			display: flex;
-			flex-direction: row; /* Horizontal content */
+			flex-direction: row;
 			align-items: center;
 			gap: 1rem;
 			width: 100%;
 		}
 
 		.icon-wrapper {
-			width: 40px; /* Small icon */
+			width: 40px;
 			height: 40px;
 			border-radius: 50%;
 			overflow: hidden;
@@ -170,9 +190,9 @@
 		}
 
 		.text-wrapper {
-			text-align: left; /* Left align text */
-			opacity: 0.8; /* Higher opacity by default on mobile */
-			transform: none; /* No transform on mobile */
+			text-align: left;
+			opacity: 0.8;
+			transform: none;
 			transition: all 0.3s ease;
 			color: white;
 
@@ -194,7 +214,7 @@
 
 		/* Desktop Styles */
 		@media (min-width: 768px) {
-			flex-direction: column; /* Vertical layout on desktop */
+			flex-direction: column;
 			justify-content: center;
 			border-radius: 20px;
 			padding: 0;
@@ -246,7 +266,7 @@
 				opacity: 1;
 			}
 			.icon-wrapper {
-				transform: scale(1.1); /* Slower scale */
+				transform: scale(1.1);
 				img {
 					filter: grayscale(0%);
 				}
@@ -305,6 +325,22 @@
 				background: radial-gradient(circle, rgba(255, 0, 80, 0.15) 0%, transparent 60%);
 			}
 		}
+
+		&.github:hover {
+			border-color: #ffffff;
+			.icon-wrapper {
+				border-color: #ffffff;
+			}
+			.text-wrapper .platform {
+				color: #ffffff;
+			}
+			.text-wrapper .username {
+				color: #ffffff;
+			}
+			.glow {
+				background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+			}
+		}
 	}
 
 	/* Desktop Overrides for Grid/Wrapper */
@@ -319,14 +355,13 @@
 		}
 	}
 
-	/* Very Small Screen Adjustments */
 	@media (max-width: 480px) {
 		.grid-container {
-			grid-template-columns: 1fr; /* Full width stack */
+			grid-template-columns: 1fr;
 			gap: 0.8rem;
 		}
 		:global(.card-wrapper) {
-			height: 80px; /* Very compact bars */
+			height: 80px;
 		}
 		.social-card {
 			padding: 0 1rem;

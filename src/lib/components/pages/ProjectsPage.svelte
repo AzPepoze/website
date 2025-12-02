@@ -7,7 +7,7 @@
 </script>
 
 <Page>
-	{#if $page === 2}
+	{#if $page === 1}
 		<div
 			class="Header"
 			in:scrollTransition={{ y: -50, duration: 1000, delay: 200, blur: 5 }}
@@ -18,11 +18,11 @@
 
 		<div class="ProjectsContainer">
 			<div
-				in:scrollTransition={{ y: 100, duration: 1000, delay: 400, blur: 5, backdropBlur: 10 }}
-				out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+				in:scrollTransition={{ y: 100, duration: 1000, delay: 400, blur: 5 }}
+				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 				class="project-card"
 			>
-				<TiltCard className="project-card glass-panel">
+				<TiltCard className="project-card">
 					<div class="media-container">
 						<iframe
 							src="https://www.youtube.com/embed/videoseries?si=tuTqFvJaufMJfvyV&amp;list=PLr6Nl-A8PXhxhHBmEeVc64ns1Cpi8ygYc&autoplay=1&loop=1&mute=1&playsinline=1"
@@ -47,11 +47,11 @@
 			</div>
 
 			<div
-				in:scrollTransition={{ y: 100, duration: 1000, delay: 500, blur: 5, backdropBlur: 10 }}
-				out:scrollTransition={{ y: -100, duration: 500, blur: 5, backdropBlur: 10 }}
+				in:scrollTransition={{ y: 100, duration: 1000, delay: 600, blur: 5 }}
+				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 				class="project-card"
 			>
-				<TiltCard className="project-card glass-panel">
+				<TiltCard className="project-card">
 					<div class="media-container">
 						<iframe
 							src="https://www.youtube.com/embed/Z3Hrpjsi9AY?rel=0&wmode=opaque&enablejsapi=1&autoplay=1&loop=1&mute=1&playsinline=1&playlist=Z3Hrpjsi9AY"
@@ -232,12 +232,5 @@
 				}
 			}
 		}
-	}
-
-	:global(.glass-panel) {
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 20px;
-		backdrop-filter: blur(10px);
 	}
 </style>

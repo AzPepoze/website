@@ -22,9 +22,8 @@
 </script><div bind:this={buttonContainer} id="ButtonContainer">
 	<div class="nav-wrapper">
 		<button on:click={() => navigateTo(0)} class:selected={$page === 0}> HOME </button>
-		<button on:click={() => navigateTo(1)} class:selected={$page === 1}> SOCIALS </button>
-		<button on:click={() => navigateTo(2)} class:selected={$page === 2}> PROJECTS </button>
-		<button on:click={() => navigateTo(3)} class:selected={$page === 3}> MUSIC </button>
+		<button on:click={() => navigateTo(1)} class:selected={$page === 1}> PROJECTS </button>
+		<button on:click={() => navigateTo(2)} class:selected={$page === 2}> SOCIALS </button>
 	</div>
 </div>
 
