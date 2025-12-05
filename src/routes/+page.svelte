@@ -23,6 +23,14 @@
 	const handleWheel = (e: WheelEvent) => {
 		if (e.deltaY === 0 || !mainContainer) return;
 
+		let target = e.target as HTMLElement | null;
+		while (target && target !== mainContainer) {
+			if (target.hasAttribute("data-prevent-page-scroll")) {
+				return;
+			}
+			target = target.parentElement;
+		}
+
 		mainContainer.scrollTo({
 			top: mainContainer.scrollTop + (e.deltaY > 0 ? window.innerHeight : -window.innerHeight) / 1.2,
 			behavior: "smooth",
