@@ -17,114 +17,112 @@
 	export let repos: Repo[] = [];
 </script>
 
-<Page>
-	{#if $page === 1}
-		<div
-			class="Header"
-			in:scrollTransition={{ y: -50, duration: 1000, delay: 200, blur: 5 }}
-			out:scrollTransition={{ y: -50, duration: 500, blur: 5 }}
-		>
-			<HeaderText text="PROJECTS" className="MainText StrokeText" />
-		</div>
+<Page index={1}>
+	<div
+		class="Header"
+		in:scrollTransition={{ y: -50, duration: 1000, delay: 200, blur: 5 }}
+		out:scrollTransition={{ y: -50, duration: 500, blur: 5 }}
+	>
+		<HeaderText text="PROJECTS" className="MainText StrokeText" />
+	</div>
 
-		<div class="ProjectsContainer">
-			<div class="featured-column">
-				<div
-					in:scrollTransition={{ y: 100, duration: 1000, delay: 400, blur: 5 }}
-					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
-					class="project-card"
-				>
-					<TiltCard className="project-card">
-						<div class="media-container">
-							<iframe
-								src="https://www.youtube.com/embed/videoseries?si=tuTqFvJaufMJfvyV&amp;list=PLr6Nl-A8PXhxhHBmEeVc64ns1Cpi8ygYc&autoplay=1&loop=1&mute=1&playsinline=1"
-								title="Perthro"
-								frameborder="0"
-								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-								allowfullscreen
-							></iframe>
+	<div class="ProjectsContainer">
+		<div class="featured-column">
+			<div
+				in:scrollTransition={{ y: 100, duration: 1000, delay: 400, blur: 5 }}
+				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
+				class="project-card"
+			>
+				<TiltCard className="project-card">
+					<div class="media-container">
+						<iframe
+							src="https://www.youtube.com/embed/videoseries?si=tuTqFvJaufMJfvyV&amp;list=PLr6Nl-A8PXhxhHBmEeVc64ns1Cpi8ygYc&autoplay=1&loop=1&mute=1&playsinline=1"
+							title="Perthro"
+							frameborder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							allowfullscreen
+						></iframe>
+					</div>
+					<div class="content-wrapper">
+						<div class="title">Perthro</div>
+						<div class="description">
+							<p><strong>Genre:</strong> Open World RPG (Roblox)</p>
+							<p><strong>Role:</strong> Solo Developer</p>
+							<p>
+								<strong>Status:</strong>
+								<span class="status-tag developing">In Development</span>
+							</p>
 						</div>
-						<div class="content-wrapper">
-							<div class="title">Perthro</div>
-							<div class="description">
-								<p><strong>Genre:</strong> Open World RPG (Roblox)</p>
-								<p><strong>Role:</strong> Solo Developer</p>
-								<p>
-									<strong>Status:</strong>
-									<span class="status-tag developing">In Development</span>
-								</p>
-							</div>
-						</div>
-					</TiltCard>
-				</div>
-
-				<div
-					in:scrollTransition={{ y: 100, duration: 1000, delay: 600, blur: 5 }}
-					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
-					class="project-card"
-				>
-					<TiltCard className="project-card">
-						<div class="media-container">
-							<iframe
-								src="https://www.youtube.com/embed/Z3Hrpjsi9AY?rel=0&wmode=opaque&enablejsapi=1&autoplay=1&loop=1&mute=1&playsinline=1&playlist=Z3Hrpjsi9AY"
-								title="Newtube"
-								frameborder="0"
-								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-								allowfullscreen
-							></iframe>
-						</div>
-						<div class="content-wrapper">
-							<div class="title">Newtube</div>
-							<div class="description">
-								<p><strong>Type:</strong> Browser Extension</p>
-								<p>
-									<strong>Available:</strong>
-									<a
-										href="https://chrome.google.com/webstore/detail/dnjjchajjdnfbjhjclmilicgheglcopj"
-										target="_blank"
-										class="link">Chrome</a
-									>,
-									<a
-										href="https://addons.mozilla.org/en-US/firefox/addon/newtube-youtubestylecustomizer/"
-										target="_blank"
-										class="link">Firefox</a
-									>
-								</p>
-								<p><strong>Status:</strong> <span class="status-tag public">Public</span></p>
-							</div>
-						</div>
-					</TiltCard>
-				</div>
+					</div>
+				</TiltCard>
 			</div>
 
 			<div
-				class="repos-column"
-				in:scrollTransition={{ x: 50, duration: 1000, delay: 800, blur: 5 }}
-				out:scrollTransition={{ x: 50, duration: 500, blur: 5 }}
+				in:scrollTransition={{ y: 100, duration: 1000, delay: 600, blur: 5 }}
+				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
+				class="project-card"
 			>
-				<h2 class="section-title">All Repositories</h2>
-				<div class="repo-list-wrapper" data-prevent-page-scroll>
-					<div class="repo-list">
-						{#each repos as repo}
-							<a href={repo.html_url} target="_blank" class="repo-item">
-								<div class="repo-header">
-									<span class="repo-name">{repo.name}</span>
-									<span class="repo-stars">★ {repo.stargazers_count}</span>
-								</div>
-								<p class="repo-desc">{repo.description || "No description available."}</p>
-								<div class="repo-footer">
-									<span class="repo-lang">{repo.language || "Unknown"}</span>
-								</div>
-							</a>
-						{/each}
+				<TiltCard className="project-card">
+					<div class="media-container">
+						<iframe
+							src="https://www.youtube.com/embed/Z3Hrpjsi9AY?rel=0&wmode=opaque&enablejsapi=1&autoplay=1&loop=1&mute=1&playsinline=1&playlist=Z3Hrpjsi9AY"
+							title="Newtube"
+							frameborder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+							allowfullscreen
+						></iframe>
 					</div>
-					{#if repos.length === 0}
-						<div class="loading">No repositories found.</div>
-					{/if}
-				</div>
+					<div class="content-wrapper">
+						<div class="title">Newtube</div>
+						<div class="description">
+							<p><strong>Type:</strong> Browser Extension</p>
+							<p>
+								<strong>Available:</strong>
+								<a
+									href="https://chrome.google.com/webstore/detail/dnjjchajjdnfbjhjclmilicgheglcopj"
+									target="_blank"
+									class="link">Chrome</a
+								>,
+								<a
+									href="https://addons.mozilla.org/en-US/firefox/addon/newtube-youtubestylecustomizer/"
+									target="_blank"
+									class="link">Firefox</a
+								>
+							</p>
+							<p><strong>Status:</strong> <span class="status-tag public">Public</span></p>
+						</div>
+					</div>
+				</TiltCard>
 			</div>
 		</div>
-	{/if}
+
+		<div
+			class="repos-column"
+			in:scrollTransition={{ x: 50, duration: 1000, delay: 800, blur: 5 }}
+			out:scrollTransition={{ x: 50, duration: 500, blur: 5 }}
+		>
+			<h2 class="section-title">All Repositories</h2>
+			<div class="repo-list-wrapper" data-prevent-page-scroll>
+				<div class="repo-list">
+					{#each repos as repo}
+						<a href={repo.html_url} target="_blank" class="repo-item">
+							<div class="repo-header">
+								<span class="repo-name">{repo.name}</span>
+								<span class="repo-stars">★ {repo.stargazers_count}</span>
+							</div>
+							<p class="repo-desc">{repo.description || "No description available."}</p>
+							<div class="repo-footer">
+								<span class="repo-lang">{repo.language || "Unknown"}</span>
+							</div>
+						</a>
+					{/each}
+				</div>
+				{#if repos.length === 0}
+					<div class="loading">No repositories found.</div>
+				{/if}
+			</div>
+		</div>
+	</div>
 </Page>
 
 <style lang="scss">

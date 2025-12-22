@@ -1,8 +1,18 @@
-<div class="Page">
+<script lang="ts">
+	import { page } from "$lib/stores/page";
+	export let index: number;
+</script>
+
+<div
+	class="Page"
+	style:opacity={$page === index ? 1 : 0}
+	style:pointer-events={$page === index ? 'all' : 'none'}
+>
 	<slot />
 </div>
 
-<style> .Page {
+<style>
+	.Page {
 		min-width: 100%;
 		scroll-snap-align: center;
 		display: flex;
@@ -12,6 +22,7 @@
 		height: -webkit-fill-available;
 		height: -moz-available;
 		position: relative;
+		transition: opacity 0.5s ease-in-out;
 	}
 
 	@media (max-width: 768px) {
