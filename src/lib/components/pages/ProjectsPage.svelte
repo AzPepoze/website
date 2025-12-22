@@ -14,27 +14,7 @@
 		updated_at: string;
 	}
 
-	async function fetchRepos(): Promise<Repo[]> {
-		try {
-			const res = await fetch("https://api.github.com/users/AzPepoze/repos?per_page=100");
-			if (res.ok) {
-				const data: Repo[] = await res.json();
-				return data.sort((a, b) => {
-					// Primary sort: Stars (descending)
-					const starsDiff = b.stargazers_count - a.stargazers_count;
-					if (starsDiff !== 0) return starsDiff;
-					// Secondary sort: Updated date (descending)
-					return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
-				});
-			}
-			return [];
-		} catch (e) {
-			console.error(e);
-			return [];
-		}
-	}
-
-	let reposPromise = fetchRepos();
+	export let repos: Repo[] = [];
 </script>
 
 <Page>
@@ -124,26 +104,23 @@
 			>
 				<h2 class="section-title">All Repositories</h2>
 				<div class="repo-list-wrapper" data-prevent-page-scroll>
-					{#await reposPromise}
-						<div class="loading">Loading repositories...</div>
-					{:then repos}
-						<div class="repo-list">
-							{#each repos as repo}
-								<a href={repo.html_url} target="_blank" class="repo-item">
-									<div class="repo-header">
-										<span class="repo-name">{repo.name}</span>
-										<span class="repo-stars">★ {repo.stargazers_count}</span>
-									</div>
-									<p class="repo-desc">{repo.description || "No description available."}</p>
-									<div class="repo-footer">
-										<span class="repo-lang">{repo.language || "Unknown"}</span>
-									</div>
-								</a>
-							{/each}
-						</div>
-					{:catch error}
-						<div class="error">Failed to load repositories.</div>
-					{/await}
+					<div class="repo-list">
+						{#each repos as repo}
+							<a href={repo.html_url} target="_blank" class="repo-item">
+								<div class="repo-header">
+									<span class="repo-name">{repo.name}</span>
+									<span class="repo-stars">★ {repo.stargazers_count}</span>
+								</div>
+								<p class="repo-desc">{repo.description || "No description available."}</p>
+								<div class="repo-footer">
+									<span class="repo-lang">{repo.language || "Unknown"}</span>
+								</div>
+							</a>
+						{/each}
+					</div>
+					{#if repos.length === 0}
+						<div class="loading">No repositories found.</div>
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -261,8 +238,7 @@
 		}
 	}
 
-	.loading,
-	.error {
+	.loading {
 		color: white;
 		text-align: center;
 		font-family: "Nunito", sans-serif;
