@@ -3,11 +3,7 @@
 	export let index: number;
 </script>
 
-<div
-	class="Page"
-	style:opacity={$page === index ? 1 : 0}
-	style:pointer-events={$page === index ? 'all' : 'none'}
->
+<div class="Page" style:opacity={$page === index ? 1 : 0} style:pointer-events={$page === index ? "all" : "none"}>
 	<slot />
 </div>
 

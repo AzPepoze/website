@@ -44,7 +44,7 @@
 
 <style>
 	.tilt-card {
-		transition: transform 0.1s ease-out;
+		transition: all 0.1s ease-out;
 		transform-style: preserve-3d;
 	}
 

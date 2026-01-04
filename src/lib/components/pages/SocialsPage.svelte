@@ -2,7 +2,6 @@
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
-	import { page } from "$lib/stores/page";
 	import { scrollTransition } from "$lib/transitions/custom-transitions";
 </script>
 
@@ -52,11 +51,7 @@
 				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 			>
 				<TiltCard rotationIntensity={10} className="card-wrapper">
-					<a
-						href="https://www.pixiv.net/en/users/44970537"
-						target="_blank"
-						class="social-card pixiv"
-					>
+					<a href="https://www.pixiv.net/en/users/44970537" target="_blank" class="social-card pixiv">
 						<div class="card-content">
 							<div class="icon-wrapper">
 								<img

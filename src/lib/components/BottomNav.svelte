@@ -17,9 +17,9 @@
 	function navigateTo(pageNumber: number) {
 		onnavigate(pageNumber);
 	}
+</script>
 
-
-</script><div bind:this={buttonContainer} id="ButtonContainer">
+<div bind:this={buttonContainer} id="ButtonContainer">
 	<div class="nav-wrapper">
 		<button on:click={() => navigateTo(0)} class:selected={$page === 0}> HOME </button>
 		<button on:click={() => navigateTo(1)} class:selected={$page === 1}> PROJECTS </button>
@@ -94,5 +94,4 @@
 			flex-grow: 1;
 		}
 	}
-
 </style>

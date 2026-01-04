@@ -2,7 +2,6 @@
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
-	import { page } from "$lib/stores/page";
 	import { scrollTransition } from "$lib/transitions/custom-transitions";
 
 	interface Repo {
@@ -28,71 +27,108 @@
 
 	<div class="ProjectsContainer">
 		<div class="featured-column">
-			<div
-				in:scrollTransition={{ y: 100, duration: 1000, delay: 400, blur: 5 }}
-				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
-				class="project-card"
-			>
-				<TiltCard className="project-card">
-					<div class="media-container">
-						<iframe
-							src="https://www.youtube.com/embed/videoseries?si=tuTqFvJaufMJfvyV&amp;list=PLr6Nl-A8PXhxhHBmEeVc64ns1Cpi8ygYc&autoplay=1&loop=1&mute=1&playsinline=1"
-							title="Perthro"
-							frameborder="0"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-							allowfullscreen
-						></iframe>
-					</div>
-					<div class="content-wrapper">
-						<div class="title">Perthro</div>
-						<div class="description">
-							<p><strong>Genre:</strong> Open World RPG (Roblox)</p>
-							<p><strong>Role:</strong> Solo Developer</p>
-							<p>
-								<strong>Status:</strong>
-								<span class="status-tag developing">In Development</span>
-							</p>
+			<h2 class="section-title">Featured Projects</h2>
+			<div class="featured-list-wrapper scroll-mask" data-prevent-page-scroll>
+				<a
+					href="https://github.com/AzPepoze/NewTube"
+					target="_blank"
+					in:scrollTransition={{ y: 100, duration: 1000, delay: 400, blur: 5 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
+					class="project-card-link"
+				>
+					<TiltCard className="project-card">
+						<div class="media-container">
+							<iframe
+								src="https://www.youtube.com/embed/Z3Hrpjsi9AY?rel=0&wmode=opaque&enablejsapi=1&autoplay=1&loop=1&mute=1&playsinline=1&playlist=Z3Hrpjsi9AY"
+								title="Newtube"
+								frameborder="0"
+								allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+								allowfullscreen
+							></iframe>
 						</div>
-					</div>
-				</TiltCard>
-			</div>
+						<div class="content-wrapper">
+							<div class="title">Newtube</div>
+							<div class="description">
+								<p>Customize your YouTube website with a lot customizable.</p>
+							</div>
+						</div>
+					</TiltCard>
+				</a>
 
-			<div
-				in:scrollTransition={{ y: 100, duration: 1000, delay: 600, blur: 5 }}
-				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
-				class="project-card"
-			>
-				<TiltCard className="project-card">
-					<div class="media-container">
-						<iframe
-							src="https://www.youtube.com/embed/Z3Hrpjsi9AY?rel=0&wmode=opaque&enablejsapi=1&autoplay=1&loop=1&mute=1&playsinline=1&playlist=Z3Hrpjsi9AY"
-							title="Newtube"
-							frameborder="0"
-							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-							allowfullscreen
-						></iframe>
-					</div>
-					<div class="content-wrapper">
-						<div class="title">Newtube</div>
-						<div class="description">
-							<p><strong>Type:</strong> Browser Extension</p>
-							<p>
-								<strong>Available:</strong>
-								<a
-									href="https://chrome.google.com/webstore/detail/dnjjchajjdnfbjhjclmilicgheglcopj"
-									target="_blank"
-									class="link">Chrome</a
-								>,
-								<a
-									href="https://addons.mozilla.org/en-US/firefox/addon/newtube-youtubestylecustomizer/"
-									target="_blank"
-									class="link">Firefox</a
-								>
-							</p>
-							<p><strong>Status:</strong> <span class="status-tag public">Public</span></p>
+				<a
+					href="https://github.com/AzPepoze/linux-wallpaperengine-gui"
+					target="_blank"
+					in:scrollTransition={{ y: 100, duration: 1000, delay: 600, blur: 5 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
+					class="project-card-link"
+				>
+					<TiltCard className="project-card">
+						<div class="media-container">
+							<img
+								src="https://github.com/AzPepoze/linux-wallpaperengine-gui/raw/main/showcase/preview-logo.png"
+								alt="Linux Wallpaper Engine GUI"
+							/>
 						</div>
-					</div>
-				</TiltCard>
+						<div class="content-wrapper">
+							<div class="title">Linux Wallpaper Engine GUI</div>
+							<div class="description">
+								<p>
+									A graphical user interface for managing wallpapers on Linux, powered by
+									Electron, Svelte, and linux-wallpaperengine.
+								</p>
+							</div>
+						</div>
+					</TiltCard>
+				</a>
+
+				<a
+					href="https://github.com/AzPepoze/media-sync"
+					target="_blank"
+					in:scrollTransition={{ y: 100, duration: 1000, delay: 800, blur: 5 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
+					class="project-card-link"
+				>
+					<TiltCard className="project-card">
+						<div class="media-container">
+							<img
+								src="https://github.com/AzPepoze/media-sync/raw/main/assets/logo.png"
+								alt="Media Sync"
+							/>
+						</div>
+						<div class="content-wrapper">
+							<div class="title">Media Sync</div>
+							<div class="description">
+								<p>
+									A real-time video watch party application that lets you watch HLS streams
+									together with friends in perfect sync.
+								</p>
+							</div>
+						</div>
+					</TiltCard>
+				</a>
+
+				<a
+					href="https://github.com/AzPepoze/gdrive-bisync"
+					target="_blank"
+					in:scrollTransition={{ y: 100, duration: 1000, delay: 1000, blur: 5 }}
+					out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
+					class="project-card-link"
+				>
+					<TiltCard className="project-card">
+						<div class="content-wrapper">
+							<div class="title">Google Drive Bisync</div>
+							<div class="description">
+								<p>
+									gdrive-bisync is a command-line utility designed to synchronize a local
+									directory with a Google Drive folder. It provides robust features for
+									keeping your local files and Google Drive in sync, including periodic
+									scans, real-time local change detection, and a user-friendly console
+									interface.
+								</p>
+							</div>
+						</div>
+					</TiltCard>
+				</a>
 			</div>
 		</div>
 
@@ -102,7 +138,7 @@
 			out:scrollTransition={{ x: 50, duration: 500, blur: 5 }}
 		>
 			<h2 class="section-title">All Repositories</h2>
-			<div class="repo-list-wrapper" data-prevent-page-scroll>
+			<div class="repo-list-wrapper scroll-mask" data-prevent-page-scroll>
 				<div class="repo-list">
 					{#each repos as repo}
 						<a href={repo.html_url} target="_blank" class="repo-item">
@@ -143,9 +179,8 @@
 		gap: 2rem;
 		width: 100%;
 		height: 100%;
-		padding: 6rem 1rem 2rem;
-		overflow-y: auto;
-		align-content: flex-start;
+		padding: 8rem 1rem 2rem;
+		overflow: hidden;
 	}
 
 	.featured-column {
@@ -154,6 +189,39 @@
 		gap: 1.5rem;
 		width: 100%;
 		max-width: 800px;
+		height: 100%;
+		padding-bottom: 2rem;
+	}
+
+	.scroll-mask {
+		mask-image: linear-gradient(to bottom, transparent, black 20px, black 95%, transparent);
+		-webkit-mask-image: linear-gradient(to bottom, transparent, black 20px, black 95%, transparent);
+	}
+
+	.featured-list-wrapper {
+		flex: 1;
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		overflow-y: auto;
+		padding-right: 10px;
+		padding-block: 20px;
+
+		/* Scrollbar styling */
+		&::-webkit-scrollbar {
+			width: 6px;
+		}
+		&::-webkit-scrollbar-track {
+			background: rgba(255, 255, 255, 0.05);
+			border-radius: 3px;
+		}
+		&::-webkit-scrollbar-thumb {
+			background: rgba(255, 255, 255, 0.2);
+			border-radius: 3px;
+		}
+		&::-webkit-scrollbar-thumb:hover {
+			background: rgba(255, 255, 255, 0.4);
+		}
 	}
 
 	.repos-column {
@@ -192,7 +260,7 @@
 			transform 0.2s;
 
 		&:hover {
-			background: rgba(255, 255, 255, 0.1);
+			background: rgba(30, 30, 30, 1);
 			transform: translateY(-2px);
 		}
 
@@ -242,34 +310,48 @@
 		font-family: "Nunito", sans-serif;
 	}
 
+	.project-card-link {
+		text-decoration: none;
+		display: block;
+		width: 100%;
+	}
+
 	:global(.project-card) {
 		display: flex;
 		flex-direction: row;
-		width: 100%;
+		width: calc(100% - 40px); /* Adjust width for margin-inline */
+		height: auto;
+		min-height: fit-content;
 
 		padding-block: 0;
 		padding-inline: 10px;
-		overflow: hidden;
-		margin: 0 auto;
+		margin: 0 20px; /* Add margin-inline */
+		background: rgba(10, 10, 10, 0.8) !important; /* Restore dark background */
+		transition:
+			background 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+			transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+		&:hover {
+			background: rgba(30, 30, 30, 1) !important;
+		}
 
 		.media-container {
-			width: auto;
-			max-width: 50%;
+			width: 130px; /* Smaller base width */
 			height: auto;
-			max-height: 100%;
 			aspect-ratio: 16/9;
 			border-radius: 8px;
 			overflow: hidden;
-			border: 1px solid rgba(255, 255, 255, 0.1);
-			background: black;
+			background: transparent;
 			flex-shrink: 0;
 			margin: auto 0;
-			margin-right: 0.5rem;
+			margin-right: 0.4rem;
+			padding: 5px; /* Reduced padding */
 
-			iframe {
+			iframe,
+			img {
 				width: 100%;
 				height: 100%;
-				object-fit: cover;
+				object-fit: contain;
 			}
 		}
 
@@ -278,7 +360,8 @@
 			display: flex;
 			flex-direction: column;
 			padding: 0.8rem;
-			overflow-y: auto;
+			height: auto;
+			min-width: 0; /* Prevent overflow */
 
 			.title {
 				font-family: "JetBrains Mono", monospace;
@@ -299,32 +382,15 @@
 				p {
 					margin: 0.2rem 0;
 				}
+			}
+		}
+	}
 
-				.link {
-					color: #4da6ff;
-					text-decoration: none;
-					&:hover {
-						text-decoration: underline;
-					}
-				}
-
-				.status-tag {
-					display: inline-block;
-					padding: 1px 6px;
-					border-radius: 10px;
-					font-size: 0.75rem;
-					font-weight: bold;
-					margin-top: 0.2rem;
-
-					&.developing {
-						background: rgba(255, 165, 0, 0.2);
-						color: orange;
-					}
-					&.public {
-						background: rgba(0, 255, 0, 0.2);
-						color: #00ff00;
-					}
-				}
+	@media (min-width: 480px) {
+		:global(.project-card) {
+			.media-container {
+				width: 180px;
+				padding: 10px;
 			}
 		}
 	}
@@ -334,21 +400,29 @@
 			flex-direction: row;
 			justify-content: center;
 			align-items: flex-start;
-			padding: 8rem 2rem 2rem;
+			padding: 10rem 2rem 2rem;
 			gap: 3rem;
 		}
 
 		.featured-column {
 			width: 50%;
 			gap: 2rem;
+			height: calc(100vh - 12rem);
+			padding-right: 0;
+			overflow: hidden;
+		}
+
+		.featured-list-wrapper {
+			overflow-y: auto;
+			padding-right: 10px;
+			height: 100%;
 		}
 
 		.repos-column {
 			width: 40%;
 			padding: 0;
 			max-width: 500px;
-			height: 100%;
-			max-height: 70vh;
+			height: calc(100vh - 12rem);
 			display: flex;
 			flex-direction: column;
 		}
@@ -359,53 +433,21 @@
 			padding-right: 10px;
 			overscroll-behavior: contain;
 			padding-block: 20px;
-			-webkit-mask-image: linear-gradient(to bottom, transparent, black 20px, black 95%, transparent);
-
-			/* Scrollbar styling */
-			&::-webkit-scrollbar {
-				width: 6px;
-			}
-			&::-webkit-scrollbar-track {
-				background: rgba(255, 255, 255, 0.05);
-				border-radius: 3px;
-			}
-			&::-webkit-scrollbar-thumb {
-				background: rgba(255, 255, 255, 0.2);
-				border-radius: 3px;
-			}
-			&::-webkit-scrollbar-thumb:hover {
-				background: rgba(255, 255, 255, 0.4);
-			}
 		}
 
 		.section-title {
 			text-align: left;
 			margin-bottom: 1.5rem;
+			width: 100%;
 		}
 
 		:global(.project-card) {
-			max-width: 100%;
+			max-width: calc(100% - 60px);
+			margin-inline: 30px;
 
-			.content-wrapper {
-				padding: 2rem;
-
-				.title {
-					font-size: 2.5rem;
-					margin-bottom: 1rem;
-				}
-
-				.description {
-					font-size: 1.2rem;
-					line-height: 1.6;
-
-					p {
-						margin: 0.5rem 0;
-					}
-					.status-tag {
-						padding: 4px 12px;
-						font-size: 1rem;
-					}
-				}
+			.media-container {
+				width: 350px;
+				padding: 10px;
 			}
 		}
 	}

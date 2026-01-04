@@ -8,7 +8,7 @@
 	import ProjectsPage from "$lib/components/pages/ProjectsPage.svelte";
 	import SocialsPage from "$lib/components/pages/SocialsPage.svelte";
 	import { page } from "$lib/stores/page";
-	import type { PageData } from './$types';
+	import type { PageData } from "./$types";
 
 	export let data: PageData;
 

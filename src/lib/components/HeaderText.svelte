@@ -7,7 +7,8 @@
 	{text}
 </div>
 
-<style lang="scss"> .header-text {
+<style lang="scss">
+	.header-text {
 		position: relative;
 		font-family: "JetBrains Mono", monospace;
 		font-weight: 900;

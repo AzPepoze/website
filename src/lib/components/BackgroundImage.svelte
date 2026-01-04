@@ -3,9 +3,9 @@
 
 	$: grayscale = Math.max(0, 100 - scrollOffset / 5);
 	$: hue = scrollOffset / 5;
+</script>
 
-
-</script><div class="background-container">
+<div class="background-container">
 	<div class="grid-layer" style:filter={`grayscale(${grayscale}%) hue-rotate(${hue}deg)`}></div>
 	<div class="noise-layer"></div>
 </div>
@@ -44,5 +44,4 @@
 			pointer-events: none;
 		}
 	}
-
 </style>
