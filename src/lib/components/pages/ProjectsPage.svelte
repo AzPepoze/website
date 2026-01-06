@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { onMount } from "svelte";
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
@@ -13,7 +14,26 @@
 		updated_at: string;
 	}
 
-	export let repos: Repo[] = [];
+	let repos: Repo[] = [];
+	let isLoading = true;
+
+	onMount(async () => {
+		try {
+			const res = await fetch("https://api.github.com/users/AzPepoze/repos?per_page=100");
+			if (res.ok) {
+				const data: Repo[] = await res.json();
+				repos = data.sort((a, b) => {
+					const starsDiff = b.stargazers_count - a.stargazers_count;
+					if (starsDiff !== 0) return starsDiff;
+					return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+				});
+			}
+		} catch (e) {
+			console.error(e);
+		} finally {
+			isLoading = false;
+		}
+	});
 </script>
 
 <Page index={1}>
@@ -139,22 +159,26 @@
 		>
 			<h2 class="section-title">All Repositories</h2>
 			<div class="repo-list-wrapper scroll-mask" data-prevent-page-scroll>
-				<div class="repo-list">
-					{#each repos as repo}
-						<a href={repo.html_url} target="_blank" class="repo-item">
-							<div class="repo-header">
-								<span class="repo-name">{repo.name}</span>
-								<span class="repo-stars">★ {repo.stargazers_count}</span>
-							</div>
-							<p class="repo-desc">{repo.description || "No description available."}</p>
-							<div class="repo-footer">
-								<span class="repo-lang">{repo.language || "Unknown"}</span>
-							</div>
-						</a>
-					{/each}
-				</div>
-				{#if repos.length === 0}
-					<div class="loading">No repositories found.</div>
+				{#if isLoading}
+					<div class="loading">Loading...</div>
+				{:else}
+					<div class="repo-list">
+						{#each repos as repo}
+							<a href={repo.html_url} target="_blank" class="repo-item">
+								<div class="repo-header">
+									<span class="repo-name">{repo.name}</span>
+									<span class="repo-stars">★ {repo.stargazers_count}</span>
+								</div>
+								<p class="repo-desc">{repo.description || "No description available."}</p>
+								<div class="repo-footer">
+									<span class="repo-lang">{repo.language || "Unknown"}</span>
+								</div>
+							</a>
+						{/each}
+					</div>
+					{#if repos.length === 0}
+						<div class="loading">No repositories found.</div>
+					{/if}
 				{/if}
 			</div>
 		</div>
