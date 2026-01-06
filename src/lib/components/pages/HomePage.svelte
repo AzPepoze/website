@@ -2,11 +2,11 @@
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
-	import { page } from "$lib/stores/page";
 	import { scrollTransition } from "$lib/transitions/custom-transitions";
 </script>
 
 <Page index={0}>
+	<h1 class="sr-only">AzPepoze - My Portfolio & Showcase</h1>
 	<div
 		class="LeftFrame"
 		in:scrollTransition={{ y: 100, duration: 1000, delay: 200, blur: 5 }}
@@ -27,8 +27,7 @@
 			<div id="google_translate_element" class="google-translate-container"></div>
 
 			<div class="SubText CenterText">
-				<br />You can scroll (Mouse), swipe (Touch screen)<br />and select page at bottom to change
-				page.
+				<br />You can scroll (Mouse), swipe (Touch screen)<br />and select page at bottom to change page.
 			</div>
 		</TiltCard>
 	</div>
