@@ -2,6 +2,37 @@
 <html lang="en" style="height: 100%">
 	<head>
 		%sveltekit.head%
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@graph": [
+					{
+						"@type": "Person",
+						"@id": "https://azpepoze.com/#person",
+						"name": "AzPepoze",
+						"url": "https://azpepoze.com/",
+						"image": "https://azpepoze.com/web-app-manifest-512x512.png",
+						"sameAs": [
+							"https://github.com/AzPepoze",
+							"https://www.youtube.com/channel/UCJ2C0UTfxQo6iGTfudPfoRQ",
+							"https://www.pixiv.net/en/users/44970537",
+							"https://www.tiktok.com/@azpepoze_1"
+						],
+						"jobTitle": "Developer & Creator"
+					},
+					{
+						"@type": "WebSite",
+						"@id": "https://azpepoze.com/#website",
+						"url": "https://azpepoze.com/",
+						"name": "AzPepoze Portfolio",
+						"publisher": {
+							"@id": "https://azpepoze.com/#person"
+						},
+						"description": "Welcome to AzPepoze's portfolio. Discover my projects, showcases, and connect with me."
+					}
+				]
+			}
+		</script>
 		<title>AzPepoze - My Portfolio & Projects</title>
 		<meta
 			name="description"
