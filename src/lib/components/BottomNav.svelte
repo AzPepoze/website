@@ -23,7 +23,8 @@
 	<div class="nav-wrapper">
 		<button on:click={() => navigateTo(0)} class:selected={$page === 0}> HOME </button>
 		<button on:click={() => navigateTo(1)} class:selected={$page === 1}> PROJECTS </button>
-		<button on:click={() => navigateTo(2)} class:selected={$page === 2}> SOCIALS </button>
+		<button on:click={() => navigateTo(2)} class:selected={$page === 2}> REPOS </button>
+		<button on:click={() => navigateTo(3)} class:selected={$page === 3}> SOCIALS </button>
 	</div>
 </div>
 
@@ -44,20 +45,20 @@
 	.nav-wrapper {
 		display: flex;
 		flex-direction: row;
-		background: rgba(0, 0, 0, 0.8);
-		border: 1px solid rgba(255, 255, 255, 0.2);
+		background: var(--bg-color);
+		border: 1px solid var(--stroke-color);
 		border-radius: 50px;
 		padding: 5px;
 		gap: 5px;
-		backdrop-filter: blur(10px);
 		pointer-events: auto;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 	}
 
 	button {
 		background: transparent;
 		border: none;
-		color: #888;
+		color: var(--text-color);
+		opacity: 0.5;
 		cursor: pointer;
 		padding: 12px 24px;
 		font-size: 1rem;
@@ -70,14 +71,15 @@
 	}
 
 	button:hover {
-		color: white;
-		background-color: rgba(255, 255, 255, 0.1);
+		opacity: 1;
+		background-color: var(--accent-color);
 	}
 
 	button.selected {
-		color: black;
-		background-color: white;
+		color: var(--bg-color);
+		background-color: var(--text-color);
 		font-weight: bold;
+		opacity: 1;
 	}
 
 	@media (max-width: 768px) {

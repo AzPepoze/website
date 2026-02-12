@@ -5,7 +5,7 @@
 	import { scrollTransition } from "$lib/transitions/custom-transitions";
 </script>
 
-<Page index={2}>
+<Page index={3}>
 	<div
 		class="LeftFrame"
 		in:scrollTransition={{ y: 100, duration: 1000, delay: 200, blur: 5 }}
@@ -148,7 +148,7 @@
 		justify-content: flex-start;
 		height: 100%;
 		width: 100%;
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		border: 1px solid var(--stroke-color);
 		border-radius: 15px;
 		text-decoration: none;
 		overflow: hidden;
@@ -170,7 +170,7 @@
 			border-radius: 50%;
 			overflow: hidden;
 			transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-			border: 1px solid rgba(255, 255, 255, 0.1);
+			border: 1px solid var(--stroke-color);
 			flex-shrink: 0;
 
 			img {
@@ -187,7 +187,7 @@
 			opacity: 0.8;
 			transform: none;
 			transition: all 0.3s ease;
-			color: white;
+			color: var(--text-color);
 
 			.platform {
 				display: block;
@@ -196,12 +196,14 @@
 				font-weight: bold;
 				margin-bottom: 0.1rem;
 				transition: color 0.3s;
+				color: var(--text-color);
 			}
 
 			.username {
 				font-family: "Nunito", sans-serif;
 				font-size: 0.75rem;
 				transition: color 0.3s;
+				color: var(--text-color);
 			}
 		}
 
@@ -277,10 +279,10 @@
 				border-color: #ff0000;
 			}
 			.text-wrapper .platform {
-				color: #ff0000;
+				color: #ff0000 !important;
 			}
 			.text-wrapper .username {
-				color: #ff0000;
+				color: #ff0000 !important;
 			}
 			.glow {
 				background: radial-gradient(circle, rgba(255, 0, 0, 0.15) 0%, transparent 60%);
@@ -293,10 +295,10 @@
 				border-color: #0096fa;
 			}
 			.text-wrapper .platform {
-				color: #0096fa;
+				color: #0096fa !important;
 			}
 			.text-wrapper .username {
-				color: #0096fa;
+				color: #0096fa !important;
 			}
 			.glow {
 				background: radial-gradient(circle, rgba(0, 150, 250, 0.15) 0%, transparent 60%);
@@ -309,10 +311,10 @@
 				border-color: #ff0050;
 			}
 			.text-wrapper .platform {
-				color: #ff0050;
+				color: #ff0050 !important;
 			}
 			.text-wrapper .username {
-				color: #ff0050;
+				color: #ff0050 !important;
 			}
 			.glow {
 				background: radial-gradient(circle, rgba(255, 0, 80, 0.15) 0%, transparent 60%);
@@ -320,18 +322,18 @@
 		}
 
 		&.github:hover {
-			border-color: #ffffff;
+			border-color: #a855f7;
 			.icon-wrapper {
-				border-color: #ffffff;
+				border-color: #a855f7;
 			}
 			.text-wrapper .platform {
-				color: #ffffff;
+				color: #a855f7 !important;
 			}
 			.text-wrapper .username {
-				color: #ffffff;
+				color: #a855f7 !important;
 			}
 			.glow {
-				background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 60%);
+				background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 60%);
 			}
 		}
 	}

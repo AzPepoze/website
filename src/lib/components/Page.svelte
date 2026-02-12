@@ -10,15 +10,14 @@
 <style>
 	.Page {
 		min-width: 100%;
-		scroll-snap-align: center;
 		display: flex;
 		flex-direction: row;
 		justify-content: center;
 		align-items: center;
-		height: -webkit-fill-available;
-		height: -moz-available;
+		height: 100vh;
 		position: relative;
 		transition: opacity 0.5s ease-in-out;
+		background-color: transparent;
 	}
 
 	@media (max-width: 768px) {

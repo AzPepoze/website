@@ -34,6 +34,7 @@
 
 <div
 	class="tilt-card {className}"
+	role="presentation"
 	class:bg
 	bind:this={card}
 	on:mousemove={handleMouseMove}
@@ -49,8 +50,9 @@
 	}
 
 	.bg {
-		background: rgba(10, 10, 10, 0.8);
+		background: rgba(255, 255, 255, 0.03);
 		border: 1px solid rgba(255, 255, 255, 0.1);
-		border-radius: 20px;
+		border-radius: 24px;
+		box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
 	}
 </style>
