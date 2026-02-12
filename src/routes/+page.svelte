@@ -138,7 +138,6 @@
 	.pages {
 		position: relative;
 		width: 100%;
-		background-color: var(--sub-bg-color);
 		transition: background-color 0.5s ease;
 	}
 
@@ -147,11 +146,10 @@
 		height: 100vh;
 		position: sticky;
 		top: 0;
-		background-color: transparent;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		background: var(--bg-color);
+		background: linear-gradient(var(--bg-color), transparent);
 
 		/* 3D Stacking Animation */
 		--progress: 0;

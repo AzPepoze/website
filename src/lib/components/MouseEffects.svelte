@@ -11,7 +11,7 @@
 			mouseEffect.style.cssText = `
         width: 10px;
         height: 10px;
-        background: white;
+        background: var(--text-color);
         position: fixed;
         transition: all 0.5s;
         opacity: 0;
@@ -44,7 +44,7 @@
 			mouseEffect.style.cssText = `
         width: 10px;
         height: 10px;
-        border: 1px solid white;
+        border: 1px solid var(--text-color);
         position: fixed;
         transition: all 0.5s;
         opacity: 0;

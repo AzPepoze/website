@@ -4,22 +4,72 @@
 
 :root {
 	--bg-color: #050505;
-	--sub-bg-color: #5a5a5a;
+	--bg-secondary: #05050542;
+	--sub-bg-color: #171717;
 	--text-color: #ffffff;
 	--accent-color: rgba(255, 255, 255, 0.1);
 	--stroke-color: rgba(255, 255, 255, 0.3);
 	--theme-icon-filter: invert(0);
 	--bg-icon-filter: invert(1);
+	--card-bg: #000000;
+	--card-hover-bg: #111111;
+	--card-border: #ffffff;
+	--iframe-border: #333333;
+	--success-color: #008000;
+	--error-color: #ff0000;
+	--info-color: #0084ff;
+	--warning-color: #ba54ff;
+	--grid-color: rgba(255, 255, 255, 0.03);
+	--circle-gradient: radial-gradient(
+		circle,
+		color-mix(in srgb, var(--text-color), transparent 75%) 0%,
+		transparent 70%
+	);
+	--card-gradient: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%);
+	--media-box-bg: rgba(0, 0, 0, 0.2);
+	--info-box-bg: rgba(0, 0, 0, 0.3);
+	--text-dim: rgba(255, 255, 255, 0.5);
+	--dot-bg: #8e8e8e;
+	--star-color: #ffcc00;
+	--star-bg: rgba(255, 204, 0, 0.1);
+	--star-border: rgba(255, 204, 0, 0.2);
+	--repo-card-hover: rgba(255, 255, 255, 0.06);
+	--glow-default: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
 }
 
 :root[data-theme="light"] {
 	--bg-color: #ffffff;
+	--bg-secondary: #f0f0f5;
 	--sub-bg-color: #000000;
 	--text-color: #1a1a1a;
 	--accent-color: rgba(0, 0, 0, 0.05);
 	--stroke-color: rgba(0, 0, 0, 0.2);
 	--theme-icon-filter: invert(1);
 	--bg-icon-filter: invert(0);
+	--card-bg: #f9f9f9;
+	--card-hover-bg: #f0f0f0;
+	--card-border: #1a1a1a;
+	--iframe-border: #cccccc;
+	--success-color: #2e7d32;
+	--error-color: #d32f2f;
+	--info-color: #0288d1;
+	--warning-color: #7b1fa2;
+	--grid-color: rgba(0, 0, 0, 0.05);
+	--circle-gradient: radial-gradient(
+		circle,
+		color-mix(in srgb, var(--text-color), transparent 70%) 0%,
+		transparent 70%
+	);
+	--card-gradient: linear-gradient(145deg, rgba(0, 0, 0, 0.05) 0%, rgba(0, 0, 0, 0.02) 100%);
+	--media-box-bg: rgba(0, 0, 0, 0.05);
+	--info-box-bg: rgba(0, 0, 0, 0.02);
+	--text-dim: rgba(0, 0, 0, 0.5);
+	--dot-bg: #cccccc;
+	--star-color: #b8860b;
+	--star-bg: rgba(184, 134, 11, 0.1);
+	--star-border: rgba(184, 134, 11, 0.3);
+	--repo-card-hover: rgba(0, 0, 0, 0.03);
+	--glow-default: radial-gradient(circle, rgba(0, 0, 0, 0.05) 0%, transparent 60%);
 }
 
 .sr-only {
@@ -238,7 +288,7 @@ body {
 	}
 	.RightFrame {
 		border-left: none;
-		border-top: 1px solid rgba(255, 255, 255, 0.1);
+		border-top: 1px solid var(--accent-color);
 	}
 }
 
@@ -250,7 +300,7 @@ body {
 	align-items: center;
 	padding: 20px;
 	text-align: center;
-	border-right: 1px solid rgba(255, 255, 255, 0.1);
+	border-right: 1px solid var(--accent-color);
 }
 .Collum3:last-child {
 	border-right: none;
@@ -260,13 +310,13 @@ body {
 	.Collum3 {
 		width: 100%;
 		border-right: none;
-		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		border-bottom: 1px solid var(--accent-color);
 	}
 }
 
 .work {
-	border: 1px solid white;
-	background: black;
+	border: 1px solid var(--card-border);
+	background: var(--card-bg);
 	padding: 20px;
 	margin-bottom: 20px;
 	width: 100%;
@@ -277,7 +327,7 @@ body {
 
 .work:hover {
 	transform: translateY(-2px);
-	background: #111;
+	background: var(--card-hover-bg);
 }
 
 .work .title {
@@ -297,7 +347,7 @@ body {
 .WorkContainer iframe {
 	width: 100%;
 	height: 300px;
-	border: 1px solid #333;
+	border: 1px solid var(--iframe-border);
 	margin-bottom: 15px;
 	transition: filter 0.3s;
 	border-radius: 10px;
@@ -313,7 +363,7 @@ body {
 
 .typing-animation {
 	animation: Typing 0.8s infinite;
-	border-right: 12px solid white;
+	border-right: 12px solid var(--text-color);
 	padding-right: 10px;
 }
 
@@ -332,23 +382,23 @@ body {
 }
 
 .border-green {
-	border-color: green !important;
+	border-color: var(--success-color) !important;
 }
 
 .border-white {
-	border-color: white !important;
+	border-color: var(--text-color) !important;
 }
 
 .box-shadow-red {
-	box-shadow: red 0px 0px 6px;
+	box-shadow: var(--error-color) 0px 0px 6px;
 }
 
 .box-shadow-blue {
-	box-shadow: rgb(0, 132, 255) 0px 0px 6px;
+	box-shadow: var(--info-color) 0px 0px 6px;
 }
 
 .box-shadow-purple {
-	box-shadow: rgb(186, 84, 255) 0px 0px 6px;
+	box-shadow: var(--warning-color) 0px 0px 6px;
 }
 
 .margin-bottom-40 {

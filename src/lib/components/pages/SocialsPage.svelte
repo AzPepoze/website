@@ -244,7 +244,7 @@
 			position: absolute;
 			width: 600px;
 			height: 600px;
-			background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+			background: var(--glow-default);
 			top: calc(var(--mouse-y, 0) - 300px);
 			left: calc(var(--mouse-x, 0) - 300px);
 			opacity: 0;

@@ -133,8 +133,7 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-		perspective: 2000px;
-		/* Changed to visible to prevent 3D clipping */
+		perspective: 1500px;
 		overflow: visible;
 		padding-top: 4rem;
 	}
@@ -142,7 +141,7 @@
 	.stage {
 		position: relative;
 		width: 100%;
-		height: 500px; /* Increased height */
+		height: 500px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -152,19 +151,21 @@
 	.card-wrapper {
 		position: absolute;
 		width: 320px;
-		height: 450px; /* Increased height */
+		height: 450px;
 		transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-		transform: translateX(calc(var(--offset) * 110%)) scale(calc(1 - var(--abs-offset) * 0.2))
-			rotateY(calc(var(--offset) * -35deg)) translateZ(calc(var(--abs-offset) * -200px));
-
+		
+		/* Simple 2D-like positioning for side cards to avoid perspective conflicts */
+		transform: translateX(calc(var(--offset) * 110%)) scale(calc(1 - var(--abs-offset) * 0.2));
 		opacity: calc(1 - var(--abs-offset) * 0.4);
 		pointer-events: none;
-		/* Ensure it doesn't clip its own children */
-		transform-style: preserve-3d;
+		z-index: calc(10 - var(--abs-offset));
 
 		&.active {
 			pointer-events: auto;
 			opacity: 1;
+			z-index: 20;
+			/* Only apply 3D transform to active card if needed, or rely on TiltCard */
+			transform: translateX(0) scale(1);
 		}
 	}
 
@@ -177,8 +178,8 @@
 
 	:global(.stage-card) {
 		height: 100%;
-		background: linear-gradient(145deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
-		border: 1px solid rgba(255, 255, 255, 0.1) !important;
+		background: var(--card-gradient) !important;
+		border: 1px solid var(--accent-color) !important;
 		border-radius: 32px !important;
 		box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3) !important;
 		overflow: hidden; /* Ensure inner content follows radius */
@@ -193,7 +194,7 @@
 			width: 100%;
 			flex: 1;
 			overflow: hidden;
-			background: rgba(0, 0, 0, 0.2);
+			background: var(--media-box-bg);
 
 			&.contain img {
 				object-fit: contain !important;
@@ -219,21 +220,21 @@
 
 		.info {
 			padding: 1.5rem;
-			background: rgba(0, 0, 0, 0.3);
+			background: var(--info-box-bg);
 			/* Added rounding to bottom corners */
 			border-radius: 0 0 32px 32px;
 
 			.title {
 				font-family: "JetBrains Mono", monospace;
 				font-size: 1.4rem;
-				color: white;
+				color: var(--text-color);
 				margin: 0 0 0.5rem 0;
 			}
 
 			.tagline {
 				font-family: "Nunito", sans-serif;
 				font-size: 0.9rem;
-				color: rgba(255, 255, 255, 0.5);
+				color: var(--text-dim);
 				margin: 0;
 			}
 		}
@@ -250,7 +251,7 @@
 	.control-btn {
 		background: var(--accent-color);
 		border: 1px solid var(--stroke-color);
-		color: white;
+		color: var(--text-color);
 		width: 50px;
 		height: 50px;
 		border-radius: 50%;
@@ -262,7 +263,8 @@
 
 		&:hover {
 			transform: scale(1.1);
-			background: rgba(255, 255, 255, 0.1);
+			background: var(--accent-color);
+			opacity: 0.8;
 		}
 	}
 
@@ -275,16 +277,16 @@
 		width: 10px;
 		height: 10px;
 		border-radius: 50%;
-		background: rgb(142, 142, 142);
+		background: var(--dot-bg);
 		border: none;
 		cursor: pointer;
 		padding: 0;
 		transition: all 0.3s ease;
 
 		&.active {
-			background: white;
+			background: var(--text-color);
 			transform: scale(1.3);
-			box-shadow: 0 0 15px rgb(0, 0, 0);
+			box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
 		}
 	}
 

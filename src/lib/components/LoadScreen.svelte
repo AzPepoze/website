@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from "svelte";
-	import { theme } from "$lib/stores/theme";
 
 	let loadscreen: HTMLElement;
 	let isLoaded = false;
@@ -20,7 +19,6 @@
 	bind:this={loadscreen}
 	id="loadscreen"
 	class:exit={isLoaded}
-	class:light={$theme === "light"}
 >
 	<div class="content">
 		<img
@@ -39,7 +37,7 @@
 
 <style lang="scss">
 	#loadscreen {
-		background-color: #050505;
+		background-color: var(--bg-secondary);
 		width: 100%;
 		height: 100%;
 		position: fixed;
@@ -51,9 +49,8 @@
 		align-items: center;
 		transition: opacity 1.5s ease-in-out, background-color 0.5s ease;
 
-		&.light {
-			background-color: #f0f0f5;
-			#loadicon { filter: invert(1); }
+		#loadicon {
+			filter: var(--theme-icon-filter);
 		}
 
 		&.exit {

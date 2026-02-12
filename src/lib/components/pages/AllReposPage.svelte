@@ -124,18 +124,18 @@
 		transition: all 0.3s ease;
 
 		&:hover {
-			background: rgba(255, 255, 255, 0.06);
-			border-color: #ffcc00;
+			background: var(--repo-card-hover);
+			border-color: var(--star-color);
 			transform: translateY(-3px);
 
 			.stars {
-				color: #ffcc00;
-				text-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+				color: var(--star-color);
+				text-shadow: 0 0 10px var(--star-bg);
 			}
 
 			.lang {
-				border-color: rgba(255, 204, 0, 0.5);
-				background: rgba(255, 204, 0, 0.15);
+				border-color: var(--star-border);
+				background: var(--star-bg);
 			}
 		}
 
@@ -157,7 +157,7 @@
 				align-items: center;
 				gap: 4px;
 				font-size: 0.8rem;
-				color: #ffcc00;
+				color: var(--star-color);
 				font-weight: 600;
 			}
 		}
@@ -179,10 +179,10 @@
 			.lang {
 				font-family: "JetBrains Mono", monospace;
 				font-size: 0.7rem;
-				color: #ffcc00;
+				color: var(--star-color);
 				opacity: 0.8;
-				background: rgba(255, 204, 0, 0.1);
-				border: 1px solid rgba(255, 204, 0, 0.2);
+				background: var(--star-bg);
+				border: 1px solid var(--star-border);
 				padding: 3px 10px;
 				border-radius: 8px;
 			}
@@ -190,14 +190,14 @@
 	}
 
 	.loading {
-		color: white;
+		color: var(--text-color);
 		text-align: center;
 		padding: 4rem;
 		opacity: 0.5;
 	}
 
 	.scroll-mask {
-		mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+		mask-image: linear-gradient(to bottom, transparent, var(--bg-color) 10%, var(--bg-color) 90%, transparent);
 	}
 
 	@media (min-width: 768px) {

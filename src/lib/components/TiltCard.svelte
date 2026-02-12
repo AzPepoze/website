@@ -50,8 +50,8 @@
 	}
 
 	.bg {
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid rgba(255, 255, 255, 0.1);
+		background: var(--grid-color);
+		border: 1px solid var(--accent-color);
 		border-radius: 24px;
 		box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
 	}
