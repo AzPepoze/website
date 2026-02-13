@@ -2,9 +2,16 @@
 	import { onMount } from "svelte";
 	import { page } from "../stores/page";
 
-	export let onnavigate: (page: number) => void = () => {};
+	let { onnavigate } = $props<{ onnavigate: (page: number) => void }>();
 
 	let buttonContainer: HTMLElement;
+
+	const navItems = [
+		{ label: "HOME", value: 0 },
+		{ label: "PROJECTS", value: 1 },
+		{ label: "REPOS", value: 2 },
+		{ label: "SOCIALS", value: 3 },
+	];
 
 	onMount(() => {
 		setTimeout(() => {
@@ -13,19 +20,20 @@
 			}
 		}, 500);
 	});
-
-	function navigateTo(pageNumber: number) {
-		onnavigate(pageNumber);
-	}
 </script>
 
 <div bind:this={buttonContainer} id="ButtonContainer">
-	<div class="nav-wrapper">
-		<button on:click={() => navigateTo(0)} class:selected={$page === 0}> HOME </button>
-		<button on:click={() => navigateTo(1)} class:selected={$page === 1}> PROJECTS </button>
-		<button on:click={() => navigateTo(2)} class:selected={$page === 2}> REPOS </button>
-		<button on:click={() => navigateTo(3)} class:selected={$page === 3}> SOCIALS </button>
-	</div>
+	<nav class="nav-wrapper">
+		{#each navItems as item}
+			<button
+				onclick={() => onnavigate(item.value)}
+				class:selected={$page === item.value}
+				aria-current={$page === item.value ? "page" : undefined}
+			>
+				{item.label}
+			</button>
+		{/each}
+	</nav>
 </div>
 
 <style>

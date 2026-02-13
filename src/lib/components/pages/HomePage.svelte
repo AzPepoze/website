@@ -1,9 +1,11 @@
-<script>
+<script lang="ts">
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
 	import { scrollTransition } from "$lib/transitions/custom-transitions";
 	import { theme } from "$lib/stores/theme";
+	import sunIcon from "$lib/assets/sun.svg";
+	import moonIcon from "$lib/assets/moon.svg";
 
 	function toggleTheme() {
 		theme.update(t => t === 'light' ? 'dark' : 'light');
@@ -22,12 +24,12 @@
 			<div class="SubText">Welcome to my digital space.</div>
 			
 			<div class="theme-toggle-container">
-				<button class="theme-btn" on:click={toggleTheme} aria-label="Toggle Theme">
+				<button class="theme-btn" onclick={toggleTheme} aria-label="Toggle Theme">
 					<div class="icon-pod">
 						{#if $theme === 'dark'}
-							<img src="/src/lib/assets/sun.svg" alt="Sun" width="20" height="20" class="theme-icon" />
+							<img src={sunIcon} alt="Sun" width="20" height="20" class="theme-icon" />
 						{:else}
-							<img src="/src/lib/assets/moon.svg" alt="Moon" width="20" height="20" class="theme-icon" />
+							<img src={moonIcon} alt="Moon" width="20" height="20" class="theme-icon" />
 						{/if}
 					</div>
 					<span>{$theme === 'dark' ? 'LIGHT MODE' : 'DARK MODE'}</span>

@@ -24,11 +24,11 @@
 
 			mouseContainer.append(mouseEffect);
 
-			setTimeout(() => {
+			requestAnimationFrame(() => {
 				mouseEffect.style.opacity = "1";
 				mouseEffect.style.transition = "all 0.2s";
 				mouseEffect.style.transform = `scale(1)`;
-			}, 10);
+			});
 
 			setTimeout(() => {
 				mouseEffect.style.opacity = "0";
@@ -58,14 +58,11 @@
 
 			mouseContainer.append(mouseEffect);
 
-			setTimeout(() => {
+			requestAnimationFrame(() => {
 				mouseEffect.style.transform = `scale(10)`;
-			}, 1);
-
-			setTimeout(() => {
 				mouseEffect.style.opacity = "1";
 				mouseEffect.style.transition = "all 0.2s";
-			}, 10);
+			});
 
 			setTimeout(() => {
 				mouseEffect.style.opacity = "0";
@@ -73,8 +70,8 @@
 			}, 200);
 		};
 
-		window.addEventListener("mousemove", handleMouseMove);
-		window.addEventListener("mousedown", handleMouseDown);
+		window.addEventListener("mousemove", handleMouseMove, { passive: true });
+		window.addEventListener("mousedown", handleMouseDown, { passive: true });
 
 		return () => {
 			window.removeEventListener("mousemove", handleMouseMove);

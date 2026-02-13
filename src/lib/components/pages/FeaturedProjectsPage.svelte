@@ -2,19 +2,20 @@
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
+	import type { Project } from "$lib/types";
 
 	let activeIndex = 0;
-	const projects = [
+	const projects: Project[] = [
 		{
 			title: "NewTube",
-			tagline: "Next-gen YouTube Customization",
+			tagline: "Browser Extension for Customizing YouTube",
 			url: "https://github.com/AzPepoze/NewTube",
 			type: "video",
 			src: "https://www.youtube-nocookie.com/embed/Z3Hrpjsi9AY?rel=0&controls=0&mute=1",
 		},
 		{
-			title: "Wallpaper Engine",
-			tagline: "Linux GUI for Wallpaper Engine",
+			title: "Linux Wallpaper Engine GUI",
+			tagline: "GUI for Linux Wallpaper Engine",
 			url: "https://github.com/AzPepoze/linux-wallpaperengine-gui",
 			type: "image",
 			src: "https://github.com/AzPepoze/linux-wallpaperengine-gui/raw/main/showcase/preview-logo.png",
@@ -28,7 +29,7 @@
 		},
 		{
 			title: "GDrive BiSync",
-			tagline: "Cloud Storage Synchronizer",
+			tagline: "Two-way Google Drive Sync Tool",
 			url: "https://github.com/AzPepoze/gdrive-bisync",
 			type: "icon",
 			src: "☁️",
@@ -101,7 +102,11 @@
 			</button>
 			<div class="dots">
 				{#each projects as _, i}
-					<button class="dot" class:active={i === activeIndex} on:click={() => (activeIndex = i)}
+					<button
+						class="dot"
+						class:active={i === activeIndex}
+						on:click={() => (activeIndex = i)}
+						aria-label="Go to project {i + 1}"
 					></button>
 				{/each}
 			</div>
@@ -153,7 +158,7 @@
 		width: 320px;
 		height: 450px;
 		transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
-		
+
 		/* Simple 2D-like positioning for side cards to avoid perspective conflicts */
 		transform: translateX(calc(var(--offset) * 110%)) scale(calc(1 - var(--abs-offset) * 0.2));
 		opacity: calc(1 - var(--abs-offset) * 0.4);

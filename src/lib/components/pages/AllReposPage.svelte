@@ -3,15 +3,7 @@
 	import Page from "../Page.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
 	import { scrollTransition } from "$lib/transitions/custom-transitions";
-
-	interface Repo {
-		html_url: string;
-		name: string;
-		stargazers_count: number;
-		description: string | null;
-		language: string | null;
-		updated_at: string;
-	}
+	import type { Repo } from "$lib/types";
 
 	let repos: Repo[] = [];
 	let isLoading = true;

@@ -117,7 +117,7 @@
 }
 
 .wave {
-	background-image: url(img/wave.png);
+	background-image: url(/img/wave.png);
 	background-size: 1000px 100%;
 }
 

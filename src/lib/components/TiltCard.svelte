@@ -1,9 +1,21 @@
 <script lang="ts">
-	export let rotationIntensity = 5;
-	export let scale = 1.02;
-	export let className = "";
-	export let perspective = 1000;
-	export let bg = true;
+	import type { Snippet } from "svelte";
+
+	let { 
+		rotationIntensity = 5, 
+		scale = 1.02, 
+		className = "", 
+		perspective = 1000, 
+		bg = true,
+		children
+	} = $props<{
+		rotationIntensity?: number;
+		scale?: number;
+		className?: string;
+		perspective?: number;
+		bg?: boolean;
+		children: Snippet;
+	}>();
 
 	let card: HTMLElement;
 
@@ -37,10 +49,10 @@
 	role="presentation"
 	class:bg
 	bind:this={card}
-	on:mousemove={handleMouseMove}
-	on:mouseleave={handleMouseLeave}
+	onmousemove={handleMouseMove}
+	onmouseleave={handleMouseLeave}
 >
-	<slot />
+	{@render children()}
 </div>
 
 <style>

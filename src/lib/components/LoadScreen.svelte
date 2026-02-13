@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 
 	let loadscreen: HTMLElement;
-	let isLoaded = false;
+	let isLoaded = $state(false);
 
 	onMount(() => {
 		// Start exit animation after a short delay or when everything is ready
@@ -23,7 +23,7 @@
 	<div class="content">
 		<img
 			id="loadicon"
-			src="img/loading.png"
+			src="/img/loading.png"
 			alt="Loading Icon"
 			class:blur-out={isLoaded}
 		/>

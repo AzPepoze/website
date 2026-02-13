@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Page from "../Page.svelte";
 	import TiltCard from "$lib/components/TiltCard.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";

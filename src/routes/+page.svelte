@@ -10,15 +10,14 @@
 	import MouseEffects from "$lib/components/MouseEffects.svelte";
 	import { page } from "$lib/stores/page";
 
-	let scrollTop = 0;
+	let scrollTop = $state(0);
 	let mainContainer: HTMLElement;
-	let windowHeight = 0;
+	let windowHeight = $state(0);
 	let isScrolling = false;
 
 	function handleScroll() {
 		if (!mainContainer) return;
 		scrollTop = mainContainer.scrollTop;
-		windowHeight = window.innerHeight;
 
 		const currentPage = Math.round(scrollTop / windowHeight);
 		page.set(currentPage);
@@ -32,7 +31,6 @@
 		}
 	}
 
-	// The "Old Code" manual scroll logic
 	const handleWheel = (e: WheelEvent) => {
 		if (!mainContainer || isScrolling) return;
 
@@ -56,7 +54,7 @@
 		const nextPageIndex = Math.max(0, Math.min(3, $page + direction));
 
 		mainContainer.scrollTo({
-			top: nextPageIndex * window.innerHeight,
+			top: nextPageIndex * windowHeight,
 			behavior: "smooth",
 		});
 
@@ -68,7 +66,7 @@
 	function handleNavigate(pageNumber: number) {
 		if (!mainContainer) return;
 		mainContainer.scrollTo({
-			top: pageNumber * window.innerHeight,
+			top: pageNumber * windowHeight,
 			behavior: "smooth",
 		});
 	}

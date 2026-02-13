@@ -1,10 +1,15 @@
 <script lang="ts">
 	import { page } from "$lib/stores/page";
-	export let index: number;
+	import type { Snippet } from "svelte";
+	
+	let { index, children } = $props<{ 
+		index: number; 
+		children: Snippet 
+	}>();
 </script>
 
 <div class="Page" style:opacity={$page === index ? 1 : 0} style:pointer-events={$page === index ? "all" : "none"}>
-	<slot />
+	{@render children()}
 </div>
 
 <style>

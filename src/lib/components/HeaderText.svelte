@@ -1,7 +1,10 @@
 <script lang="ts">
 	import { theme } from "$lib/stores/theme";
-	export let text: string;
-	export let className = "";
+	
+	let { text, className = "" } = $props<{
+		text: string;
+		className?: string;
+	}>();
 </script>
 
 <div class="header-text {className}" class:light={$theme === "light"}>

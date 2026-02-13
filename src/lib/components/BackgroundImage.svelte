@@ -1,9 +1,9 @@
 <script lang="ts">
-	export let scrollOffset = 0;
+	let { scrollOffset = 0 } = $props<{ scrollOffset?: number }>();
 
-	$: parallax1 = scrollOffset * 0.2;
-	$: parallax2 = scrollOffset * 0.4;
-	$: parallax3 = scrollOffset * 0.1;
+	let parallax1 = $derived(scrollOffset * 0.2);
+	let parallax2 = $derived(scrollOffset * 0.4);
+	let parallax3 = $derived(scrollOffset * 0.1);
 </script>
 
 <div class="background-container">
