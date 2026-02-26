@@ -11,6 +11,7 @@
 		{ label: "PROJECTS", value: 1 },
 		{ label: "REPOS", value: 2 },
 		{ label: "SOCIALS", value: 3 },
+		{ label: "CONTACT", value: 4 },
 	];
 
 	onMount(() => {
@@ -98,10 +99,11 @@
 		}
 
 		button {
-			font-size: 0.7rem;
-			padding: 10px 10px;
-			border-radius: 15px;
+			font-size: 0.65rem;
+			padding: 8px 6px;
+			border-radius: 12px;
 			flex-grow: 1;
+			letter-spacing: 0.5px;
 		}
 	}
 </style>

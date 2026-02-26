@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { Snippet } from "svelte";
 
-	let { 
-		rotationIntensity = 5, 
-		scale = 1.02, 
-		className = "", 
-		perspective = 1000, 
+	let {
+		rotationIntensity = 5,
+		scale = 1.02,
+		className = "",
+		perspective = 1000,
 		bg = true,
-		children
+		children,
 	} = $props<{
 		rotationIntensity?: number;
 		scale?: number;
@@ -34,6 +34,9 @@
 
 		card.style.setProperty("--mouse-x", `${x}px`);
 		card.style.setProperty("--mouse-y", `${y}px`);
+
+		// Disable for touch devices to avoid jarring scale/rotate on tap
+		if (window.matchMedia("(hover: none)").matches) return;
 
 		card.style.transform = `perspective(${perspective}px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(${scale}, ${scale}, ${scale})`;
 	}

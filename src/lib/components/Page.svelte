@@ -1,14 +1,23 @@
 <script lang="ts">
 	import { page } from "$lib/stores/page";
 	import type { Snippet } from "svelte";
-	
-	let { index, children } = $props<{ 
-		index: number; 
-		children: Snippet 
+
+	let {
+		index,
+		children,
+		className = "",
+	} = $props<{
+		index: number;
+		children: Snippet;
+		className?: string;
 	}>();
 </script>
 
-<div class="Page" style:opacity={$page === index ? 1 : 0} style:pointer-events={$page === index ? "all" : "none"}>
+<div
+	class="Page {className}"
+	style:opacity={$page === index ? 1 : 0}
+	style:pointer-events={$page === index ? "all" : "none"}
+>
 	{@render children()}
 </div>
 
@@ -23,11 +32,14 @@
 		position: relative;
 		transition: opacity 0.5s ease-in-out;
 		background-color: transparent;
+		padding: 4rem 2rem 8rem; /* Space for Header and BottomNav */
 	}
 
 	@media (max-width: 768px) {
 		.Page {
 			flex-direction: column;
+			padding: 2rem 1rem 6rem; /* Reduced paddings */
+			justify-content: flex-start;
 		}
 	}
 

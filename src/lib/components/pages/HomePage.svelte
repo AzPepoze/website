@@ -8,7 +8,7 @@
 	import moonIcon from "$lib/assets/moon.svg";
 
 	function toggleTheme() {
-		theme.update(t => t === 'light' ? 'dark' : 'light');
+		theme.update((t) => (t === "light" ? "dark" : "light"));
 	}
 </script>
 
@@ -20,19 +20,40 @@
 		out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 	>
 		<TiltCard className="tilt-card-container" bg={false}>
-			<HeaderText text="HELLO!" className="MainText StrokeText glitch-header typing-cursor" />
+			<HeaderText
+				text="HELLO!"
+				className="MainText StrokeText glitch-header"
+				typing={true}
+			/>
 			<div class="SubText">Welcome to my digital space.</div>
-			
+
 			<div class="theme-toggle-container">
-				<button class="theme-btn" onclick={toggleTheme} aria-label="Toggle Theme">
+				<button
+					class="theme-btn"
+					onclick={toggleTheme}
+					aria-label="Toggle Theme"
+				>
 					<div class="icon-pod">
-						{#if $theme === 'dark'}
-							<img src={sunIcon} alt="Sun" width="20" height="20" class="theme-icon" />
+						{#if $theme === "dark"}
+							<img
+								src={sunIcon}
+								alt="Sun"
+								width="20"
+								height="20"
+								class="theme-icon"
+							/>
 						{:else}
-							<img src={moonIcon} alt="Moon" width="20" height="20" class="theme-icon" />
+							<img
+								src={moonIcon}
+								alt="Moon"
+								width="20"
+								height="20"
+								class="theme-icon"
+							/>
 						{/if}
 					</div>
-					<span>{$theme === 'dark' ? 'LIGHT MODE' : 'DARK MODE'}</span>
+					<span>{$theme === "dark" ? "LIGHT MODE" : "DARK MODE"}</span
+					>
 				</button>
 			</div>
 		</TiltCard>
@@ -44,11 +65,14 @@
 		out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 	>
 		<TiltCard className="tilt-card-container" bg={false}>
-			<div id="google_translate_element" class="google-translate-container"></div>
+			<div
+				id="google_translate_element"
+				class="google-translate-container"
+			></div>
 
 			<div class="SubText CenterText">
 				<br />Choose your language and explore.<br />
-				Scroll down to see my projects.
+				Navigate through the menu to see my work.
 			</div>
 		</TiltCard>
 	</div>
@@ -99,7 +123,7 @@
 		.theme-icon {
 			filter: invert(1); /* ALWAYS WHITE ICON */
 		}
-		
+
 		span {
 			font-family: "JetBrains Mono", monospace;
 			font-weight: 800;
@@ -116,9 +140,20 @@
 		}
 	}
 
-	@keyframes Typing {
-		0% { border-color: transparent; }
-		50% { border-color: var(--text-color); }
-		100% { border-color: transparent; }
+	@media (max-width: 768px) {
+		.theme-toggle-container {
+			justify-content: center;
+			margin-top: 1rem;
+		}
+
+		.CenterText {
+			margin-top: 1rem;
+		}
+
+		:global(.tilt-card-container) {
+			width: 100%;
+			max-width: 320px;
+			padding: 1rem;
+		}
 	}
 </style>

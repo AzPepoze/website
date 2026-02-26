@@ -6,6 +6,7 @@
 	import FeaturedProjectsPage from "$lib/components/pages/FeaturedProjectsPage.svelte";
 	import AllReposPage from "$lib/components/pages/AllReposPage.svelte";
 	import SocialsPage from "$lib/components/pages/SocialsPage.svelte";
+	import ContactPage from "$lib/components/pages/ContactPage.svelte";
 	import LoadScreen from "$lib/components/LoadScreen.svelte";
 	import MouseEffects from "$lib/components/MouseEffects.svelte";
 	import { page } from "$lib/stores/page";
@@ -14,61 +15,61 @@
 	let mainContainer: HTMLElement;
 	let windowHeight = $state(0);
 	let isScrolling = false;
+	const scrollThrottling = 200;
 
 	function handleScroll() {
 		if (!mainContainer) return;
 		scrollTop = mainContainer.scrollTop;
 
 		const currentPage = Math.round(scrollTop / windowHeight);
-		page.set(currentPage);
+		// Avoid redundant store updates
+		page.subscribe(($p) => {
+			if ($p !== currentPage) page.set(currentPage);
+		})();
 
 		// High-performance 3D transform updates
-		for (let i = 0; i < 4; i++) {
+		for (let i = 0; i < 5; i++) {
 			const sectionTop = i * windowHeight;
 			const distance = scrollTop - sectionTop;
 			const progress = Math.max(0, Math.min(1, distance / windowHeight));
-			mainContainer.style.setProperty(`--p${i}-progress`, progress.toString());
+			mainContainer.style.setProperty(
+				`--p${i}-progress`,
+				progress.toString(),
+			);
 		}
 	}
 
-	const handleWheel = (e: WheelEvent) => {
+	function handleNavigate(pageNumber: number) {
 		if (!mainContainer || isScrolling) return;
 
-		// Check if we are inside a scrollable element (like the Repo grid)
-		let target = e.target as HTMLElement | null;
-		while (target && target !== mainContainer) {
-			if (target.hasAttribute("data-prevent-page-scroll")) {
-				const canScrollUp = target.scrollTop > 0;
-				const canScrollDown = target.scrollTop < target.scrollHeight - target.clientHeight;
-				if (e.deltaY > 0 && canScrollDown) return;
-				if (e.deltaY < 0 && canScrollUp) return;
-				break;
-			}
-			target = target.parentElement;
-		}
-
-		e.preventDefault();
 		isScrolling = true;
-
-		const direction = e.deltaY > 0 ? 1 : -1;
-		const nextPageIndex = Math.max(0, Math.min(3, $page + direction));
-
 		mainContainer.scrollTo({
-			top: nextPageIndex * windowHeight,
+			top: pageNumber * windowHeight,
 			behavior: "smooth",
 		});
 
 		setTimeout(() => {
 			isScrolling = false;
-		}, 800); // Lock scroll slightly during transition
-	};
+		}, scrollThrottling);
+	}
 
-	function handleNavigate(pageNumber: number) {
-		if (!mainContainer) return;
-		mainContainer.scrollTo({
-			top: pageNumber * windowHeight,
-			behavior: "smooth",
-		});
+	function handleWheel(e: WheelEvent) {
+		if (isScrolling) return;
+
+		// Check if target is inside a scrollable container
+		if ((e.target as HTMLElement).closest("[data-prevent-page-scroll]")) {
+			return;
+		}
+
+		const direction = e.deltaY > 0 ? 1 : -1;
+		let currentPage = 0;
+		page.subscribe(($p) => (currentPage = $p))();
+
+		const nextPage = Math.max(0, Math.min(4, currentPage + direction));
+
+		if (nextPage !== currentPage) {
+			handleNavigate(nextPage);
+		}
 	}
 
 	onMount(() => {
@@ -80,8 +81,64 @@
 		if (mainContainer) {
 			mainContainer.scrollTop = 0;
 			handleScroll();
-			mainContainer.addEventListener("scroll", handleScroll, { passive: true });
-			mainContainer.addEventListener("wheel", handleWheel, { passive: false });
+			mainContainer.addEventListener("scroll", handleScroll, {
+				passive: true,
+			});
+
+			mainContainer.addEventListener("wheel", handleWheel, {
+				passive: false,
+			});
+
+			// Disable touch scroll on mobile
+			mainContainer.addEventListener(
+				"touchmove",
+				(e) => {
+					if (
+						!(e.target as HTMLElement).closest(
+							"[data-prevent-page-scroll]",
+						)
+					) {
+						e.preventDefault();
+					}
+				},
+				{ passive: false },
+			);
+
+			// Disable scroll keys
+			window.addEventListener(
+				"keydown",
+				(e) => {
+					const scrollKeys = [
+						"ArrowUp",
+						"ArrowDown",
+						"PageUp",
+						"PageDown",
+						"Home",
+						"End",
+						" ",
+					];
+					if (
+						scrollKeys.includes(e.key) &&
+						!(e.target as HTMLElement).closest(
+							"[data-prevent-page-scroll]",
+						)
+					) {
+						e.preventDefault();
+						const direction =
+							e.key === "ArrowDown" ||
+							e.key === "PageDown" ||
+							e.key === " "
+								? 1
+								: -1;
+						let currentPage = 0;
+						page.subscribe(($p) => (currentPage = $p))();
+						handleNavigate(
+							Math.max(0, Math.min(4, currentPage + direction)),
+						);
+					}
+				},
+				{ passive: false },
+			);
 		}
 
 		return () => {
@@ -100,7 +157,7 @@
 	<LoadScreen />
 	<MouseEffects />
 
-	<div class="pages" style:height="{windowHeight * 4}px">
+	<div class="pages" style:height="{windowHeight * 5}px">
 		<section id="page-0" style:z-index="1" class="stack-section">
 			<HomePage />
 		</section>
@@ -113,6 +170,9 @@
 		<section id="page-3" style:z-index="4" class="stack-section">
 			<SocialsPage />
 		</section>
+		<section id="page-4" style:z-index="5" class="stack-section">
+			<ContactPage />
+		</section>
 	</div>
 
 	<BottomNav onnavigate={handleNavigate} />
@@ -122,8 +182,7 @@
 	main {
 		width: 100vw;
 		height: 100vh;
-		overflow-x: hidden;
-		overflow-y: scroll;
+		overflow: hidden; /* Completely disable manual scroll */
 		background-color: var(--bg-color);
 		scrollbar-width: none;
 		-ms-overflow-style: none;
@@ -155,7 +214,8 @@
 		--rotate: calc(var(--progress) * 15deg);
 		--opacity: calc(1 - (var(--progress) * 0.8));
 
-		transform: perspective(1200px) rotateX(var(--rotate)) scale(var(--scale));
+		transform: perspective(1200px) rotateX(var(--rotate))
+			scale(var(--scale));
 		opacity: var(--opacity);
 
 		transform-origin: center top;
@@ -173,5 +233,8 @@
 	}
 	#page-3 {
 		--progress: var(--p3-progress, 0);
+	}
+	#page-4 {
+		--progress: var(--p4-progress, 0);
 	}
 </style>

@@ -20,7 +20,12 @@
 	<div class="RightFrame">
 		<div class="grid-container">
 			<div
-				in:scrollTransition={{ y: 100, duration: 500, delay: 200, blur: 5 }}
+				in:scrollTransition={{
+					y: 100,
+					duration: 500,
+					delay: 200,
+					blur: 5,
+				}}
 				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 			>
 				<TiltCard rotationIntensity={10} className="card-wrapper">
@@ -47,11 +52,20 @@
 			</div>
 
 			<div
-				in:scrollTransition={{ y: 100, duration: 500, delay: 300, blur: 5 }}
+				in:scrollTransition={{
+					y: 100,
+					duration: 500,
+					delay: 300,
+					blur: 5,
+				}}
 				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 			>
 				<TiltCard rotationIntensity={10} className="card-wrapper">
-					<a href="https://www.pixiv.net/en/users/44970537" target="_blank" class="social-card pixiv">
+					<a
+						href="https://www.pixiv.net/en/users/44970537"
+						target="_blank"
+						class="social-card pixiv"
+					>
 						<div class="card-content">
 							<div class="icon-wrapper">
 								<img
@@ -70,11 +84,20 @@
 			</div>
 
 			<div
-				in:scrollTransition={{ y: 100, duration: 500, delay: 400, blur: 5 }}
+				in:scrollTransition={{
+					y: 100,
+					duration: 500,
+					delay: 400,
+					blur: 5,
+				}}
 				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 			>
 				<TiltCard rotationIntensity={10} className="card-wrapper">
-					<a href="https://www.tiktok.com/@azpepoze_1" target="_blank" class="social-card tiktok">
+					<a
+						href="https://www.tiktok.com/@azpepoze_1"
+						target="_blank"
+						class="social-card tiktok"
+					>
 						<div class="card-content">
 							<div class="icon-wrapper">
 								<img
@@ -93,11 +116,20 @@
 			</div>
 
 			<div
-				in:scrollTransition={{ y: 100, duration: 500, delay: 500, blur: 5 }}
+				in:scrollTransition={{
+					y: 100,
+					duration: 500,
+					delay: 500,
+					blur: 5,
+				}}
 				out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 			>
 				<TiltCard rotationIntensity={10} className="card-wrapper">
-					<a href="https://github.com/AzPepoze" target="_blank" class="social-card github">
+					<a
+						href="https://github.com/AzPepoze"
+						target="_blank"
+						class="social-card github"
+					>
 						<div class="card-content">
 							<div class="icon-wrapper">
 								<img
@@ -285,7 +317,11 @@
 				color: #ff0000 !important;
 			}
 			.glow {
-				background: radial-gradient(circle, rgba(255, 0, 0, 0.15) 0%, transparent 60%);
+				background: radial-gradient(
+					circle,
+					rgba(255, 0, 0, 0.15) 0%,
+					transparent 60%
+				);
 			}
 		}
 
@@ -301,7 +337,11 @@
 				color: #0096fa !important;
 			}
 			.glow {
-				background: radial-gradient(circle, rgba(0, 150, 250, 0.15) 0%, transparent 60%);
+				background: radial-gradient(
+					circle,
+					rgba(0, 150, 250, 0.15) 0%,
+					transparent 60%
+				);
 			}
 		}
 
@@ -317,7 +357,11 @@
 				color: #ff0050 !important;
 			}
 			.glow {
-				background: radial-gradient(circle, rgba(255, 0, 80, 0.15) 0%, transparent 60%);
+				background: radial-gradient(
+					circle,
+					rgba(255, 0, 80, 0.15) 0%,
+					transparent 60%
+				);
 			}
 		}
 
@@ -333,7 +377,11 @@
 				color: #a855f7 !important;
 			}
 			.glow {
-				background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 60%);
+				background: radial-gradient(
+					circle,
+					rgba(168, 85, 247, 0.15) 0%,
+					transparent 60%
+				);
 			}
 		}
 	}
