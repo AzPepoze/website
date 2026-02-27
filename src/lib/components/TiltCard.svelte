@@ -65,8 +65,8 @@
 	}
 
 	.bg {
-		background: var(--grid-color);
-		border: 1px solid var(--accent-color);
+		background: var(--button-bg);
+		border: 1px solid var(--button-border);
 		border-radius: 24px;
 		box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.2);
 	}

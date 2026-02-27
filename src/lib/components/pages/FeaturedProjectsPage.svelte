@@ -55,19 +55,28 @@
 		<div class="thumb" aria-hidden="true"></div>
 		<button
 			class:active={categoryFilter === "all"}
-			onclick={() => (categoryFilter = "all")}
+			onclick={() => {
+				categoryFilter = "all";
+				activeIndex = 0;
+			}}
 		>
 			All
 		</button>
 		<button
 			class:active={categoryFilter === "software"}
-			onclick={() => (categoryFilter = "software")}
+			onclick={() => {
+				categoryFilter = "software";
+				activeIndex = 0;
+			}}
 		>
 			Software
 		</button>
 		<button
 			class:active={categoryFilter === "game"}
-			onclick={() => (categoryFilter = "game")}
+			onclick={() => {
+				categoryFilter = "game";
+				activeIndex = 0;
+			}}
 		>
 			Games
 		</button>
@@ -82,7 +91,10 @@
 					class="filter-transition-wrapper"
 				>
 					{#key activeIndex}
-						{@const project = projects[activeIndex]}
+						{@const project =
+							projects[activeIndex] ||
+							projects[0] ||
+							featuredProjects[0]}
 						<div
 							class="project-view"
 							in:fly={{ x: 50, duration: 800, delay: 200 }}

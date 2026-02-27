@@ -10,13 +10,19 @@
 
 	onMount(async () => {
 		try {
-			const res = await fetch("https://api.github.com/users/AzPepoze/repos?per_page=100");
+			const res = await fetch(
+				"https://api.github.com/users/AzPepoze/repos?per_page=100",
+			);
 			if (res.ok) {
 				const data: Repo[] = await res.json();
 				repos = data.sort((a, b) => {
-					const starsDiff = b.stargazers_count - a.stargazers_count;
+					const starsDiff =
+						b.stargazers_count - a.stargazers_count;
 					if (starsDiff !== 0) return starsDiff;
-					return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+					return (
+						new Date(b.updated_at).getTime() -
+						new Date(a.updated_at).getTime()
+					);
 				});
 			}
 		} catch (e) {
@@ -31,10 +37,18 @@
 	<div class="PageContent">
 		<div
 			class="HeaderContainer"
-			in:scrollTransition={{ y: -50, duration: 1000, delay: 200, blur: 5 }}
+			in:scrollTransition={{
+				y: -50,
+				duration: 1000,
+				delay: 200,
+				blur: 5,
+			}}
 			out:scrollTransition={{ y: -50, duration: 500, blur: 5 }}
 		>
-			<HeaderText text="GITHUB PROJECTS" className="MainText StrokeText" />
+			<HeaderText
+				text="GITHUB PROJECTS"
+				className="MainText StrokeText"
+			/>
 		</div>
 
 		<div class="RepoContainer scroll-mask" data-prevent-page-scroll>
@@ -43,21 +57,39 @@
 			{:else}
 				<div class="repo-dense-grid">
 					{#each repos as repo}
-						<a href={repo.html_url} target="_blank" class="mini-repo-card">
+						<a
+							href={repo.html_url}
+							target="_blank"
+							class="mini-repo-card"
+						>
 							<div class="card-content">
 								<div class="repo-top">
-									<span class="name">{repo.name}</span>
+									<span class="name"
+										>{repo.name}</span
+									>
 									<span class="stars">
-										<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+										<svg
+											width="12"
+											height="12"
+											viewBox="0 0 24 24"
+											fill="currentColor"
+											><path
+												d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"
+											/></svg
+										>
 										{repo.stargazers_count}
 									</span>
 								</div>
 								{#if repo.description}
-									<p class="desc">{repo.description}</p>
+									<p class="desc">
+										{repo.description}
+									</p>
 								{/if}
 								<div class="footer">
 									{#if repo.language}
-										<span class="lang">{repo.language}</span>
+										<span class="lang"
+											>{repo.language}</span
+										>
 									{/if}
 								</div>
 							</div>
@@ -109,7 +141,7 @@
 
 	.mini-repo-card {
 		text-decoration: none;
-		background: var(--accent-color);
+		background: var(--button-bg);
 		border: 1px solid var(--stroke-color);
 		border-radius: 16px;
 		padding: 1.2rem;
@@ -162,7 +194,7 @@
 			margin: 0.5rem 0 1rem;
 			line-height: 1.4;
 			display: -webkit-box;
-			-webkit-line-clamp: 2;
+			line-clamp: 2;
 			-webkit-box-orient: vertical;
 			overflow: hidden;
 		}
@@ -189,7 +221,13 @@
 	}
 
 	.scroll-mask {
-		mask-image: linear-gradient(to bottom, transparent, var(--bg-color) 10%, var(--bg-color) 90%, transparent);
+		mask-image: linear-gradient(
+			to bottom,
+			transparent,
+			var(--bg-color) 10%,
+			var(--bg-color) 90%,
+			transparent
+		);
 	}
 
 	@media (min-width: 768px) {

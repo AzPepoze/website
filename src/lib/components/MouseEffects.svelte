@@ -2,26 +2,144 @@
 	import { onMount } from "svelte";
 
 	let mouseContainer: HTMLElement;
-	let mouseX = 0;
-	let mouseY = 0;
-	let cursorX = 0;
-	let cursorY = 0;
+	let canvas: HTMLCanvasElement;
+	let ctx: CanvasRenderingContext2D | null;
 	let isHovering = false;
+	let particles: Particle[] = [];
+	let animationFrame: number;
+
+	class Particle {
+		x: number;
+		y: number;
+		size: number;
+		rotation: number;
+		color: string;
+		life: number = 1;
+		decay: number;
+		type: "trail" | "click";
+		vx: number = 0;
+		vy: number = 0;
+
+		constructor(
+			x: number,
+			y: number,
+			size: number,
+			color: string,
+			type: "trail" | "click",
+			vx = 0,
+			vy = 0,
+		) {
+			this.x = x;
+			this.y = y;
+			this.size = size;
+			this.rotation = Math.random() * Math.PI * 2;
+			this.color = color;
+			this.type = type;
+			this.vx = vx;
+			this.vy = vy;
+			this.decay =
+				type === "trail"
+					? 0.02 + Math.random() * 0.02
+					: 0.015 + Math.random() * 0.015;
+		}
+
+		update() {
+			this.life -= this.decay;
+			this.x += this.vx;
+			this.y += this.vy;
+			if (this.type === "click") {
+				this.rotation += 0.02;
+			}
+		}
+
+		draw(ctx: CanvasRenderingContext2D) {
+			ctx.save();
+			ctx.translate(this.x, this.y);
+			ctx.rotate(this.rotation);
+			ctx.globalAlpha = this.life;
+			ctx.fillStyle = this.color;
+
+			if (this.type === "trail") {
+				drawStarPath(ctx, 0, 0, 5, this.size, this.size / 2.5);
+			} else {
+				ctx.beginPath();
+				ctx.arc(0, 0, this.size, 0, Math.PI * 2);
+			}
+			ctx.fill();
+			ctx.restore();
+		}
+	}
+
+	function drawStarPath(
+		ctx: CanvasRenderingContext2D,
+		cx: number,
+		cy: number,
+		spikes: number,
+		outerRadius: number,
+		innerRadius: number,
+	) {
+		let rot = (Math.PI / 2) * 3;
+		let x = cx;
+		let y = cy;
+		const step = Math.PI / spikes;
+
+		ctx.beginPath();
+		ctx.moveTo(cx, cy - outerRadius);
+		for (let i = 0; i < spikes; i++) {
+			x = cx + Math.cos(rot) * outerRadius;
+			y = cy + Math.sin(rot) * outerRadius;
+			ctx.lineTo(x, y);
+			rot += step;
+
+			x = cx + Math.cos(rot) * innerRadius;
+			y = cy + Math.sin(rot) * innerRadius;
+			ctx.lineTo(x, y);
+			rot += step;
+		}
+		ctx.lineTo(cx, cy - outerRadius);
+		ctx.closePath();
+	}
+
+	function resizeCanvas() {
+		if (!canvas) return;
+		canvas.width = window.innerWidth * window.devicePixelRatio;
+		canvas.height = window.innerHeight * window.devicePixelRatio;
+		canvas.style.width = `${window.innerWidth}px`;
+		canvas.style.height = `${window.innerHeight}px`;
+		if (ctx) ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+	}
 
 	onMount(() => {
-		const handleMouseMove = (e: MouseEvent) => {
-			mouseX = e.clientX;
-			mouseY = e.clientY;
+		ctx = canvas.getContext("2d");
+		resizeCanvas();
+		window.addEventListener("resize", resizeCanvas);
 
+		const animate = () => {
+			if (!ctx) return;
+			ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+			for (let i = particles.length - 1; i >= 0; i--) {
+				const p = particles[i];
+				p.update();
+				if (p.life <= 0) {
+					particles.splice(i, 1);
+				} else {
+					p.draw(ctx);
+				}
+			}
+
+			animationFrame = requestAnimationFrame(animate);
+		};
+		animate();
+
+		const handleMouseMove = (e: MouseEvent) => {
 			if (!mouseContainer) return;
 
-			// Check for interactive elements
 			const target = e.target as HTMLElement;
 			isHovering = !!target.closest(
 				'a, button, [role="button"], input, select, textarea',
 			);
 
-			// Zero-latency cursor positioning
 			const cursor = mouseContainer.querySelector(
 				".custom-cursor",
 			) as HTMLElement;
@@ -29,58 +147,36 @@
 				cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
 			}
 
-			// Professional Star Trail Effect
-			for (let i = 0; i < 4; i++) {
-				const trail = document.createElement("div");
-				trail.className = "mouse-trail";
-				const size = Math.random() * 8 + 4;
-				const offsetX = (Math.random() - 0.5) * 15;
-				const offsetY = (Math.random() - 0.5) * 15;
-				const rotation = Math.random() * 360;
+			// Add trail particles
+			const textColor =
+				getComputedStyle(document.documentElement)
+					.getPropertyValue("--text-color")
+					.trim() || "#fff";
+			const accentColor =
+				getComputedStyle(document.documentElement)
+					.getPropertyValue("--accent-color")
+					.trim() || "#fff";
 
-				trail.style.width = `${size}px`;
-				trail.style.height = `${size}px`;
-				trail.style.left = `${mouseX + offsetX}px`;
-				trail.style.top = `${mouseY + offsetY}px`;
-				trail.style.setProperty("--rotation", `${rotation}deg`);
-				trail.style.background =
-					Math.random() > 0.5
-						? "var(--text-color)"
-						: "var(--accent-color, #fff)";
+			const size = Math.random() * 2 + 1;
+			const offsetX = (Math.random() - 0.5) * 15;
+			const offsetY = (Math.random() - 0.5) * 15;
+			const color = Math.random() > 0.5 ? textColor : accentColor;
 
-				mouseContainer.appendChild(trail);
-				setTimeout(() => trail.remove(), 800);
-			}
-		};
-
-		const createParticle = (x: number, y: number, color: string) => {
-			const particle = document.createElement("div");
-			particle.className = "click-particle";
-
-			const size = Math.random() * 6 + 2;
-			const destinationX = (Math.random() - 0.5) * 200;
-			const destinationY = (Math.random() - 0.5) * 200;
-			const rotation = Math.random() * 360;
-
-			particle.style.cssText = `
-				width: ${size}px;
-				height: ${size}px;
-				background: ${color};
-				left: ${x}px;
-				top: ${y}px;
-				--dx: ${destinationX}px;
-				--dy: ${destinationY}px;
-				--dr: ${rotation}deg;
-			`;
-
-			mouseContainer.appendChild(particle);
-			setTimeout(() => particle.remove(), 800);
+			particles.push(
+				new Particle(
+					e.clientX + offsetX,
+					e.clientY + offsetY,
+					size,
+					color,
+					"trail",
+				),
+			);
 		};
 
 		const handleMouseDown = (e: MouseEvent) => {
 			if (!mouseContainer) return;
 
-			// Primary Ripple
+			// Primary Ripple (Keep DOM for now as it's a simple CSS animation and looks good)
 			const ripple = document.createElement("div");
 			ripple.className = "click-ripple";
 			ripple.style.left = `${e.clientX}px`;
@@ -88,23 +184,33 @@
 			mouseContainer.appendChild(ripple);
 			setTimeout(() => ripple.remove(), 600);
 
-			// Secondary Subtle Ripple
-			setTimeout(() => {
-				const ripple2 = document.createElement("div");
-				ripple2.className = "click-ripple-inner";
-				ripple2.style.left = `${e.clientX}px`;
-				ripple2.style.top = `${e.clientY}px`;
-				mouseContainer.appendChild(ripple2);
-				setTimeout(() => ripple2.remove(), 500);
-			}, 50);
+			// Particle Burst on Canvas
+			const textColor =
+				getComputedStyle(document.documentElement)
+					.getPropertyValue("--text-color")
+					.trim() || "#fff";
+			const accentColor =
+				getComputedStyle(document.documentElement)
+					.getPropertyValue("--accent-color")
+					.trim() || "#fff";
+			const colors = [textColor, accentColor, "#fff"];
 
-			// Particle Burst
-			const colors = ["var(--text-color)", "var(--accent-color)", "#fff"];
 			for (let i = 0; i < 12; i++) {
-				createParticle(
-					e.clientX,
-					e.clientY,
-					colors[Math.floor(Math.random() * colors.length)],
+				const size = Math.random() * 3 + 1;
+				const vx = (Math.random() - 0.5) * 8;
+				const vy = (Math.random() - 0.5) * 8;
+				const color =
+					colors[Math.floor(Math.random() * colors.length)];
+				particles.push(
+					new Particle(
+						e.clientX,
+						e.clientY,
+						size,
+						color,
+						"click",
+						vx,
+						vy,
+					),
 				);
 			}
 		};
@@ -117,6 +223,8 @@
 		});
 
 		return () => {
+			cancelAnimationFrame(animationFrame);
+			window.removeEventListener("resize", resizeCanvas);
 			window.removeEventListener("mousemove", handleMouseMove);
 			window.removeEventListener("mousedown", handleMouseDown);
 		};
@@ -124,6 +232,7 @@
 </script>
 
 <div bind:this={mouseContainer} id="MouseContainer">
+	<canvas bind:this={canvas} id="MouseCanvas"></canvas>
 	<div class="custom-cursor" class:hover={isHovering}>
 		<div class="cursor-dot"></div>
 	</div>
@@ -194,27 +303,6 @@
 		}
 	}
 
-	:global(.mouse-trail) {
-		position: absolute;
-		pointer-events: none;
-		opacity: 0.8;
-		transform: translate(-50%, -50%) rotate(var(--rotation));
-		animation: trailFade 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-		clip-path: polygon(
-			50% 0%,
-			61% 35%,
-			98% 35%,
-			68% 57%,
-			79% 91%,
-			50% 70%,
-			21% 91%,
-			32% 57%,
-			2% 35%,
-			39% 35%
-		);
-		box-shadow: 0 0 10px currentColor;
-	}
-
 	:global(.click-ripple) {
 		position: absolute;
 		width: 2px;
@@ -224,36 +312,6 @@
 		pointer-events: none;
 		transform: translate(-50%, -50%);
 		animation: rippleExpand 0.6s cubic-bezier(0, 0.5, 0.5, 1) forwards;
-	}
-
-	:global(.click-ripple-inner) {
-		position: absolute;
-		width: 2px;
-		height: 2px;
-		background: radial-gradient(
-			circle,
-			var(--text-color) 0%,
-			transparent 70%
-		);
-		border-radius: 50%;
-		pointer-events: none;
-		transform: translate(-50%, -50%);
-		animation: rippleExpandInner 0.5s cubic-bezier(0, 0.5, 0.5, 1) forwards;
-	}
-
-	:global(.click-particle) {
-		position: absolute;
-		border-radius: 50%;
-		pointer-events: none;
-		transform: translate(-50%, -50%);
-		animation: particleShoot 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-	}
-
-	@keyframes trailFade {
-		to {
-			opacity: 0;
-			transform: translate(-50%, -50%) scale(0.1);
-		}
 	}
 
 	@keyframes rippleExpand {
@@ -268,31 +326,6 @@
 			height: 100px;
 			opacity: 0;
 			border-width: 0.5px;
-		}
-	}
-
-	@keyframes rippleExpandInner {
-		0% {
-			width: 0;
-			height: 0;
-			opacity: 0.5;
-		}
-		100% {
-			width: 60px;
-			height: 60px;
-			opacity: 0;
-		}
-	}
-
-	@keyframes particleShoot {
-		0% {
-			transform: translate(-50%, -50%) scale(1);
-			opacity: 1;
-		}
-		100% {
-			transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy)))
-				rotate(var(--dr)) scale(0);
-			opacity: 0;
 		}
 	}
 </style>
