@@ -163,7 +163,7 @@ export const featuredProjects: Project[] = [
 		type: "icon",
 		src: "🎲",
 		actions: [
-			{ label: "Website", url: "waifu-randomizer.azpepoze.com" },
+			{ label: "Website", url: "https://waifu-randomizer.azpepoze.com/" },
 		],
 		images: []
 	}
