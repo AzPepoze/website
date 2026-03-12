@@ -1,10 +1,8 @@
 <script lang="ts">
 	import { onMount } from "svelte";
 
-	let mouseContainer: HTMLElement;
 	let canvas: HTMLCanvasElement;
 	let ctx: CanvasRenderingContext2D | null;
-	let isHovering = false;
 	let particles: Particle[] = [];
 	let animationFrame: number;
 
@@ -133,20 +131,6 @@
 		animate();
 
 		const handleMouseMove = (e: MouseEvent) => {
-			if (!mouseContainer) return;
-
-			const target = e.target as HTMLElement;
-			isHovering = !!target.closest(
-				'a, button, [role="button"], input, select, textarea',
-			);
-
-			const cursor = mouseContainer.querySelector(
-				".custom-cursor",
-			) as HTMLElement;
-			if (cursor) {
-				cursor.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-			}
-
 			// Add trail particles
 			const textColor =
 				getComputedStyle(document.documentElement)
@@ -174,16 +158,6 @@
 		};
 
 		const handleMouseDown = (e: MouseEvent) => {
-			if (!mouseContainer) return;
-
-			// Primary Ripple (Keep DOM for now as it's a simple CSS animation and looks good)
-			const ripple = document.createElement("div");
-			ripple.className = "click-ripple";
-			ripple.style.left = `${e.clientX}px`;
-			ripple.style.top = `${e.clientY}px`;
-			mouseContainer.appendChild(ripple);
-			setTimeout(() => ripple.remove(), 600);
-
 			// Particle Burst on Canvas
 			const textColor =
 				getComputedStyle(document.documentElement)
@@ -231,20 +205,11 @@
 	});
 </script>
 
-<div bind:this={mouseContainer} id="MouseContainer">
+<div id="MouseContainer">
 	<canvas bind:this={canvas} id="MouseCanvas"></canvas>
-	<div class="custom-cursor" class:hover={isHovering}>
-		<div class="cursor-dot"></div>
-	</div>
 </div>
 
 <style lang="scss">
-	:global(html, body, *) {
-		@media (hover: hover) and (pointer: fine) {
-			cursor: none !important;
-		}
-	}
-
 	#MouseContainer {
 		position: fixed;
 		inset: 0;
@@ -254,78 +219,6 @@
 
 		@media (hover: none), (pointer: coarse) {
 			display: none;
-		}
-	}
-
-	.custom-cursor {
-		position: absolute;
-		width: 16px;
-		height: 16px;
-		border: 1.5px solid var(--text-color);
-		border-radius: 50%;
-		top: 0;
-		left: 0;
-		margin-top: -8px;
-		margin-left: -8px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		will-change: transform;
-
-		/* Transitions ONLY for colors/shadows to keep movement instant */
-		transition:
-			background-color 0.2s ease,
-			border-color 0.2s ease,
-			opacity 0.2s ease,
-			box-shadow 0.2s ease;
-
-		.cursor-dot {
-			width: 4px;
-			height: 4px;
-			background: var(--text-color);
-			border-radius: 50%;
-			transition: transform 0.2s cubic-bezier(0.19, 1, 0.22, 1);
-		}
-
-		&.hover {
-			width: 40px;
-			height: 40px;
-			margin-top: -20px;
-			margin-left: -20px;
-			background: var(--text-color);
-			border-color: var(--text-color);
-			box-shadow: 0 0 30px var(--text-color);
-			opacity: 0.8;
-
-			.cursor-dot {
-				transform: scale(0);
-			}
-		}
-	}
-
-	:global(.click-ripple) {
-		position: absolute;
-		width: 2px;
-		height: 2px;
-		border: 1px solid var(--text-color);
-		border-radius: 50%;
-		pointer-events: none;
-		transform: translate(-50%, -50%);
-		animation: rippleExpand 0.6s cubic-bezier(0, 0.5, 0.5, 1) forwards;
-	}
-
-	@keyframes rippleExpand {
-		0% {
-			width: 0;
-			height: 0;
-			opacity: 1;
-			border-width: 2px;
-		}
-		100% {
-			width: 100px;
-			height: 100px;
-			opacity: 0;
-			border-width: 0.5px;
 		}
 	}
 </style>
