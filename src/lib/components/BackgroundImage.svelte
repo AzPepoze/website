@@ -12,6 +12,7 @@
 	let mouseY = $state(0);
 	let targetMouseX = 0;
 	let targetMouseY = 0;
+	let isMobile = $state(false);
 
 	function handleMouseMove(e: MouseEvent) {
 		targetMouseX = (e.clientX - window.innerWidth / 2) * 0.05;
@@ -25,9 +26,17 @@
 	}
 
 	onMount(() => {
+		const checkMobile = () => {
+			isMobile = window.innerWidth <= 768;
+		};
+		checkMobile();
+		window.addEventListener("resize", checkMobile);
 		window.addEventListener("mousemove", handleMouseMove);
 		updateMouse();
-		return () => window.removeEventListener("mousemove", handleMouseMove);
+		return () => {
+			window.removeEventListener("resize", checkMobile);
+			window.removeEventListener("mousemove", handleMouseMove);
+		};
 	});
 </script>
 
@@ -38,8 +47,10 @@
 		style:transform={`translateY(${-parallax1}px) translate(${mouseX * 0.5}px, ${mouseY * 0.5}px)`}
 	></div>
 
-	<!-- Metro Canvas Projectiles -->
-	<MetroCanvas />
+	<!-- Metro Canvas Projectiles (Disabled on Mobile for performance) -->
+	{#if !isMobile}
+		<MetroCanvas />
+	{/if}
 
 	<!-- Secondary Parallax Elements -->
 	<div

@@ -120,5 +120,9 @@
 		justify-content: center;
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
+
+		@media (max-width: 768px) {
+			padding-bottom: 120px;
+		}
 	}
 </style>
