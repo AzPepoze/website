@@ -71,7 +71,7 @@
 	});
 </script>
 
-<main bind:this={mainContainer}>
+<div class="main-container" bind:this={mainContainer}>
 	<BackgroundImage scrollOffset={scrollTop} />
 	<LoadScreen />
 	<MouseEffects />
@@ -95,12 +95,12 @@
 	</div>
 
 	<BottomNav onnavigate={handleNavigate} />
-</main>
+</div>
 
 <style>
-	main {
-		width: 100vw;
-		height: 100vh;
+	.main-container {
+		width: 100%;
+		height: 100%;
 		overflow-y: auto;
 		background-color: var(--bg-color);
 		scroll-snap-type: y mandatory;
@@ -121,7 +121,7 @@
 		scroll-snap-align: start;
 		scroll-snap-stop: always;
 
-		@media (max-width: 768px) {
+		@media (max-width: 1024px) {
 			padding-bottom: 120px;
 		}
 	}

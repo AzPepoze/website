@@ -31,7 +31,7 @@
 		padding: 4rem 2rem 5rem;
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 1024px) {
 		.Page {
 			flex-direction: column;
 			padding: 2rem 1rem 6rem;

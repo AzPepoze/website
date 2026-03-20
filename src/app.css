@@ -20,16 +20,12 @@
 	--info-color: #0084ff;
 	--warning-color: #ba54ff;
 	--grid-color: rgba(255, 255, 255, 0.2);
-	--circle-gradient: radial-gradient(
-		circle,
-		color-mix(in srgb, var(--text-color), transparent 75%) 0%,
-		transparent 70%
-	);
-	--card-gradient: linear-gradient(
-		145deg,
-		rgba(255, 255, 255, 0.08) 0%,
-		rgba(255, 255, 255, 0.02) 100%
-	);
+	--circle-gradient: radial-gradient(circle,
+			color-mix(in srgb, var(--text-color), transparent 75%) 0%,
+			transparent 70%);
+	--card-gradient: linear-gradient(145deg,
+			rgba(255, 255, 255, 0.08) 0%,
+			rgba(255, 255, 255, 0.02) 100%);
 	--media-box-bg: rgba(0, 0, 0, 0.2);
 	--info-box-bg: rgba(0, 0, 0, 0.3);
 	--text-dim: rgba(255, 255, 255, 0.5);
@@ -38,11 +34,9 @@
 	--star-bg: rgba(255, 204, 0, 0.1);
 	--star-border: rgba(255, 204, 0, 0.2);
 	--repo-card-hover: rgba(255, 255, 255, 0.06);
-	--glow-default: radial-gradient(
-		circle,
-		rgba(255, 255, 255, 0.1) 0%,
-		transparent 60%
-	);
+	--glow-default: radial-gradient(circle,
+			rgba(255, 255, 255, 0.1) 0%,
+			transparent 60%);
 	--button-bg: rgba(20, 20, 20, 0.8);
 	--button-border: rgba(255, 255, 255, 0.1);
 }
@@ -65,16 +59,12 @@
 	--info-color: #0288d1;
 	--warning-color: #7b1fa2;
 	--grid-color: rgba(0, 0, 0, 0.2);
-	--circle-gradient: radial-gradient(
-		circle,
-		color-mix(in srgb, var(--text-color), transparent 70%) 0%,
-		transparent 70%
-	);
-	--card-gradient: linear-gradient(
-		145deg,
-		rgba(0, 0, 0, 0.05) 0%,
-		rgba(0, 0, 0, 0.02) 100%
-	);
+	--circle-gradient: radial-gradient(circle,
+			color-mix(in srgb, var(--text-color), transparent 70%) 0%,
+			transparent 70%);
+	--card-gradient: linear-gradient(145deg,
+			rgba(0, 0, 0, 0.05) 0%,
+			rgba(0, 0, 0, 0.02) 100%);
 	--media-box-bg: rgba(0, 0, 0, 0.05);
 	--info-box-bg: rgba(0, 0, 0, 0.02);
 	--text-dim: rgba(0, 0, 0, 0.5);
@@ -83,11 +73,9 @@
 	--star-bg: rgba(184, 134, 11, 0.1);
 	--star-border: rgba(184, 134, 11, 0.3);
 	--repo-card-hover: rgba(0, 0, 0, 0.03);
-	--glow-default: radial-gradient(
-		circle,
-		rgba(0, 0, 0, 0.05) 0%,
-		transparent 60%
-	);
+	--glow-default: radial-gradient(circle,
+			rgba(0, 0, 0, 0.05) 0%,
+			transparent 60%);
 	--button-bg: rgba(255, 255, 255, 0.7);
 	--button-border: rgba(0, 0, 0, 0.1);
 }
@@ -237,6 +225,8 @@ body {
 	margin: 0px;
 	font-family: "Nunito", "Noto Sans Thai", sans-serif;
 	letter-spacing: 0.5px;
+	max-height: 100%;
+	min-height: 100%;
 }
 
 .MainText {
@@ -304,7 +294,7 @@ body {
 	position: relative;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
 	.Page {
 		flex-direction: column;
 	}
@@ -330,7 +320,7 @@ body {
 	border-right: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
 	.Collum3 {
 		width: 100%;
 		border-right: none;

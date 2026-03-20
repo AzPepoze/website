@@ -140,7 +140,7 @@
 			}
 		}
 	}
-	@media (max-width: 768px) {
+	@media (max-width: 1024px) {
 		.project-footer {
 			padding: 1rem 0;
 			margin-top: 1rem;

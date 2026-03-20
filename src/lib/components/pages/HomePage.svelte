@@ -140,7 +140,7 @@
 		}
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 1024px) {
 		.theme-toggle-container {
 			justify-content: center;
 			margin-top: 1rem;

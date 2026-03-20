@@ -240,7 +240,7 @@
 		}
 
 		/* Desktop Styles */
-		@media (min-width: 768px) {
+		@media (min-width: 1024px) {
 			flex-direction: column;
 			justify-content: center;
 			border-radius: 20px;
@@ -387,7 +387,7 @@
 	}
 
 	/* Desktop Overrides for Grid/Wrapper */
-	@media (min-width: 768px) {
+	@media (min-width: 1024px) {
 		.grid-container {
 			gap: 2rem;
 			grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));

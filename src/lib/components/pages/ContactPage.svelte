@@ -501,7 +501,7 @@
         }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
         :global(.Header) {
             padding: 0.5rem 0;
             margin-bottom: 0.5rem;

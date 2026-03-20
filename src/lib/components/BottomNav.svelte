@@ -91,7 +91,7 @@
 		opacity: 1;
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 1024px) {
 		.nav-wrapper {
 			width: 95%;
 			justify-content: space-between;
