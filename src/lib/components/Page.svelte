@@ -13,11 +13,7 @@
 	}>();
 </script>
 
-<div
-	class="Page {className}"
-	style:opacity={$page === index ? 1 : 0}
-	style:pointer-events={$page === index ? "all" : "none"}
->
+<div class="Page {className}">
 	{@render children()}
 </div>
 

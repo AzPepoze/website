@@ -15,11 +15,7 @@
 	});
 </script>
 
-<div
-	bind:this={loadscreen}
-	id="loadscreen"
-	class:exit={isLoaded}
->
+<div bind:this={loadscreen} id="loadscreen" class:exit={isLoaded}>
 	<div class="content">
 		<img
 			id="loadicon"
@@ -37,7 +33,7 @@
 
 <style lang="scss">
 	#loadscreen {
-		background-color: var(--bg-secondary);
+		background-color: var(--bg-color);
 		width: 100%;
 		height: 100%;
 		position: fixed;
@@ -47,7 +43,10 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		transition: opacity 1.5s ease-in-out, background-color 0.5s ease;
+		transition:
+			opacity 1.5s ease-in-out,
+			background-color 0.5s ease;
+		overflow: hidden;
 
 		#loadicon {
 			filter: var(--theme-icon-filter);
@@ -68,7 +67,9 @@
 		width: 80px;
 		height: 80px;
 		animation: Loading 1.5s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
-		transition: filter 1.5s ease-in-out, opacity 1s ease;
+		transition:
+			filter 1.5s ease-in-out,
+			opacity 1s ease;
 
 		&.blur-out {
 			filter: blur(40px);
@@ -83,7 +84,9 @@
 		width: 100%;
 		height: 15%;
 		overflow: hidden;
-		transition: filter 1.5s ease-in-out, opacity 1s ease;
+		transition:
+			filter 1.5s ease-in-out,
+			opacity 1s ease;
 
 		&.blur-out {
 			filter: blur(40px);
@@ -113,12 +116,20 @@
 	}
 
 	@keyframes Loading {
-		from { transform: rotate(0deg); }
-		to { transform: rotate(360deg); }
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
 	}
 
 	@keyframes SlideWave {
-		from { transform: translateX(0); }
-		to { transform: translateX(-50%); }
+		from {
+			transform: translateX(0);
+		}
+		to {
+			transform: translateX(-50%);
+		}
 	}
 </style>

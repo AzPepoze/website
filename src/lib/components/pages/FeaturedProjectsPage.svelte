@@ -2,7 +2,7 @@
 	import Page from "../Page.svelte";
 	import HeaderText from "$lib/components/HeaderText.svelte";
 	import ProjectSlider from "$lib/components/ProjectSlider.svelte";
-	import ProjectFooter from "$lib/components/ProjectFooter.svelte";
+	import ProjectDetails from "$lib/components/ProjectDetails.svelte";
 	import { featuredProjects } from "$lib/data/projects";
 	import { fly } from "svelte/transition";
 
@@ -20,13 +20,14 @@
 				),
 	);
 
+	const categories = [
+		{ id: "all", label: "All" },
+		{ id: "software", label: "Software" },
+		{ id: "game", label: "Games" },
+	];
+
 	$effect(() => {
-		selectedIndex =
-			categoryFilter === "all"
-				? 0
-				: categoryFilter === "software"
-					? 1
-					: 2;
+		selectedIndex = categories.findIndex((c) => c.id === categoryFilter);
 	});
 
 	function next() {
@@ -53,33 +54,17 @@
 
 	<div class="filter-controls" style="--i: {selectedIndex}">
 		<div class="thumb" aria-hidden="true"></div>
-		<button
-			class:active={categoryFilter === "all"}
-			onclick={() => {
-				categoryFilter = "all";
-				activeIndex = 0;
-			}}
-		>
-			All
-		</button>
-		<button
-			class:active={categoryFilter === "software"}
-			onclick={() => {
-				categoryFilter = "software";
-				activeIndex = 0;
-			}}
-		>
-			Software
-		</button>
-		<button
-			class:active={categoryFilter === "game"}
-			onclick={() => {
-				categoryFilter = "game";
-				activeIndex = 0;
-			}}
-		>
-			Games
-		</button>
+		{#each categories as cat}
+			<button
+				class:active={categoryFilter === cat.id}
+				onclick={() => {
+					categoryFilter = cat.id;
+					activeIndex = 0;
+				}}
+			>
+				{cat.label}
+			</button>
+		{/each}
 	</div>
 
 	<div class="ProjectStage">
@@ -112,47 +97,7 @@
 							</div>
 
 							<div class="right-side">
-								<div class="project-info">
-									<h2 class="title">{project.title}</h2>
-									<p class="tagline">{project.tagline}</p>
-
-									{#if project.description}
-										<p class="description">
-											{project.description}
-										</p>
-									{/if}
-
-									{#if project.features && project.features.length > 0}
-										<div class="features-list">
-											<h3>Key Features</h3>
-											<ul>
-												{#each project.features as feature}
-													<li>
-														<svg
-															width="18"
-															height="18"
-															viewBox="0 0 24 24"
-															fill="none"
-															stroke="currentColor"
-															stroke-width="3"
-														>
-															<polyline
-																points="20 6 9 17 4 12"
-															></polyline>
-														</svg>
-														<span>{feature}</span>
-													</li>
-												{/each}
-											</ul>
-										</div>
-									{/if}
-
-									<ProjectFooter
-										githubUrl={project.url}
-										demoUrl={project.demoUrl}
-										actions={project.actions}
-									/>
-								</div>
+								<ProjectDetails {project} />
 							</div>
 						</div>
 					{/key}
@@ -370,85 +315,6 @@
 		justify-content: center;
 	}
 
-	.project-info {
-		display: flex;
-		flex-direction: column;
-
-		.title {
-			font-family: "JetBrains Mono", monospace;
-			font-size: 2.2rem;
-			color: var(--text-color);
-			margin: 0;
-			line-height: 1.1;
-			background: linear-gradient(
-				135deg,
-				var(--project-title-start) 30%,
-				var(--project-title-end) 100%
-			);
-			background-clip: text;
-			-webkit-background-clip: text;
-			-webkit-text-fill-color: transparent;
-			font-weight: 800;
-		}
-
-		.tagline {
-			font-family: "Nunito", sans-serif;
-			font-size: 1rem;
-			color: var(--project-tagline-color);
-			margin: 0.5rem 0 1.2rem;
-			font-weight: 700;
-			letter-spacing: 4px;
-			text-transform: uppercase;
-			opacity: 1;
-		}
-
-		.description {
-			font-family: "Nunito", sans-serif;
-			font-size: 1.05rem;
-			color: var(--text-dim);
-			white-space: pre-wrap;
-			line-height: 1.6;
-			margin-bottom: 2rem;
-		}
-
-		.features-list {
-			margin-bottom: 2rem;
-
-			h3 {
-				font-family: "JetBrains Mono", monospace;
-				font-size: 0.8rem;
-				color: var(--text-color);
-				text-transform: uppercase;
-				letter-spacing: 2px;
-				margin-bottom: 0.8rem;
-				opacity: 0.5;
-			}
-
-			ul {
-				list-style: none;
-				padding: 0;
-				margin: 0;
-				display: grid;
-				grid-template-columns: 1fr;
-				gap: 0.6rem;
-
-				li {
-					display: flex;
-					align-items: center;
-					gap: 0.8rem;
-					font-family: "Nunito", sans-serif;
-					color: var(--text-color);
-					font-size: 0.9rem;
-
-					svg {
-						color: var(--accent-color);
-						flex-shrink: 0;
-					}
-				}
-			}
-		}
-	}
-
 	.navigation {
 		margin-top: 1rem;
 		display: flex;
@@ -560,37 +426,7 @@
 		.right-side {
 			flex: 1;
 			overflow-y: auto;
-			padding-bottom: 80px; /* Space for absolute navigation within project-view */
-			-webkit-overflow-scrolling: touch;
-			scrollbar-width: none;
-			&::-webkit-scrollbar {
-				display: none;
-			}
-		}
-
-		.project-info {
-			.title {
-				font-size: 1.8rem;
-			}
-
-			.tagline {
-				font-size: 0.9rem;
-				letter-spacing: 2px;
-			}
-
-			.description {
-				font-size: 0.9rem;
-				line-height: 1.5;
-				margin-bottom: 1rem;
-				white-space: pre-wrap;
-			}
-
-			.features-list {
-				margin-bottom: 1rem;
-				ul li {
-					font-size: 0.85rem;
-				}
-			}
+			transform: translateZ(0);
 		}
 
 		.navigation {

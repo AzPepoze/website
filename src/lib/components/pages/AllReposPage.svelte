@@ -16,8 +16,7 @@
 			if (res.ok) {
 				const data: Repo[] = await res.json();
 				repos = data.sort((a, b) => {
-					const starsDiff =
-						b.stargazers_count - a.stargazers_count;
+					const starsDiff = b.stargazers_count - a.stargazers_count;
 					if (starsDiff !== 0) return starsDiff;
 					return (
 						new Date(b.updated_at).getTime() -
@@ -64,9 +63,7 @@
 						>
 							<div class="card-content">
 								<div class="repo-top">
-									<span class="name"
-										>{repo.name}</span
-									>
+									<span class="name">{repo.name}</span>
 									<span class="stars">
 										<svg
 											width="12"
@@ -87,8 +84,7 @@
 								{/if}
 								<div class="footer">
 									{#if repo.language}
-										<span class="lang"
-											>{repo.language}</span
+										<span class="lang">{repo.language}</span
 										>
 									{/if}
 								</div>
@@ -128,6 +124,7 @@
 		display: flex;
 		justify-content: center;
 		-webkit-overflow-scrolling: touch;
+		transform: translateZ(0);
 	}
 
 	.repo-dense-grid {

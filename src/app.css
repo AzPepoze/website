@@ -3,7 +3,7 @@
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap");
 
 :root {
-	--bg-color: #050505;
+	--bg-color: #000000;
 	--bg-secondary: #05050542;
 	--sub-bg-color: #171717;
 	--text-color: #ffffff;
@@ -189,12 +189,13 @@ iframe.skiptranslate {
 }
 
 ::-webkit-scrollbar {
-	width: 6px;
+	width: 2px;
 	height: 6px;
+	scrollbar-width: thin;
 }
 
 ::-webkit-scrollbar-track {
-	background: var(--bg-color);
+	background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -234,7 +235,6 @@ html {
 
 body {
 	margin: 0px;
-	overflow-y: hidden;
 	font-family: "Nunito", "Noto Sans Thai", sans-serif;
 	letter-spacing: 0.5px;
 }
