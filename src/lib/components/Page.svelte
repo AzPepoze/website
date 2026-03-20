@@ -28,13 +28,13 @@
 		position: relative;
 		transition: opacity 0.5s ease-in-out;
 		background-color: transparent;
-		padding: 4rem 2rem 8rem; /* Space for Header and BottomNav */
+		padding: 4rem 2rem 5rem;
 	}
 
 	@media (max-width: 768px) {
 		.Page {
 			flex-direction: column;
-			padding: 2rem 1rem 6rem; /* Reduced paddings */
+			padding: 2rem 1rem 6rem;
 			justify-content: flex-start;
 		}
 	}

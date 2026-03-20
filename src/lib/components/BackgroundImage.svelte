@@ -47,19 +47,19 @@
 		style:transform={`translateY(${-parallax1}px) translate(${mouseX * 0.5}px, ${mouseY * 0.5}px)`}
 	></div>
 
-	<!-- Metro Canvas Projectiles (Disabled on Mobile for performance) -->
 	{#if !isMobile}
 		<MetroCanvas />
 	{/if}
 
-	<!-- Secondary Parallax Elements -->
-	<div
-		class="circles-layer"
-		style:transform={`translateY(${-parallax2}px) translate(${mouseX}px, ${mouseY}px)`}
-	>
-		<div class="circle c1"></div>
-		<div class="circle c2"></div>
-	</div>
+	{#if !isMobile}
+		<div
+			class="circles-layer"
+			style:transform={`translateY(${-parallax2}px) translate(${mouseX}px, ${mouseY}px)`}
+		>
+			<div class="circle c1"></div>
+			<div class="circle c2"></div>
+		</div>
+	{/if}
 
 	<div
 		class="noise-layer"

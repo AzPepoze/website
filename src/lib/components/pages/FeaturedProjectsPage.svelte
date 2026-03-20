@@ -149,7 +149,6 @@
 </Page>
 
 <style lang="scss">
-	/* Scoped Page override for this specific screen structure */
 	:global(.ProjectPage) {
 		display: flex !important;
 		flex-direction: column !important;
@@ -163,7 +162,7 @@
 		width: 100%;
 		display: flex;
 		justify-content: center;
-		padding: 0.5rem 0; /* Reduced from 1rem */
+		padding: 0.5rem 0;
 		z-index: 20;
 		pointer-events: none;
 		position: relative;
@@ -236,7 +235,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 0;
+		padding-block: 20px;
 		max-width: 1200px;
 		margin: 0 auto;
 		position: relative;
@@ -262,17 +261,14 @@
 
 	.project-view {
 		position: absolute;
-		top: 55%; /* Moved slightly down from 50% */
 		left: 0;
-		transform: translateY(-50%);
-		display: grid;
-		grid-template-columns: 1.15fr 0.85fr;
+		display: flex;
 		gap: 3rem;
 		width: 100%;
 		align-items: center;
+		height: 100%;
 	}
 
-	/* Theme-Consistent Descriptive Variables */
 	:root {
 		--project-card-bg: var(--sub-bg-color);
 		--project-card-border: rgba(255, 255, 255, 0.1);
@@ -298,8 +294,8 @@
 	}
 
 	.left-side {
-		width: 100%;
 		aspect-ratio: 16 / 9;
+		width: 100%;
 		height: auto;
 		border-radius: 32px;
 		background: var(--project-card-bg);
@@ -311,8 +307,9 @@
 	.right-side {
 		display: flex;
 		flex-direction: column;
-		height: 100%;
-		justify-content: center;
+		overflow-y: auto;
+		max-height: 100%;
+		min-width: 50%;
 	}
 
 	.navigation {
@@ -373,6 +370,7 @@
 			overflow: hidden !important;
 			display: flex !important;
 			flex-direction: column !important;
+			padding-bottom: 80px !important;
 		}
 
 		.Header {
@@ -387,7 +385,7 @@
 			flex: 1;
 			width: 100%;
 			padding: 0;
-			margin-bottom: 80px; /* Adjusted for BottomNav */
+			padding-top: 20px;
 			position: relative;
 			display: flex;
 			flex-direction: column;
@@ -411,7 +409,6 @@
 			flex-direction: column;
 			gap: 0.5rem;
 			transform: none;
-			padding-bottom: 60px; /* Space for dots */
 		}
 
 		.left-side {
@@ -425,16 +422,12 @@
 
 		.right-side {
 			flex: 1;
-			overflow-y: auto;
 			transform: translateZ(0);
+			padding-bottom: 2rem;
+			overflow-y: auto;
 		}
 
 		.navigation {
-			position: absolute;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			height: 60px;
 			display: flex;
 			align-items: center;
 			justify-content: center;
