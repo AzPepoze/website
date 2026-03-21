@@ -95,7 +95,7 @@ export const featuredProjects: Project[] = [
 		url: "https://github.com/AzPepoze/gdrive-bisync",
 		category: "software",
 		type: "icon",
-		src: "☁️",
+		src: "",
 		images: []
 	},
 	{
@@ -129,7 +129,7 @@ export const featuredProjects: Project[] = [
 		url: "https://github.com/AzPepoze/StyleShift",
 		category: "software",
 		type: "icon",
-		src: "🎨",
+		src: "",
 		images: []
 	},
 	{
@@ -145,7 +145,7 @@ export const featuredProjects: Project[] = [
 		url: "https://github.com/AzPepoze/browser-as-wallpaper",
 		category: "software",
 		type: "icon",
-		src: "🌐",
+		src: "",
 		images: []
 	},
 	{
@@ -161,7 +161,7 @@ export const featuredProjects: Project[] = [
 		url: "https://github.com/AzPepoze/waifu-randomizer",
 		category: "software",
 		type: "icon",
-		src: "🎲",
+		src: "",
 		actions: [
 			{ label: "Website", url: "https://waifu-randomizer.azpepoze.com/" },
 		],
@@ -220,7 +220,7 @@ export const featuredProjects: Project[] = [
 		demoUrl: "https://azpepoze.itch.io/tani",
 		actions: [{ label: "Itch.io", url: "https://azpepoze.itch.io/tani" }],
 		type: "icon",
-		src: "👻",
+		src: "",
 		images: []
 	}
 	,
@@ -234,7 +234,7 @@ export const featuredProjects: Project[] = [
 		demoUrl: "https://www.roblox.com/id/games/14913055408/Perthro",
 		actions: [{ label: "Play on Roblox", url: "https://www.roblox.com/id/games/14913055408/Perthro" }],
 		type: "icon",
-		src: "🎮",
+		src: "",
 		images: []
 	}
 ];

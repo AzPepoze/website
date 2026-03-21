@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { fade } from "svelte/transition";
+	import NoImage from "./NoImage.svelte";
 
 	let {
 		images = [],
@@ -36,7 +37,9 @@
 							allowfullscreen
 						></iframe>
 					{:else if type === "icon"}
-						<div class="icon-display">{images[currentIndex]}</div>
+						<div class="icon-display">
+							<NoImage />
+						</div>
 					{:else}
 						<img src={images[currentIndex]} alt="{title} screenshot {currentIndex + 1}" />
 					{/if}
