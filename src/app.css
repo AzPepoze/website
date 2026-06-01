@@ -116,20 +116,6 @@
 	}
 }
 
-@keyframes SlideWave {
-	from {
-		background-position-x: 0px;
-	}
-
-	to {
-		background-position-x: 1000px;
-	}
-}
-
-.wave {
-	background-image: url(/img/wave.png);
-	background-size: 1000px 100%;
-}
 
 @keyframes Typing {
 	0% {
@@ -301,7 +287,6 @@ body {
 
 	.RightFrame {
 		border-left: none;
-		border-top: 1px solid var(--accent-color);
 	}
 }
 

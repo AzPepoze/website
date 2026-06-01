@@ -37,7 +37,7 @@
 						<div class="card-content">
 							<div class="icon-wrapper">
 								<img
-									src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/09/YouTube_full-color_icon_%282017%29.svg/2560px-YouTube_full-color_icon_%282017%29.svg.png"
+									src="/icons/youtube.svg"
 									alt="Youtube"
 								/>
 							</div>
@@ -69,7 +69,7 @@
 						<div class="card-content">
 							<div class="icon-wrapper">
 								<img
-									src="https://is5-ssl.mzstatic.com/image/thumb/Purple116/v4/65/cc/d2/65ccd259-6ed6-4e34-20f0-d83018f6663a/AppIcon-0-1x_U007emarketing-0-7-0-85-220.png/512x512bb.jpg"
+									src="/icons/pixiv.jpg"
 									alt="Pixiv"
 								/>
 							</div>
@@ -101,7 +101,7 @@
 						<div class="card-content">
 							<div class="icon-wrapper">
 								<img
-									src="https://img.freepik.com/premium-vector/tik-tok-logo_578229-290.jpg"
+									src="/icons/tiktok.jpg"
 									alt="Tiktok"
 								/>
 							</div>
@@ -133,7 +133,7 @@
 						<div class="card-content">
 							<div class="icon-wrapper">
 								<img
-									src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+									src="/icons/github.png"
 									alt="GitHub"
 								/>
 							</div>

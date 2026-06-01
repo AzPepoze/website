@@ -5,10 +5,12 @@
 		text,
 		className = "",
 		typing = false,
+		nowrap = false,
 	} = $props<{
 		text: string;
 		className?: string;
 		typing?: boolean;
+		nowrap?: boolean;
 	}>();
 
 	let lines = $derived(text.split("\n"));
@@ -20,18 +22,38 @@
 		}
 		return index + charIdx;
 	}
+
+	function getWords(line: string) {
+		let words = [];
+		let currentWord = [];
+		for (let i = 0; i < line.length; i++) {
+			if (line[i] === " ") {
+				if (currentWord.length > 0) words.push(currentWord);
+				words.push([{ char: " ", index: i }]);
+				currentWord = [];
+			} else {
+				currentWord.push({ char: line[i], index: i });
+			}
+		}
+		if (currentWord.length > 0) words.push(currentWord);
+		return words;
+	}
 </script>
 
 <div class="header-text-container {className}" class:light={$theme === "light"}>
 	<div class="header-text">
 		{#each lines as line, lineIdx}
-			<div class="line">
-				{#each line.split("") as char, charIdx}
-					<span
-						class="char"
-						style:--index={getGlobalIndex(lineIdx, charIdx)}
-						>{char === " " ? "\u00A0" : char}</span
-					>
+			<div class="line" class:nowrap={nowrap}>
+				{#each getWords(line) as word}
+					<span class="word">
+						{#each word as { char, index }}
+							<span
+								class="char"
+								style:--index={getGlobalIndex(lineIdx, index)}
+								>{char === " " ? "\u00A0" : char}</span
+							>
+						{/each}
+					</span>
 				{/each}
 				{#if typing && lineIdx === lines.length - 1}
 					<span class="cursor"></span>
@@ -62,6 +84,16 @@
 		display: flex;
 		flex-wrap: wrap;
 		width: auto;
+		
+		&.nowrap {
+			flex-wrap: nowrap;
+			white-space: nowrap;
+		}
+	}
+
+	.word {
+		display: flex;
+		flex-wrap: nowrap;
 	}
 
 	.char {

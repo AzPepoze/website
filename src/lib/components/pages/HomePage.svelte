@@ -14,16 +14,29 @@
 
 <Page index={0}>
 	<h1 class="sr-only">AzPepoze - My Portfolio & Showcase</h1>
+
+	<div
+		class="center-logo-wrapper"
+		in:scrollTransition={{ y: -50, duration: 1000, delay: 300, blur: 5 }}
+		out:scrollTransition={{ y: 50, duration: 500, blur: 5 }}
+	>
+		<div class="logo-container">
+			<img src="/img/logo.png" alt="AzPepoze Logo" class="main-logo" />
+		</div>
+	</div>
+
 	<div
 		class="LeftFrame"
 		in:scrollTransition={{ y: 100, duration: 1000, delay: 200, blur: 5 }}
 		out:scrollTransition={{ y: -100, duration: 500, blur: 5 }}
 	>
 		<TiltCard className="tilt-card-container" bg={false}>
+
 			<HeaderText
 				text="HELLO!"
 				className="MainText StrokeText glitch-header"
 				typing={true}
+				nowrap={true}
 			/>
 			<div class="SubText">Welcome to my digital space.</div>
 
@@ -140,7 +153,58 @@
 		}
 	}
 
+	.center-logo-wrapper {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 10;
+		pointer-events: none;
+	}
+
+	.logo-container {
+		width: 150px;
+		height: 150px;
+		filter: drop-shadow(0 10px 20px var(--accent-color));
+		animation: FloatingLogo 5s ease-in-out infinite;
+		will-change: transform;
+		pointer-events: auto;
+	}
+
+	.main-logo {
+		width: 100%;
+		height: 100%;
+		object-fit: contain;
+		transition: filter 0.3s;
+		filter: var(--theme-icon-filter);
+	}
+
+	@keyframes FloatingLogo {
+		0%, 100% {
+			transform: translateY(0);
+		}
+		50% {
+			transform: translateY(-12px);
+		}
+	}
+
 	@media (max-width: 1024px) {
+		.center-logo-wrapper {
+			position: relative;
+			top: auto;
+			left: auto;
+			transform: none;
+			margin: 2rem auto;
+			display: flex;
+			justify-content: center;
+			order: -1;
+		}
+		
+		.logo-container {
+			width: 100px;
+			height: 100px;
+		}
+
 		.theme-toggle-container {
 			justify-content: center;
 			margin-top: 1rem;

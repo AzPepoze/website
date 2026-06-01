@@ -5,29 +5,35 @@
 	let isLoaded = $state(false);
 
 	onMount(() => {
-		// Start exit animation after a short delay or when everything is ready
+		// Faster loading delay to feel snappier
 		setTimeout(() => {
 			isLoaded = true;
 			setTimeout(() => {
 				if (loadscreen) loadscreen.remove();
-			}, 2000);
+			}, 1000);
 		}, 1000);
 	});
 </script>
 
 <div bind:this={loadscreen} id="loadscreen" class:exit={isLoaded}>
 	<div class="content">
-		<img
-			id="loadicon"
-			src="/img/loading.png"
-			alt="Loading Icon"
-			class:blur-out={isLoaded}
-		/>
-	</div>
-
-	<div class="waves-container" class:blur-out={isLoaded}>
-		<div class="wave w1"></div>
-		<div class="wave w2"></div>
+		<div class="fast-loader" class:fade-out={isLoaded}>
+			<svg viewBox="0 0 100 100" class="shape s1">
+				<circle cx="50" cy="50" r="35" stroke="currentColor" stroke-width="8" fill="none" />
+			</svg>
+			<svg viewBox="0 0 100 100" class="shape s2">
+				<polygon points="50,18 80,72 20,72" stroke="currentColor" stroke-width="8" fill="none" stroke-linejoin="round" />
+			</svg>
+			<svg viewBox="0 0 100 100" class="shape s3">
+				<rect x="25" y="25" width="50" height="50" stroke="currentColor" stroke-width="8" fill="none" rx="8" />
+			</svg>
+			<svg viewBox="0 0 100 100" class="shape s4">
+				<polygon points="50,15 80,33 80,67 50,85 20,67 20,33" stroke="currentColor" stroke-width="8" fill="none" stroke-linejoin="round" />
+			</svg>
+			<svg viewBox="0 0 100 100" class="shape s5">
+				<path d="M50,20 L50,80 M20,50 L80,50" stroke="currentColor" stroke-width="8" stroke-linecap="round" />
+			</svg>
+		</div>
 	</div>
 </div>
 
@@ -43,14 +49,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		transition:
-			opacity 1.5s ease-in-out,
-			background-color 0.5s ease;
-		overflow: hidden;
-
-		#loadicon {
-			filter: var(--theme-icon-filter);
-		}
+		transition: opacity 1s ease-in-out;
+		will-change: opacity;
 
 		&.exit {
 			opacity: 0;
@@ -63,73 +63,64 @@
 		z-index: 2;
 	}
 
-	#loadicon {
-		width: 80px;
-		height: 80px;
-		animation: Loading 1.5s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
-		transition:
-			filter 1.5s ease-in-out,
-			opacity 1s ease;
+	.fast-loader {
+		position: relative;
+		width: 10vmax;
+		height: 10vmax;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		transition: opacity 0.5s ease;
+		animation: LoaderRotate 4s linear infinite;
 
-		&.blur-out {
-			filter: blur(40px);
+		&.fade-out {
+			opacity: 0;
+		}
+
+		.shape {
+			position: absolute;
+			width: 6vmax;
+			height: 6vmax;
+			color: var(--text-color);
+			opacity: 0;
+			animation: CycleFade 2.5s infinite;
+			will-change: opacity;
+			/* Centers the SVG explicitly */
+			top: 50%;
+			left: 50%;
+			margin-top: -3vmax;
+			margin-left: -3vmax;
+		}
+
+		.s1 { animation-delay: 0s; }
+		.s2 { animation-delay: 0.5s; }
+		.s3 { animation-delay: 1s; }
+		.s4 { animation-delay: 1.5s; }
+		.s5 { animation-delay: 2s; }
+	}
+
+	/* 
+		Hardware-accelerated zero-lag animation. 
+		2.5s total. 20% = 0.5s per slot.
+	*/
+	@keyframes CycleFade {
+		0% {
+			opacity: 0;
+		}
+		8%, 12% {
+			opacity: 1;
+		}
+		20%, 100% {
 			opacity: 0;
 		}
 	}
 
-	.waves-container {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: 100%;
-		height: 15%;
-		overflow: hidden;
-		transition:
-			filter 1.5s ease-in-out,
-			opacity 1s ease;
-
-		&.blur-out {
-			filter: blur(40px);
-			opacity: 0;
-		}
-	}
-
-	.wave {
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		width: 200%;
-		height: 100%;
-		background-image: url("/img/wave.png");
-		background-size: 50% 100%;
-		background-repeat: repeat-x;
-		opacity: 0.3;
-
-		&.w1 {
-			animation: SlideWave 3s linear infinite;
-		}
-		&.w2 {
-			animation: SlideWave 2s linear infinite reverse;
-			opacity: 0.15;
-			bottom: 5px;
-		}
-	}
-
-	@keyframes Loading {
+	@keyframes LoaderRotate {
 		from {
 			transform: rotate(0deg);
 		}
 		to {
 			transform: rotate(360deg);
-		}
-	}
-
-	@keyframes SlideWave {
-		from {
-			transform: translateX(0);
-		}
-		to {
-			transform: translateX(-50%);
 		}
 	}
 </style>

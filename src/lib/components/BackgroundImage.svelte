@@ -41,11 +41,7 @@
 </script>
 
 <div class="background-container">
-	<!-- Animated Grid Layer -->
-	<div
-		class="grid-layer"
-		style:transform={`translateY(${-parallax1}px) translate(${mouseX * 0.5}px, ${mouseY * 0.5}px)`}
-	></div>
+
 
 	{#if !isMobile}
 		<MetroCanvas />
@@ -78,27 +74,6 @@
 		transition: background-color 0.5s ease;
 		overflow: hidden;
 
-		.grid-layer {
-			position: absolute;
-			top: -50%;
-			left: -50%;
-			width: 200%;
-			height: 200%;
-			background-image: linear-gradient(
-					to right,
-					var(--grid-color) 2px,
-					transparent 2px
-				),
-				linear-gradient(
-					to bottom,
-					var(--grid-color) 2px,
-					transparent 2px
-				);
-			background-size: 100px 100px;
-			pointer-events: none;
-			animation: GridMove 40s linear infinite;
-			opacity: 0.8;
-		}
 
 		.circles-layer {
 			position: absolute;
@@ -134,14 +109,7 @@
 		}
 	}
 
-	@keyframes GridMove {
-		0% {
-			transform: perspective(1000px) rotateX(10deg) translateY(0);
-		}
-		100% {
-			transform: perspective(1000px) rotateX(10deg) translateY(80px);
-		}
-	}
+
 
 	@keyframes Float {
 		0%,
