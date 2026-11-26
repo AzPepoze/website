@@ -44,8 +44,9 @@
     --line: #2a2a2a;
     --dot: rgba(255, 255, 255, 0.07);
     --glow: rgba(255, 255, 255, 0.08);
-    --display: "Fredoka", system-ui, sans-serif;
-    --body: "M PLUS Rounded 1c", system-ui, sans-serif;
+    --noto: "Noto Sans", "Noto Sans Thai", "Noto Sans JP", "Noto Sans SC", "Noto Sans KR";
+    --display: "Fredoka", var(--noto), system-ui, sans-serif;
+    --body: "M PLUS Rounded 1c", var(--noto), system-ui, sans-serif;
     --mono: "JetBrains Mono", ui-monospace, monospace;
     --dock-h: 56px;
   }
