@@ -1,0 +1,149 @@
+<script>
+  import StarField from "./components/StarField.lusia";
+  import LoadScreen from "./components/LoadScreen.lusia";
+  import BottomNav from "./components/BottomNav.lusia";
+  import ThemeToggle from "./components/ThemeToggle.lusia";
+  import LangSelect from "./components/LangSelect.lusia";
+  import Home from "./sections/Home.lusia";
+  import About from "./sections/About.lusia";
+  import Featured from "./sections/Featured.lusia";
+  import Projects from "./sections/Projects.lusia";
+  import Socials from "./sections/Socials.lusia";
+  import Contact from "./sections/Contact.lusia";
+  import { onAttach } from "lusiajs";
+  import { startPageSnap } from "./page-snap.ts";
+
+  onAttach(() => startPageSnap());
+</script>
+
+<StarField />
+<LoadScreen />
+
+<main>
+  <Home />
+  <About />
+  <Featured />
+  <Projects />
+  <Socials />
+  <Contact />
+</main>
+
+<div class="notranslate" translate="no">
+  <BottomNav />
+  <ThemeToggle />
+  <LangSelect />
+</div>
+
+<style global>
+  :root {
+    color-scheme: dark;
+    --bg: #000000;
+    --fg: #ffffff;
+    --muted: #9a9a9a;
+    --surface: #111111;
+    --line: #2a2a2a;
+    --dot: rgba(255, 255, 255, 0.07);
+    --glow: rgba(255, 255, 255, 0.08);
+    --display: "Fredoka", system-ui, sans-serif;
+    --body: "M PLUS Rounded 1c", system-ui, sans-serif;
+    --mono: "JetBrains Mono", ui-monospace, monospace;
+    --dock-h: 56px;
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --bg: #ffffff;
+    --fg: #0a0a0a;
+    --muted: #6b6b6b;
+    --surface: #f2f2f2;
+    --line: #d6d6d6;
+    --dot: rgba(10, 10, 10, 0.08);
+    --glow: rgba(10, 10, 10, 0.06);
+  }
+
+  ::selection {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  main > section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100svh;
+    min-height: 0;
+    box-sizing: border-box;
+    padding-top: 48px;
+    padding-bottom: calc(var(--dock-h) + 48px);
+    overflow: hidden;
+  }
+
+  main > section > .wrap {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 0;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  main {
+    position: relative;
+    z-index: 1;
+    overflow-x: clip;
+    padding-bottom: calc(var(--dock-h) + 40px);
+  }
+
+  h1,
+  h2,
+  h3 {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 600;
+  }
+
+  .section {
+    position: relative;
+    box-sizing: border-box;
+    padding: 128px 24px;
+  }
+
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .label {
+    margin: 0;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .screentone {
+    background-image: radial-gradient(var(--dot) 1.2px, transparent 1.6px);
+    background-size: 8px 8px;
+  }
+
+
+
+  @include screen(PHONE) {
+    .section {
+      padding: 96px 24px;
+    }
+  }
+</style>

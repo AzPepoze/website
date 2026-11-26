@@ -1,0 +1,70 @@
+<script>
+  import { ON, onAttach } from "lusiajs";
+  import { LOAD_MS, loaded } from "../loading.ts";
+  import { motion } from "../motion.ts";
+  import { MORPH_FIRST, MORPH_KEY_TIMES, MORPH_SPLINES, MORPH_VALUES } from "../loader-shapes.ts";
+
+  const fadeOut = {
+    0: { opacity: 1 },
+    1: { opacity: 0 },
+  };
+
+  onAttach(() => {
+    const timer = setTimeout(() => (loaded.value = true), LOAD_MS);
+    return () => clearTimeout(timer);
+  });
+</script>
+
+<IF {!loaded.value}>
+  <div class="load-screen" aria-hidden="true" animate={motion({ play: fadeOut, on: ON.DETACH, duration: 600 })}>
+    <div class="loader">
+      <svg viewBox="0 0 100 100" class="morph">
+        <path class="main" d={MORPH_FIRST}>
+          <animate attributeName="d" dur="2.4s" repeatCount="indefinite" calcMode="spline" values={MORPH_VALUES} keyTimes={MORPH_KEY_TIMES} keySplines={MORPH_SPLINES} />
+        </path>
+      </svg>
+    </div>
+  </div>
+</IF>
+
+<style>
+  .load-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+  }
+
+  .loader {
+    width: min(22vmin, 160px);
+    aspect-ratio: 1;
+    animation: loader-spin 2.4s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  }
+
+  .morph {
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+
+  .morph path {
+    fill: none;
+    stroke: var(--fg);
+    stroke-width: 3;
+    stroke-linejoin: round;
+  }
+
+
+  @keyframes loader-spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .loader {
+      animation: none;
+    }
+  }
+</style>

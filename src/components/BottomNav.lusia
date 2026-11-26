@@ -1,0 +1,163 @@
+<script>
+  import { listen, onAttach, variable } from "lusiajs";
+  import { motion, reduced } from "../motion.ts";
+
+  const SECTIONS = [
+    { id: "home", label: "Home" },
+    { id: "about", label: "About" },
+    { id: "featured", label: "Featured" },
+    { id: "projects", label: "Projects" },
+    { id: "socials", label: "Socials" },
+    { id: "contact", label: "Contact" },
+  ];
+
+  const active = variable("home");
+  const pillReady = variable(false);
+  const pillTarget = variable<HTMLElement | null>(null);
+
+  function placePill() {
+    pillTarget.value = document.getElementById(`dock-${active.value}`);
+  }
+
+  function setActive(id: string) {
+    active.value = id;
+    placePill();
+  }
+
+  let lockedId: string | null = null;
+  let unlockTimer = 0;
+
+  function unlock() {
+    lockedId = null;
+  }
+
+  function go(event: MouseEvent, id: string) {
+    event.preventDefault();
+    lockedId = id;
+    setActive(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: reduced ? "auto" : "smooth" });
+  }
+
+  onAttach(() => {
+    const update = () => {
+      if (lockedId) {
+        const top = document.getElementById(lockedId)?.getBoundingClientRect().top ?? 0;
+        clearTimeout(unlockTimer);
+        if (Math.abs(top) < 4) unlock();
+        else unlockTimer = window.setTimeout(unlock, 200);
+        if (lockedId) return;
+      }
+      const line = window.innerHeight * 0.4;
+      let current = SECTIONS[0].id;
+      for (const section of SECTIONS) {
+        const top = document.getElementById(section.id)?.getBoundingClientRect().top;
+        if (top !== undefined && top <= line) current = section.id;
+      }
+      setActive(current);
+    };
+    update();
+    window.setTimeout(() => (pillReady.value = true), 350);
+    listen(window, "scroll", update);
+    listen(window, "resize", () => {
+      update();
+      placePill();
+    });
+    document.fonts?.ready.then(placePill);
+  });
+</script>
+
+<nav class="dock" aria-label="Sections">
+  <span class={pillReady.value ? "pill ready" : "pill"} aria-hidden="true" animate={motion({ glide: pillTarget, duration: 300 })}></span>
+  <EACH {SECTIONS} as={item} key={item.id}>
+    <a
+      id="dock-{item.id}"
+      class={active.value === item.id ? "dock-link on" : "dock-link"}
+      href="#{item.id}"
+      onclick={(event) => go(event, item.id)}
+    >{item.label}</a>
+  </EACH>
+</nav>
+
+<style>
+  .dock {
+    position: fixed;
+    left: 50%;
+    bottom: 16px;
+    transform: translateX(-50%);
+    z-index: 100;
+    display: flex;
+    gap: 4px;
+    box-sizing: border-box;
+    height: var(--dock-h);
+    max-width: calc(100vw - 32px);
+    padding: 8px;
+    border: 1.5px solid color-mix(in srgb, var(--line) 70%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 55%, transparent);
+    -webkit-backdrop-filter: blur(16px) saturate(1.4);
+    backdrop-filter: blur(16px) saturate(1.4);
+  }
+
+  .pill {
+    opacity: 0;
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: 0;
+    width: 0;
+    border-radius: 999px;
+    background: var(--fg);
+    pointer-events: none;
+  }
+
+  .pill.ready {
+    opacity: 1;
+  }
+
+  .dock-link {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    transition: color 300ms ease;
+    align-items: center;
+    padding: 0 16px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--fg);
+    font: 600 12px/1 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .dock-link:hover {
+    color: var(--muted);
+  }
+
+  .dock-link.on,
+  .dock-link.on:hover {
+    color: var(--bg);
+  }
+
+  @include screen(PHONE) {
+    .dock {
+      left: 16px;
+      transform: none;
+      gap: 0;
+      width: calc(100vw - 96px);
+      max-width: none;
+      padding: 8px 4px;
+    }
+
+    .dock-link {
+      flex: 1 1 0;
+      justify-content: center;
+      padding: 0 2px;
+      font-size: 8px;
+      letter-spacing: 0;
+    }
+  }
+</style>

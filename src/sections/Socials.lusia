@@ -1,0 +1,70 @@
+<script>
+  import SectionHead from "../components/SectionHead.lusia";
+  import SocialCard from "../components/SocialCard.lusia";
+  import { fromLeft, motion } from "../motion.ts";
+
+  const socials = [
+    { name: "YouTube", handle: "AzPepoze", url: "https://www.youtube.com/channel/UCJ2C0UTfxQo6iGTfudPfoRQ", icon: "/icons/youtube.svg", accent: "#ff0000" },
+    { name: "Pixiv", handle: "AzPepoze", url: "https://www.pixiv.net/en/users/44970537", icon: "/icons/pixiv.jpg", accent: "#0096fa", tagline: "" },
+    { name: "TikTok", handle: "@azpepoze_1", url: "https://www.tiktok.com/@azpepoze_1", icon: "/icons/tiktok.jpg", accent: "#fe2c55", tagline: "" },
+    { name: "GitHub", handle: "AzPepoze", url: "https://github.com/AzPepoze", icon: "/icons/github.png", accent: "var(--fg)", tagline: "47 open-source repos" },
+  ].map((social, index) => ({ ...social, index }));
+</script>
+
+<section id="socials" class="section">
+  <div class="wrap">
+    <div class="split">
+      <div class="intro">
+        <SectionHead title="Socials" />
+        <p class="lead" animate={motion(fromLeft)}>Find me on these platforms</p>
+      </div>
+
+      <div class="cards">
+        <EACH {socials} as={social} key={social.name}>
+          <SocialCard name={social.name} handle={social.handle} url={social.url} icon={social.icon} tagline={social.tagline} accent={social.accent} index={social.index} />
+        </EACH>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+      align-items: center;
+      gap: clamp(32px, 5vw, 80px);
+    }
+
+    .intro {
+      min-width: 0;
+    }
+
+    .lead {
+      margin: 0;
+      font-size: clamp(18px, 2vw, 22px);
+      line-height: 1.5;
+      color: var(--muted);
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    @include screen(TABLET) {
+      .split {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+      }
+    }
+
+    @include screen(PHONE) {
+      .split {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 28px;
+      }
+    }
+  </style>

@@ -1,0 +1,13 @@
+<div class="panel">
+  <CONTENT />
+</div>
+
+<style>
+  .panel {
+    padding: 24px 28px;
+    border: 1.5px solid var(--line);
+    border-radius: 24px;
+    background: var(--surface);
+    color: var(--fg);
+  }
+</style>

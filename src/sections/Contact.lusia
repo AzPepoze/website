@@ -1,0 +1,62 @@
+<script>
+  import SectionHead from "../components/SectionHead.lusia";
+  import CopyCard from "../components/CopyCard.lusia";
+  import { fromLeft, motion } from "../motion.ts";
+</script>
+
+<section id="contact" class="section">
+  <div class="wrap">
+    <div class="split">
+      <div class="intro">
+        <SectionHead title="Contact" />
+        <p class="lead" animate={motion(fromLeft)}>Say hi — commissions, collabs, or anything.</p>
+      </div>
+
+      <div class="cards">
+        <CopyCard label="Discord" text="azpepoze01" icon="/icons/discord.svg" tint="#5865f2" srLabel="Copy Discord username azpepoze01" index={0} />
+        <CopyCard label="Email" text="azpepoze@gmail.com" icon="/icons/mail.svg" tint="#ea4335" srLabel="Copy email address azpepoze@gmail.com" index={1} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+  }
+
+  .intro {
+    min-width: 0;
+  }
+
+  .lead {
+    margin: 0;
+    font-size: clamp(18px, 2vw, 22px);
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .cards {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+  }
+
+  @include screen(TABLET) {
+    .split {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+  }
+
+  @include screen(PHONE) {
+    .split {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+  }
+</style>

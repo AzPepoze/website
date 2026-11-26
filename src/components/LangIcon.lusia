@@ -1,0 +1,41 @@
+<script>
+  import { props } from "lusiajs";
+
+  const { lang, size } = props(class {
+    lang = null as string | null;
+    size = 16;
+  });
+
+  const ICONS = new Map<string, [file: string, color: string]>([
+    ["TypeScript", ["typescript", "#3178c6"]],
+    ["JavaScript", ["javascript", "#f1e05a"]],
+    ["Go", ["go", "#00add8"]],
+    ["C++", ["cpp", "#f34b7d"]],
+    ["C#", ["csharp", "#a074c4"]],
+    ["Python", ["python", "#3572a5"]],
+    ["Shell", ["shell", "#89e051"]],
+    ["Svelte", ["svelte", "#ff3e00"]],
+    ["GDScript", ["gdscript", "#478cbf"]],
+    ["Lua", ["lua", "#5c7cfa"]],
+    ["PowerShell", ["powershell", "#5391fe"]],
+    ["AutoHotkey", ["autohotkey", "#6594b9"]],
+    ["QML", ["qml", "#44a51c"]],
+  ]);
+
+  function iconStyle(name: string | null, px: number): string {
+    const [file, color] = (name !== null && ICONS.get(name)) || ["code", "currentColor"];
+    return `--icon: url(/icons/lang/${file}.svg); --tint: ${color}; width: ${px}px; height: ${px}px`;
+  }
+</script>
+
+<span class="lang-icon" aria-hidden="true" style={iconStyle(lang, size)}></span>
+
+<style>
+  .lang-icon {
+    display: inline-block;
+    flex-shrink: 0;
+    background: var(--tint, currentColor);
+    mask: var(--icon) center / contain no-repeat;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+  }
+</style>

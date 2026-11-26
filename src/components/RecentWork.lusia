@@ -1,0 +1,228 @@
+<script>
+  import { EASE, ON, onAttach, variable, type Keyframes } from "lusiajs";
+  import LangIcon from "./LangIcon.lusia";
+  import { glowOn, listItem, motion } from "../motion.ts";
+
+  type Repo = {
+    name: string;
+    html_url: string;
+    description: string | null;
+    language: string | null;
+    fork?: boolean;
+    pushed_at?: string;
+    updated_at: string;
+  };
+  type Card = { name: string; html_url: string; description: string | null; language: string | null; ago: string };
+
+  const LIVE_URL = "https://api.github.com/users/AzPepoze/repos?per_page=100&sort=pushed";
+  const SNAPSHOT_URL = "/repos.json";
+  const SKIPPED = new Set(["AzPepoze", "website"]);
+  const COUNT = 3;
+  const MINUTE = 60_000;
+  const HOUR = 60 * MINUTE;
+  const DAY = 24 * HOUR;
+  const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
+    ["year", 365 * DAY],
+    ["month", 30 * DAY],
+    ["week", 7 * DAY],
+    ["day", DAY],
+    ["hour", HOUR],
+    ["minute", MINUTE],
+  ];
+  const formatter = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
+
+  const cards = variable<Card[]>([]);
+
+  const spin: Keyframes = {
+    0: { rotate: "0deg" },
+    1: [EASE.STYLE.QUAD, EASE.OUT, { rotate: "360deg" }],
+  };
+  const iconSpin = motion({ play: spin, on: ON.HOVER, duration: 500 });
+
+  function relative(iso: string): string {
+    const diff = Date.parse(iso) - Date.now();
+    const [unit, size] = UNITS.find(([, ms]) => Math.abs(diff) >= ms) ?? UNITS[UNITS.length - 1];
+    return `updated ${formatter.format(Math.round(diff / size), unit)}`;
+  }
+
+  function activity(repo: Repo): number {
+    return Date.parse(repo.pushed_at ?? repo.updated_at);
+  }
+
+  function toCard(repo: Repo): Card {
+    const { name, html_url, description, language } = repo;
+    return { name, html_url, description, language, ago: relative(repo.pushed_at ?? repo.updated_at) };
+  }
+
+  function recent(repos: Repo[]): Card[] {
+    return repos
+      .filter((repo) => repo.fork !== true && !SKIPPED.has(repo.name))
+      .sort((a, b) => activity(b) - activity(a))
+      .slice(0, COUNT)
+      .map(toCard);
+  }
+
+  function fetchRepos(url: string): Promise<Repo[]> {
+    return fetch(url).then((res) => {
+      if (!res.ok) throw new Error(`${url} responded ${res.status}`);
+      return res.json() as Promise<Repo[]>;
+    });
+  }
+
+  onAttach((root) => {
+    fetchRepos(LIVE_URL)
+      .catch(() => fetchRepos(SNAPSHOT_URL))
+      .then((repos) => (cards.value = recent(repos)))
+      .catch(() => (cards.value = []));
+    return glowOn(root, ".card");
+  });
+</script>
+
+<div class="recent">
+  <p class="label">Currently working on</p>
+  <ul class="cards">
+    <EACH {cards} as={repo} key={repo.name}>
+      <li class="item" animate={motion(listItem("left", cards.value.indexOf(repo)))}>
+        <a class="card" href={repo.html_url} target="_blank" rel="noopener">
+          <span class="name">{repo.name}</span>
+          <span class="desc">{repo.description ?? ""}</span>
+          <span class="meta label">
+            <span class="icon" animate={iconSpin}><LangIcon lang={repo.language} size={12} /></span>
+            {repo.language ?? "N/A"} · {repo.ago}
+          </span>
+          <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
+        </a>
+      </li>
+    </EACH>
+  </ul>
+</div>
+
+<style>
+  .recent {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .item {
+    display: flex;
+    min-width: 0;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+    padding: 12px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0;
+    background: radial-gradient(160px circle at var(--x, 50%) var(--y, 50%), color-mix(in srgb, var(--fg) 14%, transparent), transparent 70%);
+  }
+
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  .card:hover {
+    border-color: color-mix(in srgb, var(--fg) 40%, transparent);
+  }
+
+  .icon {
+    display: inline-flex;
+  }
+
+  .arrow {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+
+  .card:hover .arrow {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .name {
+    padding-right: 20px;
+    font-family: var(--display);
+    font-size: 1.05rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+    font-size: 11px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card,
+    .card::before,
+    .arrow {
+      transition: opacity 200ms ease, transform 200ms ease, border-color 200ms ease;
+    }
+  }
+
+  @include screen(PHONE) {
+    .cards {
+      grid-auto-flow: column;
+      grid-auto-columns: 78%;
+      grid-template-columns: none;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+
+    .item {
+      scroll-snap-align: start;
+    }
+  }
+</style>

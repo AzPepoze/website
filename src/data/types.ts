@@ -21,4 +21,5 @@ export interface Repo {
 	description: string | null;
 	language: string | null;
 	updated_at: string;
+	logo?: string | null;
 }

@@ -1,0 +1,209 @@
+<script>
+  import { ON, PRESET, SCREEN, listen, onAttach, type Keyframes } from "lusiajs";
+  import { loaded } from "../loading.ts";
+  import { letterBounce, fromLeft, fromRight, leave, motion } from "../motion.ts";
+
+  const reduced = SCREEN.REDUCED_MOTION.value;
+  const nudge: Keyframes = {
+    0: { translate: "0px 0px" },
+    1: { translate: "4px 4px" },
+  };
+  const letters = [..."AzPepoze"].map((ch, index) => ({
+    ch,
+    enter: motion({ play: PRESET.SLIDE_UP, on: ON.ATTACH, options: { animateSpace: true }, duration: 600, delay: 80 + index * 70 }),
+    hover: motion(letterBounce(index)),
+  }));
+
+  onAttach((root) => {
+    if (reduced || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+
+    const visual = root.querySelector(".hero-visual") as HTMLElement;
+    const title = root.querySelector(".title-big") as HTMLElement;
+    let targetX = 0;
+    let targetY = 0;
+    let x = 0;
+    let y = 0;
+    let frameId = 0;
+
+    function frame() {
+      x += (targetX - x) * 0.08;
+      y += (targetY - y) * 0.08;
+      const logo = root.querySelector<HTMLElement>(".logo");
+      if (logo) logo.style.transform = `translate3d(${x * 24}px, ${y * 24}px, 0)`;
+      title.style.transform = `translate3d(${x * 12}px, ${y * 12}px, 0)`;
+      visual.style.transform = `perspective(900px) rotateX(${-y * 6}deg) rotateY(${x * 6}deg)`;
+      frameId = requestAnimationFrame(frame);
+    }
+
+    listen(window, "mousemove", (event: MouseEvent) => {
+      targetX = (event.clientX / window.innerWidth) * 2 - 1;
+      targetY = (event.clientY / window.innerHeight) * 2 - 1;
+    });
+    frameId = requestAnimationFrame(frame);
+
+    return () => cancelAnimationFrame(frameId);
+  });
+</script>
+
+<section id="home" class="hero">
+  <span class="hero-glow" aria-hidden="true"></span>
+
+  <div class="wrap hero-inner" animate={motion(leave)}>
+
+    <div class="hero-enter" animate={motion(fromLeft)}>
+    <div class="hero-visual">
+      <IF {loaded.value}>
+        <div class="logo-bg" animate={motion({ play: PRESET.SLIDE_UP, on: ON.ATTACH, duration: 900 })}><img class="logo" src="/img/logo.png" alt="" aria-hidden="true" width="96" height="96" /></div>
+      </IF>
+      <h1 class="title-big" aria-label="AzPepoze">
+        <IF {loaded.value}>
+          <EACH {letters} as={letter}>
+            <span class="slot" animate={letter.enter}><span class="ch" animate={letter.hover}>{letter.ch}</span></span>
+          </EACH>
+        </IF>
+      </h1>
+    </div>
+    </div>
+
+    <p class="hint" animate={motion(fromRight)}>
+      Pick your language at the bottom right
+      <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true" animate={motion({ play: nudge, on: ON.ATTACH, delay: 1300, duration: 400, loop: 2, backAndForth: true })}><path d="M6 6l12 12M9 18h9V9" /></svg>
+    </p>
+
+  </div>
+
+  <p class="built" animate={motion(fromRight)}>
+    Built with <a href="https://lusia.azpepoze.com" target="_blank" rel="noopener">Lusia</a>, my own UI framework for Bun.
+  </p>
+</section>
+
+<style>
+  .built {
+    position: absolute;
+    bottom: 112px;
+    left: 50%;
+    margin: 0;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: calc(100% - 48px);
+    text-align: center;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .built a {
+    color: var(--fg);
+    text-underline-offset: 3px;
+  }
+
+  .hero {
+    position: relative;
+  }
+
+  .hero-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, var(--glow), transparent 75%);
+  }
+
+
+  .hero-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    width: 100%;
+  }
+
+
+  .hero-visual {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transform-style: preserve-3d;
+  }
+
+  .logo-bg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(70vh, 90vw);
+    margin: calc(min(70vh, 90vw) / -2) 0 0 calc(min(70vh, 90vw) / -2);
+    pointer-events: none;
+    z-index: -1;
+  }
+
+  .logo {
+    display: block;
+    width: 100%;
+    height: auto;
+    opacity: 0.08;
+  }
+
+  :global(:root[data-theme="light"]) .logo {
+    filter: invert(1);
+  }
+
+  .title-big {
+    display: flex;
+    justify-content: center;
+    margin: 0;
+    font-size: min(11vw, 22vh, 200px);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    text-align: center;
+    white-space: nowrap;
+  }
+
+  .slot {
+    display: inline-block;
+  }
+
+  .ch {
+    position: relative;
+    display: inline-block;
+    transition: transform 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .slot:hover + .slot .ch,
+  .slot:has(+ .slot:hover) .ch {
+    transform: translateY(-6px);
+  }
+
+  .hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 24px 0 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .arrow {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+
+
+
+
+
+  @include screen(PHONE) {
+    .title-big {
+      font-size: 60px;
+    }
+
+    .built {
+      bottom: 176px;
+    }
+  }
+</style>

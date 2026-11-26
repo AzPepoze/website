@@ -1,0 +1,160 @@
+<script>
+  import StarCount from "./StarCount.lusia";
+  import { ON, controller, props, variable } from "lusiajs";
+  import type { Keyframes } from "lusiajs";
+  import { motion } from "../motion.ts";
+  import NoPreview from "./NoPreview.lusia";
+
+  const { title, desc, lang, stars, image, logo } = props(class {
+    title = "";
+    desc = "";
+    lang = "";
+    stars: number | null = null;
+    image: string | null = null;
+    logo = false;
+  });
+
+  const loaded = variable(false);
+  const failed = variable(false);
+  const fade = controller();
+
+  const fadeIn: Keyframes = {
+    0: { opacity: 0 },
+    1: { opacity: 1 },
+  };
+
+  const showImage = variable.compute(() => !!image && !failed.value);
+
+  function imageClass(ready: boolean): string {
+    return ["thumb-img", logo ? "logo" : "", ready ? "is-ready" : ""].filter(Boolean).join(" ");
+  }
+
+  function markLoaded() {
+    loaded.value = true;
+    fade.play();
+  }
+
+  function markFailed() {
+    failed.value = true;
+  }
+</script>
+
+<span class="row">
+  <span class="thumb">
+    <IF {showImage}>
+      <img
+        class={imageClass(loaded.value)}
+        src={image}
+        alt=""
+        loading="lazy"
+        decoding="async"
+        onload={markLoaded}
+        onerror={markFailed}
+        animate={motion({ play: fadeIn, on: ON.MANUAL, control: fade, duration: 300 })}
+      />
+    <ELSE>
+      <NoPreview />
+    </IF>
+  </span>
+  <span class="text">
+    <span class="name">{title}</span>
+    <span class="desc">{desc}</span>
+    <span class="row-meta">
+      <IF {lang !== ""}>
+        <span>{lang}</span>
+      </IF>
+      <IF {stars !== null}>
+        <StarCount count={stars} />
+      </IF>
+    </span>
+  </span>
+</span>
+
+<style>
+  .row {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+    height: 100%;
+    text-align: left;
+  }
+
+  .thumb {
+    position: relative;
+    height: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  .thumb-img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+  }
+
+  .thumb-img.logo {
+    padding: 16%;
+    object-fit: contain;
+  }
+
+  .thumb-img.is-ready {
+    opacity: 1;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .desc {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .name {
+    overflow: hidden;
+    font-family: var(--display);
+    font-size: clamp(16px, 1.4vw, 22px);
+    font-weight: 600;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .row-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  @include screen(PHONE) {
+    .thumb {
+      flex: none;
+      height: auto;
+      width: 112px;
+    }
+  }
+</style>

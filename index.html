@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="color-scheme" content="dark light" />
+		<style>
+			html { background: #000; color-scheme: dark; }
+			html[data-theme="light"] { background: #fff; color-scheme: light; }
+		</style>
+		<script>
+			try {
+				var saved = localStorage.getItem("azpepoze-theme");
+				var light = saved ? saved === "light" : matchMedia("(prefers-color-scheme: light)").matches;
+				document.documentElement.dataset.theme = light ? "light" : "dark";
+			} catch (error) {
+				document.documentElement.dataset.theme = "dark";
+			}
+		</script>
+
+		<title>AzPepoze - My Portfolio & Projects</title>
+		<meta
+			name="description"
+			content="Welcome to AzPepoze's portfolio. Discover my projects, showcases, and connect with me."
+		/>
+
+		<link rel="canonical" href="https://azpepoze.com/" />
+
+		<link rel="icon" type="image/x-icon" href="./public/favicon.ico" />
+		<link rel="icon" type="image/png" sizes="192x192" href="./public/web-app-manifest-192x192.png" />
+		<link rel="icon" type="image/png" sizes="96x96" href="./public/favicon-96x96.png" />
+		<link rel="icon" type="image/svg+xml" href="./public/favicon.svg" />
+		<link rel="apple-touch-icon" sizes="180x180" href="./public/apple-touch-icon.png" />
+		<link rel="manifest" href="./public/site.webmanifest" />
+
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			rel="stylesheet"
+			href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=M+PLUS+Rounded+1c:wght@400;700;800&family=JetBrains+Mono:wght@400;700&display=swap"
+		/>
+
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://azpepoze.com/" />
+		<meta property="og:site_name" content="AzPepoze" />
+		<meta property="og:title" content="AzPepoze - My Portfolio & Projects" />
+		<meta
+			property="og:description"
+			content="Welcome to AzPepoze's portfolio. Discover my projects, showcases, and connect with me."
+		/>
+		<meta property="og:image" content="https://azpepoze.com/web-app-manifest-512x512.png" />
+
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content="https://azpepoze.com/" />
+		<meta property="twitter:title" content="AzPepoze - My Portfolio & Projects" />
+		<meta
+			property="twitter:description"
+			content="Welcome to AzPepoze's portfolio. Discover my projects, showcases, and connect with me."
+		/>
+		<meta property="twitter:image" content="https://azpepoze.com/web-app-manifest-512x512.png" />
+
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "WebSite",
+				"name": "AzPepoze",
+				"alternateName": ["AzPepoze Portfolio", "AzP"],
+				"url": "https://azpepoze.com/",
+				"description": "Welcome to AzPepoze's portfolio. Discover my projects, showcases, and connect with me.",
+				"inLanguage": "en",
+				"publisher": {
+					"@type": "Person",
+					"name": "AzPepoze",
+					"url": "https://azpepoze.com/"
+				}
+			}
+		</script>
+		<script type="application/ld+json">
+			{
+				"@context": "https://schema.org",
+				"@type": "Organization",
+				"name": "AzPepoze",
+				"url": "https://azpepoze.com/",
+				"logo": "https://azpepoze.com/web-app-manifest-512x512.png",
+				"sameAs": [
+					"https://github.com/AzPepoze",
+					"https://www.youtube.com/channel/UCJ2C0UTfxQo6iGTfudPfoRQ"
+				]
+			}
+		</script>
+	</head>
+	<body>
+		<script type="module" src="./src/main.ts"></script>
+		<script>
+			function googleTranslateElementInit() {
+				window.dispatchEvent(new Event("google-translate-ready"));
+			}
+		</script>
+		<script src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+	</body>
+</html>

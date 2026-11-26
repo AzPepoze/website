@@ -1,0 +1,207 @@
+<script>
+  import { MIDWAY, props, variable } from "lusiajs";
+  import { listItem, motion, pop } from "../motion.ts";
+
+  const { label, text, icon, tint, srLabel, index } = props(class {
+    label = "";
+    text = "";
+    icon = "";
+    tint = "#5865f2";
+    srLabel = "";
+    index = 0;
+  });
+
+  const enter = listItem("right", index);
+  const copied = variable(false);
+  let resetTimer = 0;
+
+  async function copy() {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+    copied.value = true;
+    clearTimeout(resetTimer);
+    resetTimer = window.setTimeout(() => (copied.value = false), 2000);
+  }
+</script>
+
+<div class="copy-wrap" animate={motion(enter)}>
+  <button class="card" type="button" style="--tint: {tint}" aria-label={srLabel} onclick={copy}>
+    <span class="tile" aria-hidden="true" style="--icon: url({icon}); background-color: {tint}"></span>
+    <span class="body">
+      <span class="label">{label}</span>
+      <span class="value">{text}</span>
+    </span>
+    <IF {copied}>
+      <span class="cta done" aria-hidden="true" animate={motion({ play: pop, duration: 420, midway: { mode: MIDWAY.SWITCH_SMOOTH } })}>
+        <svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+        <span class="cta-text">Copied</span>
+      </span>
+    <ELSE>
+      <span class="cta" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V6a2 2 0 0 1 2-2h9" /></svg>
+        <span class="cta-text">Copy</span>
+      </span>
+    </IF>
+  </button>
+  <span class="sr-only" aria-live="polite"><IF {copied}>Copied</IF></span>
+</div>
+
+<style>
+  .copy-wrap {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    min-width: 0;
+    min-height: 96px;
+    box-sizing: border-box;
+    padding: 20px 24px;
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--fg);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    overflow: hidden;
+    transition: border-color 200ms ease;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 0% 50%, var(--tint), transparent 70%);
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    border-color: var(--tint);
+  }
+
+  .card:hover::before,
+  .card:focus-visible::before {
+    opacity: 0.3;
+  }
+
+  .card > * {
+    position: relative;
+  }
+
+  .tile {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+  }
+
+  .tile::after {
+    content: "";
+    position: absolute;
+    inset: 14px;
+    background: #fff;
+    mask: var(--icon) center / contain no-repeat;
+    -webkit-mask: var(--icon) center / contain no-repeat;
+  }
+
+  .body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .value {
+    overflow: hidden;
+    font-family: var(--display);
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.15;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .cta {
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .cta svg {
+    width: 16px;
+    height: 16px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: translate 200ms ease;
+  }
+
+  .card:hover .cta svg,
+  .card:focus-visible .cta svg {
+    translate: 3px 0;
+  }
+
+  .cta.done {
+    border-color: var(--fg);
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  @include screen(PHONE) {
+    .value {
+      font-size: 1.05rem;
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .cta {
+      padding: 10px;
+    }
+
+    .cta-text {
+      display: none;
+    }
+  }
+</style>

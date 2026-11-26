@@ -1,0 +1,199 @@
+<script>
+  import { SCREEN, listen, onAttach, variable } from "lusiajs";
+  import { theme } from "../theme.ts";
+
+  const reduced = SCREEN.REDUCED_MOTION.value;
+  const ANGLE = 0.6;
+  const TAU = Math.PI * 2;
+  const LAYERS = [
+    { count: 14, len: [60, 90], width: [0.6, 1], speed: [1.2, 1.8], alpha: 0.14, scroll: 0.1, mouse: 6 },
+    { count: 10, len: [120, 160], width: [1, 1.4], speed: [2.2, 3], alpha: 0.28, scroll: 0.25, mouse: 14 },
+    { count: 6, len: [200, 260], width: [1.5, 2], speed: [3.6, 4.6], alpha: 0.5, scroll: 0.5, mouse: 28 },
+  ];
+
+  type Meteor = { x: number; y: number; len: number; width: number; speed: number; alpha: number };
+  type Layer = { config: (typeof LAYERS)[number]; meteors: Meteor[] };
+  type Star = { x: number; y: number; r: number; phase: number; speed: number };
+
+  const PAD = 300;
+
+  function wrap(value: number, size: number) {
+    return ((value % size) + size) % size;
+  }
+
+  function between(range: number[]) {
+    return range[0] + Math.random() * (range[1] - range[0]);
+  }
+
+  onAttach((root) => {
+    const canvas = root.querySelector("canvas") as HTMLCanvasElement;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const finePointer = window.matchMedia("(pointer: fine)").matches;
+    let width = 0;
+    let height = 0;
+    let scale = 1;
+    let layers: Layer[] = [];
+    let stars: Star[] = [];
+    let sprite = makeSprite();
+    let frameId = 0;
+    let last = 0;
+    let mouseX = 0;
+    let mouseY = 0;
+    let easedX = 0;
+    let easedY = 0;
+
+    function makeSprite() {
+      const image = document.createElement("canvas");
+      image.width = 256;
+      image.height = 16;
+      const g = image.getContext("2d");
+      if (!g) return image;
+      const rgb = document.documentElement.dataset.theme === "light" ? "10,10,10" : "255,255,255";
+      const gradient = g.createLinearGradient(0, 0, 240, 0);
+      gradient.addColorStop(0, `rgba(${rgb},0)`);
+      gradient.addColorStop(1, `rgba(${rgb},1)`);
+      g.fillStyle = gradient;
+      g.fillRect(0, 6, 240, 4);
+      g.fillStyle = `rgb(${rgb})`;
+      g.beginPath();
+      g.arc(242, 8, 5, 0, TAU);
+      g.fill();
+      return image;
+    }
+
+    function spawn(meteor: Meteor, config: (typeof LAYERS)[number]) {
+      meteor.len = between(config.len);
+      meteor.width = between(config.width);
+      meteor.speed = between(config.speed);
+      meteor.alpha = config.alpha * (0.7 + 0.6 * Math.random());
+      meteor.x = Math.random() * (width + 2 * PAD);
+      meteor.y = Math.random() * (height + 2 * PAD);
+    }
+
+    function build() {
+      scale = width < 600 ? 0.5 : 1;
+      layers = LAYERS.map((config) => {
+        const meteors: Meteor[] = [];
+        for (let i = 0; i < Math.round(config.count * scale); i++) {
+          const meteor = { x: 0, y: 0, len: 0, width: 0, speed: 0, alpha: 0 };
+          spawn(meteor, config);
+          meteors.push(meteor);
+        }
+        return { config, meteors };
+      });
+      stars = Array.from({ length: Math.round(36 * scale) }, () => ({
+        x: Math.random() * width,
+        y: Math.random() * height,
+        r: 0.6 + Math.random() * 0.8,
+        phase: Math.random() * TAU,
+        speed: 0.5 + Math.random(),
+      }));
+    }
+
+    function draw(now: number, dt: number) {
+      const rgb = document.documentElement.dataset.theme === "light" ? "10,10,10" : "255,255,255";
+      const scrollY = window.scrollY;
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.fillStyle = `rgb(${rgb})`;
+      for (const star of stars) {
+        const x = wrap(star.x, width);
+        const y = wrap(star.y - scrollY * 0.05, height);
+        ctx.globalAlpha = 0.12 + 0.18 * (0.5 + 0.5 * Math.sin(now * 0.002 * star.speed + star.phase));
+        ctx.beginPath();
+        ctx.arc(x, y, star.r, 0, TAU);
+        ctx.fill();
+      }
+
+      const spanX = width + 2 * PAD;
+      const spanY = height + 2 * PAD;
+      for (const layer of layers) {
+        const { config } = layer;
+        const offsetX = easedX * config.mouse;
+        const offsetY = easedY * config.mouse - scrollY * config.scroll;
+        for (const meteor of layer.meteors) {
+          if (!reduced) {
+            meteor.x += Math.cos(ANGLE) * meteor.speed * dt;
+            meteor.y += Math.sin(ANGLE) * meteor.speed * dt;
+          }
+          const x = wrap(meteor.x + offsetX + PAD, spanX) - PAD;
+          const y = wrap(meteor.y + offsetY + PAD, spanY) - PAD;
+
+          ctx.globalAlpha = meteor.alpha;
+          ctx.save();
+          ctx.translate(x, y);
+          ctx.rotate(ANGLE);
+          ctx.drawImage(sprite, -meteor.len, -meteor.width * 1.5, meteor.len, meteor.width * 3);
+          ctx.restore();
+        }
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    function frame(now: number) {
+      const dt = Math.min((now - last) / 16.67, 3);
+      last = now;
+      easedX += (mouseX - easedX) * 0.06;
+      easedY += (mouseY - easedY) * 0.06;
+      draw(now, dt);
+      frameId = requestAnimationFrame(frame);
+    }
+
+    function start() {
+      if (reduced || frameId || document.hidden) return;
+      last = performance.now();
+      frameId = requestAnimationFrame(frame);
+    }
+
+    function stop() {
+      cancelAnimationFrame(frameId);
+      frameId = 0;
+    }
+
+    function resize() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      build();
+      if (reduced) draw(0, 0);
+    }
+
+    resize();
+    start();
+    listen(window, "resize", resize);
+    listen(document, "visibilitychange", () => (document.hidden ? stop() : start()));
+    if (finePointer) {
+      listen(window, "mousemove", (event: MouseEvent) => {
+        mouseX = (event.clientX / width) * 2 - 1;
+        mouseY = (event.clientY / height) * 2 - 1;
+      });
+    }
+    const stopThemeWatch = variable.watch([theme], () => {
+      sprite = makeSprite();
+      if (reduced) draw(0, 0);
+    }, { onInit: false });
+
+    return () => {
+      stop();
+      stopThemeWatch();
+    };
+  });
+</script>
+
+<canvas class="stars" aria-hidden="true"></canvas>
+
+<style>
+  .stars {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+</style>

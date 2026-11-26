@@ -1,0 +1,133 @@
+<script>
+  import { props } from "lusiajs";
+  import { listItem, motion } from "../motion.ts";
+
+  const { name, handle, url, icon, tagline, accent, index } = props(class {
+    name = "";
+    handle = "";
+    url = "";
+    icon = "";
+    tagline = "";
+    accent = "var(--fg)";
+    index = 0;
+  });
+
+  const enter = listItem("right", index);
+</script>
+
+<a class="card" href={url} target="_blank" rel="noopener" aria-label="{name}: {handle}" style="--accent: {accent}" animate={motion(enter)}>
+  <img class="icon" src={icon} alt="" width="52" height="52" />
+  <span class="body">
+    <span class="name">{name}</span>
+    <span class="meta">
+      <span class="handle">{handle}</span>
+      <IF {tagline !== ""}>
+        <span class="tagline">· {tagline}</span>
+      </IF>
+    </span>
+  </span>
+  <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M8 7h9v9" /></svg>
+</a>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    min-width: 0;
+    min-height: 96px;
+    box-sizing: border-box;
+    padding: 20px 24px;
+    border: 1.5px solid var(--line);
+    border-radius: 20px;
+    background: var(--surface);
+    color: var(--fg);
+    text-decoration: none;
+    overflow: hidden;
+    transition: border-color 200ms ease;
+  }
+
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 0% 50%, var(--accent), transparent 70%);
+    opacity: 0;
+    transition: opacity 200ms ease;
+    pointer-events: none;
+  }
+
+  .card:hover,
+  .card:focus-visible {
+    border-color: var(--accent);
+  }
+
+  .card:hover::before,
+  .card:focus-visible::before {
+    opacity: 0.3;
+  }
+
+  .card > * {
+    position: relative;
+  }
+
+  .icon {
+    flex-shrink: 0;
+    width: 52px;
+    height: 52px;
+    border-radius: 14px;
+    object-fit: cover;
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .name {
+    font-family: var(--display);
+    font-size: 1.375rem;
+    font-weight: 600;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+
+  .meta {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    overflow-wrap: anywhere;
+  }
+
+  .handle {
+    font-family: var(--mono);
+    color: var(--muted);
+  }
+
+  .tagline {
+    margin-left: 0.4em;
+    color: var(--muted);
+  }
+
+  .arrow {
+    flex-shrink: 0;
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: color 200ms ease, translate 200ms ease;
+  }
+
+  .card:hover .arrow,
+  .card:focus-visible .arrow {
+    color: var(--accent);
+    translate: 3px 0;
+  }
+</style>

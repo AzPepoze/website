@@ -1,0 +1,71 @@
+<script>
+  import { EASE, MIDWAY, ON, variable } from "lusiajs";
+  import { theme, toggleTheme } from "../theme.ts";
+  import { motion } from "../motion.ts";
+
+  const iconIn = {
+    0: { opacity: 0, rotate: "-90deg", scale: "0.6" },
+    1: [EASE.STYLE.BACK, EASE.OUT, { opacity: 1, rotate: "0deg", scale: "1" }],
+  };
+  const iconOut = {
+    0: { opacity: 1, rotate: "0deg", scale: "1" },
+    1: { opacity: 0, rotate: "90deg", scale: "0.6" },
+  };
+
+  const isDark = variable.compute(() => theme.value === "dark");
+  const label = variable.compute(() => (isDark.value ? "Switch to light theme" : "Switch to dark theme"));
+</script>
+
+<button class="toggle" type="button" aria-label={label.value} onclick={toggleTheme}>
+  <IF {isDark}>
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" animate={motion([
+      { play: iconIn, duration: 360, midway: { mode: MIDWAY.SWITCH } },
+      { play: iconOut, on: ON.DETACH, duration: 200 },
+    ])}>
+      <circle cx="12" cy="12" r="4" />
+      <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+    </svg>
+  <ELSE>
+    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" animate={motion([
+      { play: iconIn, duration: 360, midway: { mode: MIDWAY.SWITCH } },
+      { play: iconOut, on: ON.DETACH, duration: 200 },
+    ])}>
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+    </svg>
+  </IF>
+</button>
+
+<style>
+  .toggle {
+    position: fixed;
+    right: 24px;
+    bottom: 20px;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 999px;
+    background: var(--fg);
+    color: var(--bg);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+    overflow: hidden;
+  }
+
+  .icon {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 22px;
+    height: 22px;
+    transform-origin: 50% 50%;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+</style>

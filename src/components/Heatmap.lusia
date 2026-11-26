@@ -1,0 +1,382 @@
+<script>
+  import { controller, EASE, ON, onAttach, props, SCOPE, setConfig, variable, type AnimateItem, type Keyframes } from "lusiajs";
+  import { motion, pop, reduced } from "../motion.ts";
+
+  type DayRepos = [repo: string, commits: number][];
+  type Calendar = { start: string; weeks: number[][]; counts: number[][]; days: Record<string, DayRepos> };
+  type Cell = { day: number; level: number; key: string };
+  type Column = { key: number; cells: Cell[]; enter: ReturnType<typeof wave> };
+  type Row = { name: string; label: string };
+  type Info = { head: string; count: string; rows: Row[]; more: string; other: string };
+  type Tip = Info & { x: number; y: number; below: boolean };
+  type Place = Pick<Tip, "x" | "y" | "below">;
+  type Cursor = { week: number; day: number };
+
+  const { calendar } = props(class {
+    calendar = null as Calendar | null;
+  });
+
+  const WEEKS = 53;
+  const MIN_CELL = 14;
+  const GAP = 3;
+  const WAVE_STEP = 40;
+  const DAY = 86_400_000;
+  const EMPTY = -1;
+  const TOP_ROWS = 3;
+  const TIP_WIDTH = 240;
+  const TIP_HALF = TIP_WIDTH / 2;
+  const TIP_GAP = 10;
+  const TIP_ROOM = 170;
+  const EDGE = 8;
+  const KEYS: Record<string, [number, number]> = {
+    ArrowLeft: [-1, 0],
+    ArrowRight: [1, 0],
+    ArrowUp: [0, -1],
+    ArrowDown: [0, 1],
+  };
+
+  const fit = variable({ cols: WEEKS, cell: MIN_CELL });
+  const style = variable.compute(() => `--cols: ${fit.value.cols}; --cell: ${fit.value.cell}px`);
+  const NO_TIP: Tip = { head: "", count: "", rows: [], more: "", other: "", x: 0, y: 0, below: false };
+  const tip = variable<Tip>(NO_TIP);
+  const open = variable(false);
+  const tipStyle = variable.compute(() => placeStyle(tip.value));
+  const tipRows = variable.compute(() => tip.value.rows);
+  const tipMore = variable.compute(() => tip.value.more);
+  const tipOther = variable.compute(() => tip.value.other);
+  const live = variable("");
+
+  setConfig({ animate: { ease: [EASE.STYLE.QUART, EASE.OUT] } }, SCOPE.SCOPED);
+
+  const tipRise: Keyframes = {
+    0: { opacity: 0, transform: "translateY(6px) scale(0.96)" },
+    1: [EASE.STYLE.QUART, EASE.OUT, { opacity: 1, transform: "translateY(0px) scale(1)" }],
+  };
+  const tipDrop: Keyframes = {
+    0: { opacity: 1, transform: "translateY(0px) scale(1)" },
+    1: [EASE.STYLE.QUART, EASE.IN, { opacity: 0, transform: "translateY(6px) scale(0.96)" }],
+  };
+  const fadeIn: Keyframes = { 0: { opacity: 0 }, 1: { opacity: 1 } };
+  const fadeOut: Keyframes = { 0: { opacity: 1 }, 1: { opacity: 0 } };
+  const tipEnter: AnimateItem = { play: reduced ? fadeIn : tipRise, on: ON.ATTACH, duration: 160 };
+  const tipExit: AnimateItem = { play: reduced ? fadeOut : tipDrop, on: ON.DETACH, duration: 140 };
+  const tipResize = { on: ON.RESIZE, duration: 180 } as AnimateItem;
+  const tipAnimate = reduced ? [tipEnter, tipExit] : [tipEnter, tipExit, tipResize];
+
+  const swap = controller();
+  const swapFade: Keyframes = { 0: { opacity: 0.35 }, 1: [EASE.STYLE.QUAD, EASE.OUT, { opacity: 1 }] };
+  const swapItem: AnimateItem = { play: swapFade, on: ON.MANUAL, control: swap, duration: 100 };
+
+  function wave(index: number) {
+    return motion({ play: pop, on: ON.VIEW, duration: 420, delay: index * WAVE_STEP, options: { reverse: true } });
+  }
+
+  function describe(data: Calendar, week: number, day: number): Info {
+    const date = new Date(Date.parse(`${data.start}T00:00:00Z`) + (week * 7 + day) * DAY);
+    const iso = date.toISOString().slice(0, 10);
+    const count = data.counts[week][day];
+    const stored = data.days[iso] ?? [];
+    const listed = stored.reduce((sum, [, commits]) => sum + commits, 0);
+    const head = date
+      .toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric", year: "numeric", timeZone: "UTC" })
+      .replace(/ (\d+), /, " $1 ");
+    return {
+      head,
+      count: `${count} contribution${count === 1 ? "" : "s"}`,
+      rows: stored.slice(0, TOP_ROWS).map(([name, commits]) => ({ name, label: `${commits} commit${commits === 1 ? "" : "s"}` })),
+      more: stored.length > TOP_ROWS ? `+${stored.length - TOP_ROWS} more` : "",
+      other: count > listed ? `+${count - listed} other (PRs, issues, reviews)` : "",
+    };
+  }
+
+  function toCells(week: number, levels: number[]): Cell[] {
+    return levels.map((level, day) => ({ day, level, key: `${week}-${day}` }));
+  }
+
+  function toColumns(data: Calendar | null, count: number): Column[] {
+    if (!data) return [];
+    const first = Math.max(0, data.weeks.length - count);
+    return data.weeks.slice(first).map((levels, i) => ({ key: first + i, cells: toCells(first + i, levels), enter: wave(i) }));
+  }
+
+  function cellClass(level: number): string {
+    return level === EMPTY ? "cell empty" : `cell l${level}`;
+  }
+
+  function measure(el: HTMLElement) {
+    const width = el.clientWidth;
+    const cols = Math.max(1, Math.min(WEEKS, Math.floor((width + GAP) / (MIN_CELL + GAP))));
+    const cell = (width - (cols - 1) * GAP) / cols;
+    fit.value = { cols, cell };
+  }
+
+  function placeStyle(t: Tip): string {
+    const side = t.below ? `top: ${t.y}px` : `bottom: ${t.y}px`;
+    return `left: ${t.x}px; ${side}`;
+  }
+
+  function placeTip(wrap: HTMLElement, cell: HTMLElement): Place {
+    const rect = cell.getBoundingClientRect();
+    const box = wrap.getBoundingClientRect();
+    const center = rect.left + rect.width / 2;
+    const clamped = Math.min(Math.max(center, TIP_HALF + EDGE), window.innerWidth - TIP_HALF - EDGE);
+    const below = rect.top < TIP_ROOM;
+    const y = below ? rect.bottom - box.top + TIP_GAP : box.bottom - rect.top + TIP_GAP;
+    return { x: clamped - box.left - TIP_HALF, y, below };
+  }
+
+  function showTip(next: Tip) {
+    const again = open.peek();
+    tip.value = next;
+    open.value = true;
+    if (again) swap.play();
+  }
+
+  function showCell(wrap: HTMLElement, cell: HTMLElement, data: Calendar) {
+    const [week, day] = cell.dataset.key!.split("-").map(Number);
+    const info = describe(data, week, day);
+    showTip({ ...info, ...placeTip(wrap, cell) });
+    live.value = `${info.head}: ${info.count}`;
+  }
+
+  function defaultCursor(data: Calendar): Cursor {
+    const week = data.weeks.length - 1;
+    const day = data.weeks[week].lastIndexOf(data.weeks[week].filter((level) => level !== EMPTY).at(-1) ?? EMPTY);
+    return { week, day: Math.max(0, day) };
+  }
+
+  function stepCursor(data: Calendar, cursor: Cursor, key: string, first: number): Cursor | null {
+    const delta = KEYS[key];
+    if (!delta) return null;
+    const week = Math.min(data.weeks.length - 1, Math.max(first, cursor.week + delta[0]));
+    const day = Math.min(6, Math.max(0, cursor.day + delta[1]));
+    if (data.weeks[week][day] === EMPTY) return null;
+    return { week, day };
+  }
+
+  const columns = variable.compute(() => toColumns(calendar, fit.value.cols));
+
+  onAttach((root) => {
+    const wrap = root.querySelector<HTMLElement>(".heatmap-wrap");
+    const el = root.querySelector<HTMLElement>(".heatmap");
+    if (!wrap || !el) return;
+    measure(el);
+    const observer = new ResizeObserver(() => measure(el));
+    observer.observe(el);
+
+    let cursor: Cursor | null = null;
+    const hide = () => {
+      open.value = false;
+    };
+    const over = (event: PointerEvent) => {
+      const cell = event.target instanceof Element ? event.target.closest<HTMLElement>(".cell[data-key]") : null;
+      const data = calendar;
+      if (!cell || !data || cell.classList.contains("empty")) return;
+      showCell(wrap, cell, data);
+    };
+    const leave = (event: PointerEvent) => {
+      if (event.pointerType !== "touch") hide();
+    };
+    const outside = (event: PointerEvent) => {
+      if (event.target instanceof Node && !el.contains(event.target)) hide();
+    };
+    const focusCell = (week: number, day: number) => {
+      const data = calendar;
+      if (!data) return;
+      el.querySelector(".cell.focus")?.classList.remove("focus");
+      const cell = el.querySelector<HTMLElement>(`.cell[data-key="${week}-${day}"]`);
+      if (!cell) return;
+      cell.classList.add("focus");
+      showCell(wrap, cell, data);
+    };
+    const keydown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") return hide();
+      const data = calendar;
+      if (!data) return;
+      const first = Math.max(0, data.weeks.length - fit.peek().cols);
+      const current = cursor ?? defaultCursor(data);
+      const next = stepCursor(data, current, event.key, first);
+      if (!next) return;
+      event.preventDefault();
+      cursor = next;
+      focusCell(next.week, next.day);
+    };
+    const blur = () => {
+      el.querySelector(".cell.focus")?.classList.remove("focus");
+      hide();
+    };
+
+    el.addEventListener("pointerover", over);
+    el.addEventListener("pointerleave", leave);
+    el.addEventListener("keydown", keydown);
+    el.addEventListener("blur", blur);
+    document.addEventListener("pointerdown", outside);
+    return () => {
+      observer.disconnect();
+      el.removeEventListener("pointerover", over);
+      el.removeEventListener("pointerleave", leave);
+      el.removeEventListener("keydown", keydown);
+      el.removeEventListener("blur", blur);
+      document.removeEventListener("pointerdown", outside);
+    };
+  });
+</script>
+
+<div class="heatmap-wrap">
+  <div class="heatmap" style={style.value} tabindex="0" role="application" aria-label="Contribution calendar. Use arrow keys to inspect a day.">
+    <EACH {columns} as={column} key={column.key}>
+      <div class="col" animate={column.enter}>
+        <EACH {column.cells} as={cell} key={cell.day}>
+          <span class={cellClass(cell.level)} data-key={cell.key}></span>
+        </EACH>
+      </div>
+    </EACH>
+  </div>
+  <p class="sr-only" aria-live="polite">{live.value}</p>
+  <IF {open.value}>
+    <div class="tip" role="tooltip" style={tipStyle.value} animate={tipAnimate}>
+      <div class="tip-body" animate={swapItem}>
+        <p class="tip-head">{tip.value.head}</p>
+        <p class="tip-count">{tip.value.count}</p>
+        <EACH {tipRows} as={row} key={row.name}>
+          <p class="tip-row"><span class="tip-name">{row.name}</span> · {row.label}</p>
+        </EACH>
+        <p class="tip-muted">{tipMore.value}</p>
+        <p class="tip-muted">{tipOther.value}</p>
+      </div>
+    </div>
+  </IF>
+</div>
+
+<style>
+  .heatmap-wrap {
+    position: relative;
+  }
+
+  .heatmap {
+    display: flex;
+    gap: 3px;
+    justify-content: flex-start;
+    border-radius: 4px;
+  }
+
+  .heatmap:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 4px;
+  }
+
+  .col {
+    display: grid;
+    grid-template-rows: repeat(7, var(--cell));
+    gap: 3px;
+  }
+
+  .cell {
+    position: relative;
+    display: block;
+    width: var(--cell);
+    height: var(--cell);
+    border-radius: 3px;
+    background: var(--fg);
+  }
+
+  .l0 {
+    background: var(--line);
+    opacity: 0.5;
+  }
+
+  .l1 {
+    opacity: 0.25;
+  }
+
+  .l2 {
+    opacity: 0.45;
+  }
+
+  .l3 {
+    opacity: 0.7;
+  }
+
+  .l4 {
+    opacity: 1;
+  }
+
+  .empty {
+    visibility: hidden;
+  }
+
+  .cell:not(.empty):is(:hover, .focus) {
+    transform: scale(1.6);
+    outline: 1.5px solid var(--fg);
+    z-index: 2;
+  }
+
+  .col:hover {
+    filter: brightness(1.25);
+  }
+
+  .tip {
+    position: absolute;
+    z-index: 3;
+    box-sizing: border-box;
+    width: 240px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    background: var(--surface);
+    color: var(--fg);
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.45;
+    pointer-events: none;
+  }
+
+  .tip p {
+    margin: 0;
+  }
+
+  .tip-head {
+    color: var(--muted);
+  }
+
+  .tip-count {
+    margin-top: 2px;
+    font-weight: 700;
+  }
+
+  .tip-row {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .tip-name {
+    font-weight: 600;
+  }
+
+  .tip-muted {
+    color: var(--muted);
+  }
+
+  .tip-muted:empty {
+    display: none;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .cell {
+      transition: transform 120ms ease;
+    }
+
+    .col {
+      transition: filter 160ms ease;
+    }
+  }
+</style>

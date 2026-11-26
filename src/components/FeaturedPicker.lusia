@@ -1,0 +1,317 @@
+<script>
+  import StarCount from "./StarCount.lusia";
+  import { EASE, ON, onDetach, props, variable, type Keyframes } from "lusiajs";
+  import { motion } from "../motion.ts";
+  import type { Featured } from "../data/featured.ts";
+  import NoPreview from "./NoPreview.lusia";
+
+  type Row = { item: Featured; i: number };
+
+  const { label, rows, index, open, onpick } = props(class {
+    label = "";
+    rows: Row[] = [];
+    index = 0;
+    open = false;
+    onpick: (i: number) => void = () => {};
+  });
+
+  const fadeIn: Keyframes = { 0: { opacity: 0 }, 1: { opacity: 1 } };
+  const fadeOut: Keyframes = { 0: { opacity: 1 }, 1: { opacity: 0 } };
+  const sheetIn: Keyframes = {
+    0: { translate: "0px 100%" },
+    1: [EASE.STYLE.QUART, EASE.OUT, { translate: "0px 0px" }],
+  };
+  const sheetOut: Keyframes = {
+    0: { translate: "0px 0px" },
+    1: [EASE.STYLE.QUART, EASE.IN, { translate: "0px 100%" }],
+  };
+
+  const sheetEl = variable<HTMLElement | null>(null);
+  let opener: HTMLElement | null = null;
+
+  function focusSheet() {
+    window.setTimeout(() => sheetEl.value?.focus(), 0);
+  }
+
+  function close() {
+    open = false;
+  }
+
+  function pick(i: number) {
+    onpick(i);
+    open = false;
+  }
+
+  function focusables(): HTMLElement[] {
+    return [...(sheetEl.value?.querySelectorAll<HTMLElement>("button, a[href]") ?? [])];
+  }
+
+  function trapFocus(event: KeyboardEvent) {
+    const items = focusables();
+    const first = items[0];
+    const last = items.at(-1);
+    if (!first || !last) return;
+    const active = document.activeElement;
+    if (event.shiftKey && (active === first || active === sheetEl.value)) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && active === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
+  function onKey(event: KeyboardEvent) {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      close();
+    } else if (event.key === "Tab") {
+      trapFocus(event);
+    }
+  }
+
+  function onBackdrop(event: MouseEvent) {
+    if (event.target === event.currentTarget) close();
+  }
+
+  function rowClass(i: number): string {
+    return index === i ? "row on" : "row";
+  }
+
+  function rowPressed(i: number): string {
+    return index === i ? "true" : "false";
+  }
+
+  function thumbClass(item: Featured): string {
+    return item.fit === "contain" ? "thumb-img logo" : "thumb-img";
+  }
+
+  variable.autoRun(() => {
+    document.body.style.overflow = open ? "hidden" : "";
+    if (open) {
+      opener = document.activeElement as HTMLElement | null;
+      focusSheet();
+    } else {
+      opener?.focus();
+      opener = null;
+    }
+  });
+
+  onDetach(() => {
+    document.body.style.overflow = "";
+  });
+</script>
+
+<IF {open}>
+  <div class="backdrop" data-prevent-page-scroll onclick={onBackdrop} onkeydown={onKey}
+    animate={motion([
+      { play: fadeIn, on: ON.ATTACH, duration: 280 },
+      { play: fadeOut, on: ON.DETACH, duration: 200 },
+    ])}>
+    <div class="sheet" role="dialog" aria-modal="true" aria-label="Choose project" tabindex="-1" bind-element={sheetEl}
+      animate={motion([
+        { play: sheetIn, on: ON.ATTACH, duration: 280 },
+        { play: sheetOut, on: ON.DETACH, duration: 200 },
+      ])}>
+      <div class="head">
+        <span class="handle" aria-hidden="true"></span>
+        <h2 class="label">{label}</h2>
+        <button class="close" type="button" aria-label="Close" onclick={close}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" /></svg>
+        </button>
+      </div>
+
+      <div class="scroll" data-prevent-page-scroll>
+        <EACH {rows} as={row} key={row.item.name}>
+          <button class={rowClass(row.i)} type="button" aria-pressed={rowPressed(row.i)} onclick={() => pick(row.i)}>
+            <span class="thumb">
+              <IF {row.item.image}>
+                <img class={thumbClass(row.item)} src={row.item.image} alt="" loading="lazy" decoding="async" />
+              <ELSE>
+                <NoPreview />
+              </IF>
+            </span>
+            <span class="text">
+              <span class="name">{row.item.name}</span>
+              <span class="meta label">
+                <IF {row.item.lang !== ""}>
+                  <span>{row.item.lang}</span>
+                </IF>
+                <IF {row.item.stars !== null}>
+                  <StarCount count={row.item.stars} />
+                </IF>
+              </span>
+            </span>
+          </button>
+        </EACH>
+      </div>
+    </div>
+  </div>
+</IF>
+
+<style>
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    background: color-mix(in srgb, var(--bg) 55%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+
+  .sheet {
+    display: flex;
+    flex-direction: column;
+    max-height: 70svh;
+    box-sizing: border-box;
+    border: 1.5px solid var(--line);
+    border-bottom: none;
+    border-radius: 24px 24px 0 0;
+    background: var(--surface);
+    color: var(--fg);
+    overflow: hidden;
+  }
+
+  .sheet:focus {
+    outline: none;
+  }
+
+  .head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px 12px 20px;
+  }
+
+  .handle {
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    width: 40px;
+    height: 4px;
+    border-radius: 999px;
+    background: var(--line);
+    transform: translateX(-50%);
+  }
+
+  .label {
+    flex: 1 1 auto;
+    margin: 0;
+    font-size: 12px;
+    opacity: 0.7;
+  }
+
+  .close {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--fg);
+    cursor: pointer;
+  }
+
+  .close svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .scroll {
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: column;
+    gap: 4px;
+    min-height: 0;
+    padding: 4px 10px calc(16px + env(safe-area-inset-bottom, 0px));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .row {
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    min-height: 56px;
+    padding: 8px 10px;
+    border: none;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--fg);
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .row.on {
+    background: color-mix(in srgb, var(--fg) 12%, transparent);
+  }
+
+  .thumb {
+    position: relative;
+    flex: none;
+    height: 56px;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+  }
+
+  .thumb-img {
+    display: block;
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .thumb-img.logo {
+    padding: 14%;
+    object-fit: contain;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+  }
+
+  .name {
+    overflow: hidden;
+    font-family: var(--display);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .row:focus-visible,
+  .close:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 2px;
+  }
+</style>

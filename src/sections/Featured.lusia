@@ -1,0 +1,669 @@
+<script>
+  import StarCount from "../components/StarCount.lusia";
+  import { EASE, ON, SCREEN, controller, onAttach, variable, type Keyframes } from "lusiajs";
+  import SectionHead from "../components/SectionHead.lusia";
+  import FeaturedCard from "../components/FeaturedCard.lusia";
+  import FeaturedPicker from "../components/FeaturedPicker.lusia";
+  import ProjectSlider from "../components/ProjectSlider.lusia";
+  import ProjectModal from "../components/ProjectModal.lusia";
+  import { featuredCategories, labelFor, type Featured } from "../data/featured.ts";
+  import { LIST_ENTER_MS, LIST_LEAVE_MS, fromLeft, fromRight, listRow, motion, reduced, wait } from "../motion.ts";
+
+  const ROW_BAND = 6;
+  const ROW_DISTANCE = 48;
+  function rowMotion(row: { i: number; entering: boolean }) {
+    if (row.entering) return listRow("right", row.i, { distance: ROW_DISTANCE, duration: 450, attach: true });
+    return listRow("right", row.i < ROW_BAND ? row.i : 0, { distance: ROW_DISTANCE, duration: row.i < ROW_BAND ? 450 : 350 });
+  }
+
+  const categories = featuredCategories;
+  const selected = variable(categories[0].id);
+  const index = variable(0);
+  const items = variable.compute(() => categories.find((category) => category.id === selected.value)?.items ?? []);
+  let entering = false;
+  const hidden = variable(false);
+  const scrollEl = variable<HTMLElement | null>(null);
+  const rows = variable.compute(() => (hidden.value ? [] : items.value.map((item, i) => ({ item, i, entering }))));
+  const spotItem = variable<Featured | null>(categories[0].items[0] ?? null);
+  const shown = variable.compute(() => (spotItem.value ? [spotItem.value] : []));
+
+  const currentLabel = variable.compute(() => categories.find((category) => category.id === selected.value)?.label ?? "");
+  const counter = variable.compute(() => `${index.value + 1} / ${items.value.length}`);
+
+  const active = variable<Featured | null>(null);
+  const isOpen = variable(false);
+  const pickerOpen = variable(false);
+  const SWIPE_PX = 40;
+  let swipeStartX: number | null = null;
+
+  const pillEl = variable<HTMLElement | null>(null);
+  const pillReady = variable(false);
+
+  const fade = controller();
+  const fadeOut: Keyframes = {
+    0: { opacity: 1 },
+    1: [EASE.STYLE.QUAD, EASE.OUT, { opacity: 0 }],
+  };
+
+  function placePill() {
+    const pill = pillEl.value;
+    const target = document.getElementById(`pick-${index.value}`);
+    if (!pill || !target) return;
+    pill.style.width = `${target.offsetWidth}px`;
+    pill.style.height = `${target.offsetHeight}px`;
+    pill.style.transform = `translate(${target.offsetLeft}px, ${target.offsetTop}px)`;
+  }
+
+  function revealRow(i: number) {
+    document.getElementById(`pick-${i}`)?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
+
+  async function crossfadeSpot(next: number, alive: () => boolean) {
+    await fade.play();
+    if (!alive()) return;
+    spotItem.value = items.value[next] ?? null;
+    await fade.reverse();
+  }
+
+  // Latest click wins: each call takes a token; a superseded call stops after its current await.
+  let switchToken = 0;
+  async function show(id: string, next: number) {
+    const mine = ++switchToken;
+    const alive = () => mine === switchToken;
+    const changed = selected.value !== id;
+    const wasShown = !hidden.value;
+    if (changed) hidden.value = true;
+    selected.value = id;
+    index.value = next;
+    if (!changed && wasShown) {
+      placePill();
+      revealRow(next);
+      await crossfadeSpot(next, alive);
+      return;
+    }
+    if (wasShown) {
+      await Promise.all([wait(LIST_LEAVE_MS), fade.play()]);
+      if (!alive()) return;
+    }
+    entering = true;
+    spotItem.value = items.value[next] ?? null;
+    if (scrollEl.value) scrollEl.value.scrollTop = 0;
+    hidden.value = false;
+    await fade.reverse();
+    if (!alive()) return;
+    await wait(LIST_ENTER_MS);
+    if (!alive()) return;
+    entering = false;
+    placePill();
+  }
+
+  function selectCategory(id: string) {
+    show(id, 0);
+  }
+
+  function selectItem(next: number) {
+    show(selected.value, next);
+  }
+
+  function step(delta: number) {
+    const total = items.value.length;
+    if (total === 0) return;
+    selectItem((index.value + delta + total) % total);
+  }
+
+  function openPicker() {
+    pickerOpen.value = true;
+  }
+
+  function swipeStart(event: PointerEvent) {
+    if (SCREEN.PHONE.value) swipeStartX = event.clientX;
+  }
+
+  function swipeEnd(event: PointerEvent) {
+    if (swipeStartX === null) return;
+    const dx = event.clientX - swipeStartX;
+    swipeStartX = null;
+    if (Math.abs(dx) >= SWIPE_PX) step(dx < 0 ? 1 : -1);
+  }
+
+  function swipeCancel() {
+    swipeStartX = null;
+  }
+
+  function onListKey(event: KeyboardEvent) {
+    const last = items.value.length - 1;
+    if (event.key === "ArrowDown" || event.key === "ArrowRight") selectItem(Math.min(index.value + 1, last));
+    else if (event.key === "ArrowUp" || event.key === "ArrowLeft") selectItem(Math.max(index.value - 1, 0));
+    else if (event.key === "Home") selectItem(0);
+    else if (event.key === "End") selectItem(last);
+    else return;
+    event.preventDefault();
+  }
+
+  function openProject(item: Featured) {
+    active.value = item;
+    isOpen.value = true;
+  }
+
+  function linkIcon(url: string): string {
+    if (url.includes("github.com")) return "/icons/github.png";
+    if (url.includes("youtube.com")) return "/icons/youtube.svg";
+    return "";
+  }
+
+  function tabClass(id: string): string {
+    return selected.value === id ? "tab on" : "tab";
+  }
+
+  function tabPressed(id: string): string {
+    return selected.value === id ? "true" : "false";
+  }
+
+  function rowClass(i: number): string {
+    return index.value === i ? "pick on" : "pick";
+  }
+
+  function rowPressed(i: number): string {
+    return index.value === i ? "true" : "false";
+  }
+
+  onAttach(() => {
+    placePill();
+    window.setTimeout(() => {
+      placePill();
+      pillReady.value = true;
+    }, 350);
+    const refresh = () => placePill();
+    window.addEventListener("resize", refresh);
+    document.fonts?.ready.then(refresh);
+    return () => window.removeEventListener("resize", refresh);
+  });
+</script>
+
+<section id="featured">
+  <div class="wrap">
+    <SectionHead title="Featured" />
+
+    <div class="tabs" animate={motion(fromLeft)}>
+      <EACH {categories} as={category} key={category.id}>
+        <button class={tabClass(category.id)} type="button" aria-pressed={tabPressed(category.id)} onclick={() => selectCategory(category.id)}>{category.label}</button>
+      </EACH>
+    </div>
+
+    <div class="body">
+      <div class="spot-wrap" animate={motion(fromLeft)}>
+      <div class="spot" animate={motion({ play: fadeOut, on: ON.MANUAL, control: fade, duration: 170 })}>
+        <EACH {shown} as={item} key={item.name}>
+          <div class="media" onpointerdown={swipeStart} onpointerup={swipeEnd} onpointercancel={swipeCancel}>
+            <ProjectSlider images={item.images} title={item.name} auto={!reduced && !item.video} logo={item.fit === "contain"} />
+          </div>
+          <h2 class="spot-title">{item.name}</h2>
+          <p class="spot-desc">{item.description}</p>
+          <p class="spot-meta label">
+            <IF {item.lang !== ""}>
+              <span>{item.lang}</span>
+            </IF>
+            <IF {item.stars !== null}>
+              <StarCount count={item.stars} />
+            </IF>
+          </p>
+          <div class="actions">
+            <IF {SCREEN.PHONE}>
+              <button class="btn primary" type="button" onclick={() => openProject(item)}>More info</button>
+              <a class="icon-btn" href={item.url} target="_blank" rel="noopener" aria-label={labelFor(item.url)} title={labelFor(item.url)}>
+                <IF {linkIcon(item.url) !== ""}>
+                  <img src={linkIcon(item.url)} alt="" />
+                <ELSE>
+                  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 13v6a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h6" /></svg>
+                </IF>
+              </a>
+            <ELSE>
+              <a class="btn" href={item.url} target="_blank" rel="noopener">{labelFor(item.url)}</a>
+              <EACH {item.links} as={link} key={link.url}>
+                <a class="btn" href={link.url} target="_blank" rel="noopener">{link.label}</a>
+              </EACH>
+              <button class="btn btn-ghost" type="button" onclick={() => openProject(item)}>More info</button>
+            </IF>
+          </div>
+        </EACH>
+      </div>
+
+      </div>
+      <IF {SCREEN.PHONE}>
+        <div class="pager" animate={motion(fromRight)}>
+          <button class="pager-btn" type="button" aria-label="Previous project" onclick={() => step(-1)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+          </button>
+          <button class="counter" type="button" aria-haspopup="dialog" onclick={openPicker}>{counter}</button>
+          <button class="pager-btn" type="button" aria-label="Next project" onclick={() => step(1)}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+          </button>
+        </div>
+        <FeaturedPicker label={currentLabel.value} rows={rows.value} index={index.value} bind-open={pickerOpen} onpick={selectItem} />
+      <ELSE>
+        <div class="list" tabindex="0" role="listbox" aria-label="{selected.value} items" onkeydown={onListKey}>
+          <div class="scroll" data-prevent-page-scroll bind-element={scrollEl}>
+            <div class="track">
+              <span class={pillReady.value ? "pill ready" : "pill"} aria-hidden="true" bind-element={pillEl}></span>
+              <EACH {rows} as={row} key={row.item.name}>
+                <button id="pick-{row.i}" class={rowClass(row.i)} type="button" aria-pressed={rowPressed(row.i)} onclick={() => selectItem(row.i)} animate={rowMotion(row)}>
+                  <FeaturedCard title={row.item.name} desc={row.item.desc} lang={row.item.lang} stars={row.item.stars} image={row.item.image} logo={row.item.fit === "contain"} />
+                </button>
+              </EACH>
+            </div>
+          </div>
+        </div>
+      </IF>
+    </div>
+  </div>
+
+  <ProjectModal project={active.value} bind-open={isOpen} />
+</section>
+
+<style>
+  #featured {
+    padding-inline: clamp(24px, 4vw, 64px);
+  }
+
+  #featured > .wrap {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    max-width: none;
+    min-height: 0;
+    margin: 0;
+  }
+
+  .tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 20px;
+  }
+
+  .tab {
+    padding: 8px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--fg);
+    font: 600 12px/1 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease;
+  }
+
+  .tab:hover {
+    border-color: var(--fg);
+  }
+
+  .tab.on {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg);
+  }
+
+  .body {
+    display: grid;
+    flex: 1 1 auto;
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    gap: 32px;
+    min-height: 0;
+  }
+
+  .spot-wrap {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .spot {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    min-height: 0;
+  }
+
+  .media {
+    position: relative;
+    flex: 1 1 0;
+    min-height: 0;
+    width: 100%;
+    container-type: size;
+  }
+
+  .media :global(.slider) {
+    width: min(100cqw, calc(100cqh * 16 / 9));
+    max-height: none;
+    aspect-ratio: 16 / 9;
+  }
+
+
+
+  .spot-title {
+    font-size: clamp(1.5rem, 3.2vh, 2.1rem);
+    line-height: 1.1;
+  }
+
+  .spot-desc {
+    display: -webkit-box;
+    margin: 0;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .spot-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .btn {
+    padding: 8px 14px;
+    border: 1.5px solid var(--fg);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--fg);
+    font: 600 12px/1.2 var(--mono);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color 200ms ease, color 200ms ease;
+  }
+
+  .btn:hover {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    border: 1.5px solid var(--line);
+    border-radius: 18px;
+    outline: none;
+  }
+
+  .list:focus-visible {
+    border-color: var(--fg);
+  }
+
+  .scroll {
+    flex: 1 1 0;
+    min-height: 0;
+    padding: 6px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+  }
+
+  .track {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .pill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    opacity: 0;
+    border-radius: 14px;
+    background: var(--fg);
+    pointer-events: none;
+    transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1), width 200ms cubic-bezier(0.22, 1, 0.36, 1), height 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pill.ready {
+    opacity: 1;
+  }
+
+  .pick {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex: none;
+    align-items: center;
+    height: 128px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 14px;
+    background: transparent;
+    color: var(--fg);
+    text-align: left;
+    cursor: pointer;
+    transition: color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .pick.on {
+    color: var(--bg);
+  }
+
+  .pick :global(.row) {
+    width: 100%;
+  }
+
+  .pick.on :global(.row-meta) {
+    color: inherit;
+  }
+
+  .pick :global(.row) {
+    padding-right: 20px;
+  }
+
+  .pick::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 14px;
+    background: color-mix(in srgb, var(--fg) 6%, transparent);
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .pick:not(.on):hover::before,
+  .pick:not(.on):focus-visible::before {
+    opacity: 1;
+  }
+
+  .pick :global(.thumb-img) {
+    transition: transform 300ms ease-out;
+  }
+
+  .pick :global(.name) {
+    transition: transform 200ms ease-out;
+  }
+
+  .pick:not(.on):hover :global(.name),
+  .pick:not(.on):focus-visible :global(.name) {
+    transform: translateX(4px);
+  }
+
+  .pick:hover :global(.thumb-img) {
+    transform: scale(1.06);
+  }
+
+  .pick::after {
+    content: "\203A";
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    color: var(--muted);
+    font-size: 20px;
+    line-height: 1;
+    opacity: 0;
+    transform: translateY(-50%);
+    transition: opacity 150ms ease;
+    pointer-events: none;
+  }
+
+  .pick:not(.on):hover::after,
+  .pick:not(.on):focus-visible::after {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pick :global(.thumb-img),
+    .pick :global(.name) {
+      transition: none;
+    }
+
+    .pick:hover :global(.thumb-img),
+    .pick:not(.on):hover :global(.name),
+    .pick:not(.on):focus-visible :global(.name) {
+      transform: none;
+    }
+  }
+
+  @include screen(PHONE) {
+    #featured {
+      position: relative;
+      padding-bottom: calc(var(--dock-h) + 96px + env(safe-area-inset-bottom, 0px));
+    }
+
+    #featured > .wrap,
+    .body,
+    .spot-wrap,
+    .spot {
+      flex: none;
+    }
+
+    .body {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto;
+      gap: 14px;
+    }
+
+    .media {
+      flex: none;
+      container-type: inline-size;
+      touch-action: pan-y;
+    }
+
+    .media :global(.slider) {
+      width: 100%;
+    }
+
+    .media :global(img) {
+      -webkit-user-drag: none;
+      user-select: none;
+    }
+
+    .spot-title {
+      flex: none;
+      overflow: hidden;
+      font-size: 24px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .spot-desc {
+      flex: none;
+      font-size: 14px;
+    }
+
+    .actions {
+      flex-wrap: nowrap;
+      align-items: center;
+    }
+
+    .btn.primary {
+      flex: 1 1 auto;
+      padding: 12px 16px;
+      background: var(--fg);
+      color: var(--bg);
+      text-align: center;
+    }
+
+    .icon-btn {
+      display: grid;
+      flex: none;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border: 1.5px solid var(--fg);
+      border-radius: 999px;
+      color: var(--fg);
+    }
+
+    .icon-btn img {
+      width: 22px;
+      height: 22px;
+      object-fit: contain;
+    }
+
+    .icon-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .pager {
+      position: absolute;
+      left: 24px;
+      right: 84px;
+      bottom: calc(var(--dock-h) + 32px + env(safe-area-inset-bottom, 0px));
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr) 48px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pager-btn,
+    .counter {
+      height: 48px;
+      border: 1.5px solid var(--line);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--fg);
+      cursor: pointer;
+    }
+
+    .pager-btn {
+      display: grid;
+      place-items: center;
+      padding: 0;
+    }
+
+    .pager-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .counter {
+      font: 600 13px/1 var(--mono);
+      letter-spacing: 0.08em;
+    }
+  }
+</style>

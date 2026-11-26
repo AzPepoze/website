@@ -1,0 +1,43 @@
+<script>
+  import { ON, PRESET, props } from "lusiajs";
+  import { letterBounce, motion } from "../motion.ts";
+
+  const { title } = props(class {
+    title = "";
+  });
+
+  const LETTER_STEP = 45;
+
+  const letters = [...title].map((ch, index) => ({
+    ch: ch === " " ? " " : ch,
+    enter: motion({ play: PRESET.SLIDE_UP, on: ON.VIEW, duration: 520, delay: index * LETTER_STEP, options: { reverse: true } }),
+    hover: motion(letterBounce(index)),
+  }));
+</script>
+
+<header class="head">
+  <h2 class="title" aria-label={title}>
+    <EACH {letters} as={letter}>
+      <span class="slot" aria-hidden="true" animate={letter.enter}><span class="ch" animate={letter.hover}>{letter.ch}</span></span>
+    </EACH>
+  </h2>
+</header>
+
+<style>
+  .head {
+    margin-bottom: clamp(16px, 4vh, 32px);
+  }
+
+  .title {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: clamp(2.5rem, min(6vw, 7vh), 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+  }
+
+  .slot,
+  .ch {
+    display: inline-block;
+  }
+</style>

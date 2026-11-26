@@ -1,24 +1,20 @@
 {
-	"name": "temp-sveltekit-project",
+	"name": "azpepoze-website",
 	"private": true,
-	"version": "0.0.1",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''",
-		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch"
+		"dev": "lusia dev .",
+		"repos": "bun scripts/fetch-repos.ts",
+		"stats": "bun scripts/fetch-stats.ts",
+		"build": "bun scripts/fetch-repos.ts && bun scripts/fetch-stats.ts && lusia build .",
+		"lint": "lusia lint ."
+	},
+	"dependencies": {
+		"lusiajs": "^0.2.1-beta.1"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-static": "^3.0.10",
-		"@sveltejs/kit": "^2.22.0",
-		"@sveltejs/vite-plugin-svelte": "^6.0.0",
-		"sass": "^1.94.2",
-		"svelte": "^5.0.0",
-		"svelte-check": "^4.0.0",
-		"typescript": "^5.0.0",
-		"vite": "^7.0.4"
+		"@lusiajs/vscode-support": "0.2.1-beta.1",
+		"@types/bun": "^1.4.5",
+		"typescript": "^5.6.0"
 	}
 }

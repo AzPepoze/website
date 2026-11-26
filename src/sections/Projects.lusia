@@ -1,0 +1,321 @@
+<script>
+  import StarCount from "../components/StarCount.lusia";
+  import { onAttach, variable } from "lusiajs";
+  import SectionHead from "../components/SectionHead.lusia";
+  import LangIcon from "../components/LangIcon.lusia";
+  import { LIST_ENTER_MS, LIST_LEAVE_MS, listItem, listRow, motion, wait } from "../motion.ts";
+  import type { Repo } from "../data/types.ts";
+
+  type Status = "loading" | "error" | "ready";
+  type RepoCache = { time: number; data: Repo[] };
+
+  const REPOS_URL = "https://api.github.com/users/AzPepoze/repos?per_page=100";
+  const SNAPSHOT_URL = "/repos.json";
+  const CACHE_KEY = "repos-cache";
+  const CACHE_TTL = 60 * 60 * 1000;
+
+  const status = variable<Status>("loading");
+  const repos = variable<Repo[]>([]);
+  const filter = variable("All");
+  const brokenLogos = variable<string[]>([]);
+
+  const languages = variable.compute(() => {
+    const names = new Set(repos.value.map((repo) => repo.language).filter((lang): lang is string => lang !== null));
+    return [...names].sort();
+  });
+
+  const chips = variable.compute(() => ["All", ...languages.value].map((name, i) => ({ name, i })));
+  const ROW_BAND = 8;
+  function rowMotion(row: { i: number; entering: boolean }) {
+    if (row.entering) return listRow("right", row.i, { duration: 450, attach: true });
+    return listRow("right", row.i < ROW_BAND ? row.i : 0, { duration: row.i < ROW_BAND ? 450 : 350 });
+  }
+  const visible = variable.compute(() =>
+    filter.value === "All" ? repos.value : repos.value.filter((repo) => repo.language === filter.value),
+  );
+  let entering = false;
+  let switchToken = 0;
+  const hidden = variable(false);
+  const active = variable("All");
+  const rows = variable.compute(() => (hidden.value ? [] : visible.value.map((repo, i) => ({ repo, i, entering }))));
+
+  const listEl = variable<HTMLElement | null>(null);
+
+  // Latest click wins: the chip lights up at once and a newer click cancels the switch in flight.
+  async function selectFilter(name: string) {
+    if (active.value === name) return;
+    active.value = name;
+    const token = ++switchToken;
+    if (!hidden.value) {
+      hidden.value = true;
+      await wait(LIST_LEAVE_MS);
+      if (token !== switchToken) return;
+    }
+    entering = true;
+    filter.value = name;
+    if (listEl.value) listEl.value.scrollTop = 0;
+    hidden.value = false;
+    await wait(LIST_ENTER_MS);
+    if (token === switchToken) entering = false;
+  }
+
+  function markBroken(name: string) {
+    if (!brokenLogos.value.includes(name)) brokenLogos.value = [...brokenLogos.value, name];
+  }
+
+  function showLogo(repo: Repo): boolean {
+    return repo.logo != null && !brokenLogos.value.includes(repo.name);
+  }
+
+  function byStars(a: Repo, b: Repo) {
+    const stars = b.stargazers_count - a.stargazers_count;
+    if (stars !== 0) return stars;
+    return new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime();
+  }
+
+  function readCache(): RepoCache | null {
+    try {
+      const cache = JSON.parse(localStorage.getItem(CACHE_KEY) ?? "null") as RepoCache | null;
+      return cache && Array.isArray(cache.data) ? cache : null;
+    } catch {
+      return null;
+    }
+  }
+
+  function writeCache(data: Repo[]) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), data }));
+    } catch {
+      return;
+    }
+  }
+
+  function fetchJson(url: string): Promise<Repo[]> {
+    return fetch(url).then((res) => {
+      if (!res.ok) throw new Error(`${url} responded ${res.status}`);
+      return res.json() as Promise<Repo[]>;
+    });
+  }
+
+  function fetchSnapshot(): Promise<Repo[] | null> {
+    return fetchJson(SNAPSHOT_URL).catch(() => null);
+  }
+
+  async function showRepos(data: Repo[], snapshot: Promise<Repo[] | null>) {
+    const logos = new Map((await snapshot ?? []).map((repo) => [repo.name, repo.logo ?? null]));
+    repos.value = data.map((repo) => ({ ...repo, logo: logos.get(repo.name) ?? null })).sort(byStars);
+    status.value = "ready";
+  }
+
+  onAttach(() => {
+    const snapshot = fetchSnapshot();
+    const cached = readCache();
+    if (cached && Date.now() - cached.time < CACHE_TTL) {
+      showRepos(cached.data, snapshot);
+      return;
+    }
+
+    fetchJson(REPOS_URL)
+      .then((data) => {
+        writeCache(data);
+        return showRepos(data, snapshot);
+      })
+      .catch(() => {
+        if (cached) return showRepos(cached.data, snapshot);
+        return snapshot.then((data) => (data ? showRepos(data, snapshot) : (status.value = "error")));
+      });
+  });
+</script>
+
+<section id="projects" class="section">
+  <div class="wrap">
+  <SectionHead title="Projects" />
+
+  <IF {status.value === "loading"}>
+    <p class="mono-label state">FETCHING REPOS...</p>
+  <ELSEIF {status.value === "error"}>
+    <p class="mono-label state">COULD NOT LOAD REPOS. <a href="https://github.com/AzPepoze?tab=repositories" target="_blank" rel="noopener">OPEN GITHUB</a></p>
+  <ELSE>
+    <div class="filters">
+      <EACH {chips} as={chip} key={chip.name}>
+        <button class={active.value === chip.name ? "chip on" : "chip"} type="button" onclick={() => selectFilter(chip.name)} animate={motion(listItem("left", chip.i, { step: 30 }))}>
+          <IF {chip.name !== "All"}><LangIcon lang={chip.name} size={14} /></IF>{chip.name}
+        </button>
+      </EACH>
+    </div>
+
+    <ul class="repos" data-prevent-page-scroll bind-element={listEl}>
+      <EACH {rows} as={row} key={row.repo.name}>
+        <li class="row" animate={rowMotion(row)}>
+          <a class="row-link" href={row.repo.html_url} target="_blank" rel="noopener">
+            <span class="row-thumb">
+              <IF {showLogo(row.repo)}>
+                <img src={row.repo.logo} alt="" width="32" height="32" onerror={() => markBroken(row.repo.name)} />
+              <ELSE>
+                <LangIcon lang={row.repo.language} size={18} />
+              </IF>
+            </span>
+            <span class="row-name">{row.repo.name}</span>
+            <span class="row-desc">{row.repo.description ?? ""}</span>
+            <span class="row-meta mono"><LangIcon lang={row.repo.language} size={14} />{row.repo.language ?? "N/A"}</span>
+            <span class="row-stars mono"><StarCount count={row.repo.stargazers_count} /></span>
+          </a>
+        </li>
+      </EACH>
+    </ul>
+
+  </IF>
+  </div>
+</section>
+
+<style>
+  .state {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  .state a {
+    color: var(--fg);
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 auto 24px;
+    max-width: 1120px;
+  }
+
+  .chip {
+    padding: 8px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--fg);
+    font: 600 12px/1 var(--mono);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chip.on {
+    background: var(--fg);
+    border-color: var(--fg);
+    color: var(--bg);
+  }
+
+  .repos {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    gap: 8px;
+    width: 100%;
+    max-width: 1120px;
+    min-height: 0;
+    margin: 0 auto;
+    padding: 24px 8px 24px 0;
+    overflow-y: auto;
+    mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    list-style: none;
+  }
+
+  #projects {
+    justify-content: flex-start;
+  }
+
+  #projects > .wrap {
+    flex: 1 1 auto;
+  }
+
+
+  .row-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+
+  .row-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--surface);
+    color: var(--fg);
+    overflow: hidden;
+  }
+
+  .row-thumb img {
+    display: block;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+  }
+
+  .row-link {
+    display: grid;
+    grid-template-columns: 32px 2fr 3fr 1fr 1fr;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 24px;
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+    background: var(--surface);
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .row-name {
+    font-family: var(--display);
+    font-size: 1.1rem;
+    overflow-wrap: anywhere;
+  }
+
+  .row-desc {
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .row-meta,
+  .row-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @include screen(PHONE) {
+    .row-link {
+      grid-template-columns: 32px 1fr 1fr;
+    }
+
+    .row-thumb {
+      grid-row: 1 / span 3;
+    }
+
+    .row-desc {
+      grid-column: 2 / -1;
+    }
+  }
+</style>
