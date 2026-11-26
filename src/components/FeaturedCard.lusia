@@ -57,11 +57,11 @@
     </IF>
   </span>
   <span class="text">
-    <span class="name">{title}</span>
+    <span class="name notranslate" translate="no">{title}</span>
     <span class="desc">{desc}</span>
     <span class="row-meta">
       <IF {lang !== ""}>
-        <span>{lang}</span>
+        <span class="notranslate" translate="no">{lang}</span>
       </IF>
       <IF {stars !== null}>
         <StarCount count={stars} />

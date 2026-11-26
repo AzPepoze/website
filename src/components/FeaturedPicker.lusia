@@ -132,10 +132,10 @@
               </IF>
             </span>
             <span class="text">
-              <span class="name">{row.item.name}</span>
+              <span class="name notranslate" translate="no">{row.item.name}</span>
               <span class="meta label">
                 <IF {row.item.lang !== ""}>
-                  <span>{row.item.lang}</span>
+                  <span class="notranslate" translate="no">{row.item.lang}</span>
                 </IF>
                 <IF {row.item.stars !== null}>
                   <StarCount count={row.item.stars} />
@@ -234,6 +234,7 @@
     gap: 4px;
     min-height: 0;
     padding: 4px 10px calc(16px + env(safe-area-inset-bottom, 0px));
+    overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
   }

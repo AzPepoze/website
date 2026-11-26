@@ -113,9 +113,9 @@
           <ProjectSlider images={project.images} title={project.name} logo={project.fit === "contain"} />
 
           <div class="info">
-            <h2 id="project-modal-title" class="title">{project.name}</h2>
+            <h2 id="project-modal-title" class="title notranslate" translate="no">{project.name}</h2>
             <p class="meta label">
-              <span>{project.lang}</span>
+              <span class="notranslate" translate="no">{project.lang}</span>
               <IF {project.stars !== null}>
                 <StarCount count={project.stars} />
               </IF>
@@ -210,6 +210,7 @@
     gap: 20px;
     min-height: 0;
     padding: 24px 28px 28px;
+    overflow-x: hidden;
     overflow-y: auto;
     overscroll-behavior: contain;
   }

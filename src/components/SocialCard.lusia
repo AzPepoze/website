@@ -18,9 +18,9 @@
 <a class="card" href={url} target="_blank" rel="noopener" aria-label="{name}: {handle}" style="--accent: {accent}" animate={motion(enter)}>
   <img class="icon" src={icon} alt="" width="52" height="52" />
   <span class="body">
-    <span class="name">{name}</span>
+    <span class="name notranslate" translate="no">{name}</span>
     <span class="meta">
-      <span class="handle">{handle}</span>
+      <span class="handle notranslate" translate="no">{handle}</span>
       <IF {tagline !== ""}>
         <span class="tagline">· {tagline}</span>
       </IF>

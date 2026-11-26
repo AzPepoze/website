@@ -55,7 +55,7 @@
       <IF {loaded.value}>
         <div class="logo-bg" animate={motion({ play: PRESET.SLIDE_UP, on: ON.ATTACH, duration: 900 })}><img class="logo" src="/img/logo.png" alt="" aria-hidden="true" width="96" height="96" /></div>
       </IF>
-      <h1 class="title-big" aria-label="AzPepoze">
+      <h1 class="title-big notranslate" translate="no" aria-label="AzPepoze">
         <IF {loaded.value}>
           <EACH {letters} as={letter}>
             <span class="slot" animate={letter.enter}><span class="ch" animate={letter.hover}>{letter.ch}</span></span>

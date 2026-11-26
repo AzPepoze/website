@@ -16,7 +16,7 @@
 </script>
 
 <header class="head">
-  <h2 class="title" aria-label={title}>
+  <h2 class="title notranslate" translate="no" aria-label={title}>
     <EACH {letters} as={letter}>
       <span class="slot" aria-hidden="true" animate={letter.enter}><span class="ch" animate={letter.hover}>{letter.ch}</span></span>
     </EACH>

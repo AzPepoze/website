@@ -139,7 +139,7 @@
     <div class="filters">
       <EACH {chips} as={chip} key={chip.name}>
         <button class={active.value === chip.name ? "chip on" : "chip"} type="button" onclick={() => selectFilter(chip.name)} animate={motion(listItem("left", chip.i, { step: 30 }))}>
-          <IF {chip.name !== "All"}><LangIcon lang={chip.name} size={14} /></IF>{chip.name}
+          <IF {chip.name !== "All"}><LangIcon lang={chip.name} size={14} /><span class="notranslate" translate="no">{chip.name}</span><ELSE>{chip.name}</IF>
         </button>
       </EACH>
     </div>
@@ -155,9 +155,9 @@
                 <LangIcon lang={row.repo.language} size={18} />
               </IF>
             </span>
-            <span class="row-name">{row.repo.name}</span>
+            <span class="row-name notranslate" translate="no">{row.repo.name}</span>
             <span class="row-desc">{row.repo.description ?? ""}</span>
-            <span class="row-meta mono"><LangIcon lang={row.repo.language} size={14} />{row.repo.language ?? "N/A"}</span>
+            <span class="row-meta mono"><LangIcon lang={row.repo.language} size={14} /><span class="notranslate" translate="no">{row.repo.language ?? "N/A"}</span></span>
             <span class="row-stars mono"><StarCount count={row.repo.stargazers_count} /></span>
           </a>
         </li>
@@ -220,6 +220,7 @@
     min-height: 0;
     margin: 0 auto;
     padding: 24px 8px 24px 0;
+    overflow-x: hidden;
     overflow-y: auto;
     mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);
     -webkit-mask-image: linear-gradient(to bottom, transparent, #000 10%, #000 90%, transparent);

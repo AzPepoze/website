@@ -32,8 +32,8 @@
   <button class="card" type="button" style="--tint: {tint}" aria-label={srLabel} onclick={copy}>
     <span class="tile" aria-hidden="true" style="--icon: url({icon}); background-color: {tint}"></span>
     <span class="body">
-      <span class="label">{label}</span>
-      <span class="value">{text}</span>
+      <span class="label notranslate" translate="no">{label}</span>
+      <span class="value notranslate" translate="no">{text}</span>
     </span>
     <IF {copied}>
       <span class="cta done" aria-hidden="true" animate={motion({ play: pop, duration: 420, midway: { mode: MIDWAY.SWITCH_SMOOTH } })}>

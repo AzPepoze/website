@@ -84,11 +84,11 @@
     <EACH {cards} as={repo} key={repo.name}>
       <li class="item" animate={motion(listItem("left", cards.value.indexOf(repo)))}>
         <a class="card" href={repo.html_url} target="_blank" rel="noopener">
-          <span class="name">{repo.name}</span>
+          <span class="name notranslate" translate="no">{repo.name}</span>
           <span class="desc">{repo.description ?? ""}</span>
           <span class="meta label">
             <span class="icon" animate={iconSpin}><LangIcon lang={repo.language} size={12} /></span>
-            {repo.language ?? "N/A"} · {repo.ago}
+            <span class="notranslate" translate="no">{repo.language ?? "N/A"}</span> · {repo.ago}
           </span>
           <svg class="arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 17L17 7M9 7h8v8" /></svg>
         </a>
