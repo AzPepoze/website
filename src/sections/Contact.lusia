@@ -9,7 +9,7 @@
     <div class="split">
       <div class="intro">
         <SectionHead title="Contact" />
-        <p class="lead" animate={motion(fromLeft)}>Say hi — commissions, collabs, or anything.</p>
+        <p class="lead" animate={motion(fromLeft)}>Feel free to reach out anytime.</p>
       </div>
 
       <div class="cards">
